@@ -1,4 +1,4 @@
-from bitcash.utils import (
+from bitsv.utils import (
     Decimal, bytes_to_hex, chunk_data, flip_hex_byte_order, hex_to_bytes,
     hex_to_int, int_to_hex, int_to_unknown_bytes
 )

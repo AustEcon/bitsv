@@ -1,6 +1,6 @@
 import pytest
 
-from bitcash.network.fees import get_fee
+from bitsv.network.fees import get_fee
 
 
 def test_get_fee():

@@ -1,7 +1,7 @@
 import pytest
 
-import bitcash
-from bitcash.network.services import (
+import bitsv
+from bitsv.network.services import (
     CashExplorerBitcoinDotComAPI, BlockdozerAPI, NetworkAPI, set_service_timeout
 )
 from tests.utils import (
@@ -29,9 +29,9 @@ def all_items_equal(seq):
 
 
 def test_set_service_timeout():
-    original = bitcash.network.services.DEFAULT_TIMEOUT
+    original = bitsv.network.services.DEFAULT_TIMEOUT
     set_service_timeout(3)
-    updated = bitcash.network.services.DEFAULT_TIMEOUT
+    updated = bitsv.network.services.DEFAULT_TIMEOUT
 
     assert original != updated
     assert updated == 3

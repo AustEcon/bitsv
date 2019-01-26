@@ -5,7 +5,7 @@ from time import time
 
 import requests
 
-from bitcash.utils import Decimal
+from bitsv.utils import Decimal
 
 DEFAULT_CACHE_TIME = 60
 

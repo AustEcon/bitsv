@@ -1,13 +1,13 @@
 from setuptools import find_packages, setup
 
-with open('bitcash/__init__.py', 'r') as f:
+with open('bitsv/__init__.py', 'r') as f:
     for line in f:
         if line.startswith('__version__'):
             version = line.strip().split('= ')[1].strip("'")
             break
 
 setup(
-    name='bitcash',
+    name='bitsv',
     version=version,
     description='Bitcoin Cash made easier.',
     long_description=open('README.rst', 'r').read(),
@@ -15,8 +15,8 @@ setup(
     author_email='sega01@go-beyond.org',
     maintainer='Teran McKinney',
     maintainer_email='sega01@go-beyond.org',
-    url='https://github.com/sporestack/bitcash',
-    download_url='https://github.com/sporestack/bitcash/tarball/{}'.format(version),
+    url='https://github.com/sporestack/bitsv',
+    download_url='https://github.com/sporestack/bitsv/tarball/{}'.format(version),
     license='MIT',
 
     keywords=[
@@ -50,7 +50,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': (
-            'bitcash = bitcash.cli:bitcash',
+            'bitsv = bitsv.cli:bitsv',
         ),
     },
 )

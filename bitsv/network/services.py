@@ -4,9 +4,9 @@ import requests
 from cashaddress import convert as cashaddress
 from decimal import Decimal
 
-from bitcash.network import currency_to_satoshi
-from bitcash.network.meta import Unspent
-from bitcash.network.transaction import Transaction, TxPart
+from bitsv.network import currency_to_satoshi
+from bitsv.network.meta import Unspent
+from bitsv.network.transaction import Transaction, TxPart
 
 DEFAULT_TIMEOUT = 30
 

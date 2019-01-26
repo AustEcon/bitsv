@@ -1,14 +1,14 @@
 import json
 
-from bitcash.crypto import ECPrivateKey
-from bitcash.curve import Point
-from bitcash.format import (
+from bitsv.crypto import ECPrivateKey
+from bitsv.curve import Point
+from bitsv.format import (
     bytes_to_wif, public_key_to_address, public_key_to_coords, wif_to_bytes,
     address_to_public_key_hash
 )
-from bitcash.network import NetworkAPI, get_fee, satoshi_to_currency_cached
-from bitcash.network.meta import Unspent
-from bitcash.transaction import (
+from bitsv.network import NetworkAPI, get_fee, satoshi_to_currency_cached
+from bitsv.network.meta import Unspent
+from bitsv.transaction import (
     calc_txid, create_p2pkh_transaction, sanitize_tx_data,
     OP_CHECKSIG, OP_DUP, OP_EQUALVERIFY, OP_HASH160, OP_PUSH_20
     )
@@ -178,8 +178,8 @@ class PrivateKey(BaseKey):
 
     def get_balance(self, currency='satoshi'):
         """Fetches the current balance by calling
-        :func:`~bitcash.PrivateKey.get_unspents` and returns it using
-        :func:`~bitcash.PrivateKey.balance_as`.
+        :func:`~bitsv.PrivateKey.get_unspents` and returns it using
+        :func:`~bitsv.PrivateKey.balance_as`.
 
         :param currency: One of the :ref:`supported currencies`.
         :type currency: ``str``
@@ -256,7 +256,7 @@ class PrivateKey(BaseKey):
              message=None, unspents=None):  # pragma: no cover
         """Creates a signed P2PKH transaction and attempts to broadcast it on
         the blockchain. This accepts the same arguments as
-        :func:`~bitcash.PrivateKey.create_transaction`.
+        :func:`~bitsv.PrivateKey.create_transaction`.
 
         :param outputs: A sequence of outputs you wish to send in the form
                         ``(destination, amount, currency)``. The amount can
@@ -356,7 +356,7 @@ class PrivateKey(BaseKey):
         """Creates a signed P2PKH transaction using previously prepared
         transaction data.
 
-        :param tx_data: Output of :func:`~bitcash.PrivateKey.prepare_transaction`.
+        :param tx_data: Output of :func:`~bitsv.PrivateKey.prepare_transaction`.
         :type tx_data: ``str``
         :returns: The signed transaction as hex.
         :rtype: ``str``
@@ -472,8 +472,8 @@ class PrivateKeyTestnet(BaseKey):
 
     def get_balance(self, currency='satoshi'):
         """Fetches the current balance by calling
-        :func:`~bitcash.PrivateKeyTestnet.get_unspents` and returns it using
-        :func:`~bitcash.PrivateKeyTestnet.balance_as`.
+        :func:`~bitsv.PrivateKeyTestnet.get_unspents` and returns it using
+        :func:`~bitsv.PrivateKeyTestnet.balance_as`.
 
         :param currency: One of the :ref:`supported currencies`.
         :type currency: ``str``
@@ -550,7 +550,7 @@ class PrivateKeyTestnet(BaseKey):
              message=None, unspents=None):
         """Creates a signed P2PKH transaction and attempts to broadcast it on
         the testnet blockchain. This accepts the same arguments as
-        :func:`~bitcash.PrivateKeyTestnet.create_transaction`.
+        :func:`~bitsv.PrivateKeyTestnet.create_transaction`.
 
         :param outputs: A sequence of outputs you wish to send in the form
                         ``(destination, amount, currency)``. The amount can
@@ -650,7 +650,7 @@ class PrivateKeyTestnet(BaseKey):
         """Creates a signed P2PKH transaction using previously prepared
         transaction data.
 
-        :param tx_data: Output of :func:`~bitcash.PrivateKeyTestnet.prepare_transaction`.
+        :param tx_data: Output of :func:`~bitsv.PrivateKeyTestnet.prepare_transaction`.
         :type tx_data: ``str``
         :returns: The signed transaction as hex.
         :rtype: ``str``

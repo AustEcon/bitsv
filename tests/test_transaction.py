@@ -1,13 +1,13 @@
 import pytest
 
-from bitcash.exceptions import InsufficientFunds
-from bitcash.network.meta import Unspent
-from bitcash.transaction import (
+from bitsv.exceptions import InsufficientFunds
+from bitsv.network.meta import Unspent
+from bitsv.transaction import (
     TxIn, calc_txid, create_p2pkh_transaction, construct_input_block,
     construct_output_block, estimate_tx_fee, sanitize_tx_data
 )
-from bitcash.utils import hex_to_bytes
-from bitcash.wallet import PrivateKey
+from bitsv.utils import hex_to_bytes
+from bitsv.wallet import PrivateKey
 from .samples import WALLET_FORMAT_MAIN, BITCOIN_CASHADDRESS_TEST_COMPRESSED
 
 

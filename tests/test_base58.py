@@ -1,7 +1,7 @@
 import pytest
 
-from bitcash.base58 import b58decode, b58decode_check, b58encode, b58encode_check
-from bitcash.format import MAIN_PUBKEY_HASH
+from bitsv.base58 import b58decode, b58decode_check, b58encode, b58encode_check
+from bitsv.format import MAIN_PUBKEY_HASH
 from .samples import BINARY_ADDRESS, BITCOIN_ADDRESS, PUBKEY_HASH
 
 

@@ -3,11 +3,11 @@ from collections import namedtuple
 
 from cashaddress import convert as cashaddress
 
-from bitcash.crypto import double_sha256, sha256
-from bitcash.exceptions import InsufficientFunds
-from bitcash.format import address_to_public_key_hash
-from bitcash.network.rates import currency_to_satoshi_cached
-from bitcash.utils import (
+from bitsv.crypto import double_sha256, sha256
+from bitsv.exceptions import InsufficientFunds
+from bitsv.format import address_to_public_key_hash
+from bitsv.network.rates import currency_to_satoshi_cached
+from bitsv.utils import (
     bytes_to_hex, chunk_data, hex_to_bytes, int_to_unknown_bytes, int_to_varint
 )
 

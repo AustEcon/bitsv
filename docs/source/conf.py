@@ -21,7 +21,7 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-from bitcash import __version__
+from bitsv import __version__
 
 
 # -- General configuration ------------------------------------------------
@@ -79,7 +79,7 @@ html_sidebars = {
 html_theme_options = {
     'show_powered_by': False,
     'github_user': 'ofek',
-    'github_repo': 'bitcash',
+    'github_repo': 'bitsv',
     'github_banner': True,
     'show_related': False
 }
@@ -163,7 +163,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'bitcash', 'Bitcash Documentation',
+    (master_doc, 'bitsv', 'Bitcash Documentation',
      [author], 1)
 ]
 

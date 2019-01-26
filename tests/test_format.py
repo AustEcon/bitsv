@@ -1,7 +1,7 @@
 import pytest
 from cashaddress.convert import InvalidAddress
 
-from bitcash.format import (
+from bitsv.format import (
     address_to_public_key_hash, bytes_to_wif, coords_to_public_key,
     get_version, point_to_public_key, public_key_to_coords,
     public_key_to_address, public_key_to_address, verify_sig,

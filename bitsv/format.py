@@ -1,9 +1,9 @@
 from cashaddress import convert as cashaddress
 from coincurve import verify_signature as _vs
 
-from bitcash.base58 import b58decode_check, b58encode_check
-from bitcash.crypto import ripemd160_sha256
-from bitcash.curve import x_to_y
+from bitsv.base58 import b58decode_check, b58encode_check
+from bitsv.crypto import ripemd160_sha256
+from bitsv.curve import x_to_y
 
 MAIN_PUBKEY_HASH = b'\x00'
 MAIN_SCRIPT_HASH = b'\x05'

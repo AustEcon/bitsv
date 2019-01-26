@@ -1,19 +1,19 @@
 from time import sleep, time
 
-import bitcash
-from bitcash.network.rates import (
+import bitsv
+from bitsv.network.rates import (
     RatesAPI, bch_to_satoshi, currency_to_satoshi, currency_to_satoshi_cached,
     mbch_to_satoshi, satoshi_to_currency, satoshi_to_currency_cached,
     satoshi_to_satoshi, set_rate_cache_time, ubch_to_satoshi
 )
-from bitcash.utils import Decimal
+from bitsv.utils import Decimal
 
 
 # FIXME: No API, so taking this out for now.
 # def test_set_rate_cache_time():
-#     original = bitcash.network.rates.DEFAULT_CACHE_TIME
+#     original = bitsv.network.rates.DEFAULT_CACHE_TIME
 #     set_rate_cache_time(30)
-#     updated = bitcash.network.rates.DEFAULT_CACHE_TIME
+#     updated = bitsv.network.rates.DEFAULT_CACHE_TIME
 # 
 #     assert original != updated
 #     assert updated == 30
