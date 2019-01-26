@@ -8,10 +8,12 @@ from bitsv.format import (
 )
 from bitsv.network import NetworkAPI, get_fee, satoshi_to_currency_cached
 from bitsv.network.meta import Unspent
+from bitsv.network.services import BitIndex
 from bitsv.transaction import (
     calc_txid, create_p2pkh_transaction, sanitize_tx_data,
     OP_CHECKSIG, OP_DUP, OP_EQUALVERIFY, OP_HASH160, OP_PUSH_20
     )
+from bitsv import op_return
 
 
 def wif_to_key(wif):
@@ -191,7 +193,7 @@ class PrivateKey(BaseKey):
     def get_unspents(self):
         """Fetches all available unspent transaction outputs.
 
-        :rtype: ``list`` of :class:`~bitcash.network.meta.Unspent`
+        :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
         self.unspents[:] = NetworkAPI.get_unspent(self.address)
         self.balance = sum(unspent.amount for unspent in self.unspents)
@@ -234,7 +236,7 @@ class PrivateKey(BaseKey):
         :type message: ``str``
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the blockchain itself.
-        :type unspents: ``list`` of :class:`~bitcash.network.meta.Unspent`
+        :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
         :returns: The signed transaction as hex.
         :rtype: ``str``
         """
@@ -283,7 +285,7 @@ class PrivateKey(BaseKey):
         :type message: ``str``
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the blockchain itself.
-        :type unspents: ``list`` of :class:`~bitcash.network.meta.Unspent`
+        :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
         :returns: The transaction ID.
         :rtype: ``str``
         """
@@ -331,7 +333,7 @@ class PrivateKey(BaseKey):
         :type message: ``str``
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the blockchain itself.
-        :type unspents: ``list`` of :class:`~bitcash.network.meta.Unspent`
+        :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
         :returns: JSON storing data required to create an offline transaction.
         :rtype: ``str``
         """
@@ -373,7 +375,7 @@ class PrivateKey(BaseKey):
         """
         :param hexed: A private key previously encoded as hex.
         :type hexed: ``str``
-        :rtype: :class:`~bitcash.PrivateKey`
+        :rtype: :class:`~bitsv.PrivateKey`
         """
         return PrivateKey(ECPrivateKey.from_hex(hexed))
 
@@ -382,7 +384,7 @@ class PrivateKey(BaseKey):
         """
         :param bytestr: A private key previously encoded as hex.
         :type bytestr: ``bytes``
-        :rtype: :class:`~bitcash.PrivateKey`
+        :rtype: :class:`~bitsv.PrivateKey`
         """
         return PrivateKey(ECPrivateKey(bytestr))
 
@@ -391,7 +393,7 @@ class PrivateKey(BaseKey):
         """
         :param der: A private key previously encoded as DER.
         :type der: ``bytes``
-        :rtype: :class:`~bitcash.PrivateKey`
+        :rtype: :class:`~bitsv.PrivateKey`
         """
         return PrivateKey(ECPrivateKey.from_der(der))
 
@@ -400,7 +402,7 @@ class PrivateKey(BaseKey):
         """
         :param pem: A private key previously encoded as PEM.
         :type pem: ``bytes``
-        :rtype: :class:`~bitcash.PrivateKey`
+        :rtype: :class:`~bitsv.PrivateKey`
         """
         return PrivateKey(ECPrivateKey.from_pem(pem))
 
@@ -409,12 +411,56 @@ class PrivateKey(BaseKey):
         """
         :param num: A private key in raw integer form.
         :type num: ``int``
-        :rtype: :class:`~bitcash.PrivateKey`
+        :rtype: :class:`~bitsv.PrivateKey`
         """
         return PrivateKey(ECPrivateKey.from_int(num))
 
     def __repr__(self):
         return '<PrivateKey: {}>'.format(self.address)
+
+    def create_op_return_rawtx(self, lst_of_pushdata, fee=1):
+        """creates a rawtx with OP_RETURN metadata ready for broadcast.
+
+        Parameters
+        ----------
+        lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
+        fee : sat/byte (defaults to 1 satoshi per byte)
+
+        Returns
+        -------
+        rawtx ready to broadcast
+        """
+
+        self.get_unspents()
+        pushdata = op_return.create_pushdata(lst_of_pushdata)
+        rawtx = self.create_transaction([], fee=fee, message=pushdata, custom_pushdata=True)
+
+        return rawtx
+
+    def send_op_return(self, lst_of_pushdata, fee=1):
+        """
+        All-in-one function both generates and sends a rawtx with desired OP_RETURN metadata.
+
+        Parameters
+        ----------
+        lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
+        fee : sat/byte (defaults to 1 satoshi per byte)
+
+        Returns
+        -------
+        broadcasts rawtx
+
+        Examples
+        --------
+        lst_of_pushdata = [('6d01','hex'), ('my_new_memocash_name', 'utf-8')]
+        send_op_return(my_key, lst_of_pushdata)
+        """
+
+        self.get_unspents()
+        pushdata = op_return.create_pushdata(lst_of_pushdata)
+        rawtx = self.create_transaction([], fee=fee, message=pushdata, custom_pushdata=True)
+
+        return BitIndex.broadcast_rawtx(rawtx)
 
 
 class PrivateKeyTestnet(BaseKey):
@@ -485,7 +531,7 @@ class PrivateKeyTestnet(BaseKey):
     def get_unspents(self):
         """Fetches all available unspent transaction outputs.
 
-        :rtype: ``list`` of :class:`~bitcash.network.meta.Unspent`
+        :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
         self.unspents[:] = NetworkAPI.get_unspent_testnet(self.address)
         self.balance = sum(unspent.amount for unspent in self.unspents)
@@ -528,7 +574,7 @@ class PrivateKeyTestnet(BaseKey):
         :type message: ``str``
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the testnet blockchain itself.
-        :type unspents: ``list`` of :class:`~bitcash.network.meta.Unspent`
+        :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
         :returns: The signed transaction as hex.
         :rtype: ``str``
         """
@@ -577,7 +623,7 @@ class PrivateKeyTestnet(BaseKey):
         :type message: ``str``
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the testnet blockchain itself.
-        :type unspents: ``list`` of :class:`~bitcash.network.meta.Unspent`
+        :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
         :returns: The transaction ID.
         :rtype: ``str``
         """
@@ -625,7 +671,7 @@ class PrivateKeyTestnet(BaseKey):
         :type message: ``str``
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the blockchain itself.
-        :type unspents: ``list`` of :class:`~bitcash.network.meta.Unspent`
+        :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
         :returns: JSON storing data required to create an offline transaction.
         :rtype: ``str``
         """
@@ -667,7 +713,7 @@ class PrivateKeyTestnet(BaseKey):
         """
         :param hexed: A private key previously encoded as hex.
         :type hexed: ``str``
-        :rtype: :class:`~bitcash.PrivateKeyTestnet`
+        :rtype: :class:`~bitsv.PrivateKeyTestnet`
         """
         return PrivateKeyTestnet(ECPrivateKey.from_hex(hexed))
 
@@ -676,7 +722,7 @@ class PrivateKeyTestnet(BaseKey):
         """
         :param bytestr: A private key previously encoded as hex.
         :type bytestr: ``bytes``
-        :rtype: :class:`~bitcash.PrivateKeyTestnet`
+        :rtype: :class:`~bitsv.PrivateKeyTestnet`
         """
         return PrivateKeyTestnet(ECPrivateKey(bytestr))
 
@@ -685,7 +731,7 @@ class PrivateKeyTestnet(BaseKey):
         """
         :param der: A private key previously encoded as DER.
         :type der: ``bytes``
-        :rtype: :class:`~bitcash.PrivateKeyTestnet`
+        :rtype: :class:`~bitsv.PrivateKeyTestnet`
         """
         return PrivateKeyTestnet(ECPrivateKey.from_der(der))
 
@@ -694,7 +740,7 @@ class PrivateKeyTestnet(BaseKey):
         """
         :param pem: A private key previously encoded as PEM.
         :type pem: ``bytes``
-        :rtype: :class:`~bitcash.PrivateKeyTestnet`
+        :rtype: :class:`~bitsv.PrivateKeyTestnet`
         """
         return PrivateKeyTestnet(ECPrivateKey.from_pem(pem))
 
@@ -703,7 +749,7 @@ class PrivateKeyTestnet(BaseKey):
         """
         :param num: A private key in raw integer form.
         :type num: ``int``
-        :rtype: :class:`~bitcash.PrivateKeyTestnet`
+        :rtype: :class:`~bitsv.PrivateKeyTestnet`
         """
         return PrivateKeyTestnet(ECPrivateKey.from_int(num))
 
