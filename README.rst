@@ -1,16 +1,10 @@
-BitCash: BitcoinCash made easy.
+BitSV: Bitcoin SV made easy.
 =======================
 
 NOTE about cashaddresses
 ========================
 
-Breaking change in 0.5.0!
-
-Bitcoin Cash has changed address formats (from 1........ to bitcoincash:qsomething). We now support the new format. As of 0.5.0, the new address format is used internally and the .address returned from PrivateKey has changed to the new format. This is unfortunate to make such a change, but the work would have been far greater to have legacy addresses returned. PrivateKey.send() supports both legacy and cashaddresses.
-
-If you have not done so already, *please pin your bitcash version*. Like, bitcash==0.5.0 in your setup.py. This way breaking changes won't break your application.
-
-Some point after, legacy address support may be removed entirely. So please convert addresses to the new format before sending them on to BitCash: https://github.com/oskyk/cashaddress/
+Bitcoin SV will be slowly reinstating legacy address format as the default standard. Cashaddress is a great tool for conversions if need be. https://github.com/oskyk/cashaddress/
 
 .. image:: https://img.shields.io/pypi/v/bitcash.svg?style=flat-square
     :target: https://pypi.org/project/bitcash
@@ -31,23 +25,24 @@ Some point after, legacy address support may be removed entirely. So please conv
 
 Forked from Ofek's awesome Bit library: https://github.com/ofek/bit
 
-Despite what it looks like, this is mostly a working library for Bitcoin Cash! Try to ignore the out of date bits on the README which referred to Bitcoin and not Bitcoin Cash.
+Try to ignore the out of date bits on the README which refer to Bitcoin Cash and not Bitcoin SV.
 
 What needs fixing
 ----------------
 
 - This README.
-- Dynamic fees.
 - The test cases...
+- Testnet
+- Networking for broadcasting 100 kilobyte OP_RETURNS to miners
 - Rates (so 'usd', 'jpy', etc work as they do in bit)
 
-**BitCash is so easy to use, in fact, you can do this:**
+**BitSV is so easy to use, in fact, you can do this:**
 
 .. code-block:: python
 
-    >>> from bitcash import Key
+    >>> import bitsv
     >>>
-    >>> my_key = Key(...)
+    >>> my_key = PrivateKey('YourPrivateKeyGoesHere')
     >>> my_key.get_balance('usd')
     '12.51'
     >>>
@@ -89,12 +84,12 @@ If you are intrigued, continue reading. If not, continue all the same!
 Installation
 ------------
 
-BitCash is distributed on `PyPI`_ as a universal wheel and is available on Linux/macOS
+BitSV is distributed on `PyPI`_ as a universal wheel and is available on Linux/macOS
 and Windows and supports Python 3.5+ and PyPy3.5-v5.7.1+. ``pip`` >= 8.1.2 is required.
 
 .. code-block:: bash
 
-    $ pip install bitcash  # pip3 if pip is Python 2 on your system.
+    $ pip install bitsv  # pip3 if pip is Python 2 on your system.
 
 Documentation
 -------------
@@ -106,7 +101,9 @@ Credits
 -------
 
 - `ofek`_ for the original bit codebase.
+- `terran-mckinney`_ for his work on the bitcash fork
 - `bjarnemagnussen`_ for his segwit code for the necessary BIP-143 support.
 
 .. _ofek: https://github.com/ofek/bit
+.. _terran-mckinney: https://github.com/sporestack/bitcash
 .. _bjarnemagnussen: https://github.com/bjarnemagnussen/bitcash/tree/segwit
