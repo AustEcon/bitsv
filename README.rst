@@ -1,5 +1,5 @@
 BitSV: Bitcoin SV made easy.
-=======================
+============================
 
 NOTE about cashaddresses
 ========================
@@ -28,7 +28,7 @@ Forked from Ofek's awesome Bit library: https://github.com/ofek/bit
 Try to ignore the out of date bits on the README which refer to Bitcoin Cash and not Bitcoin SV.
 
 What needs fixing
-----------------
+-----------------
 
 - This README.
 - The test cases...
@@ -36,32 +36,39 @@ What needs fixing
 - Networking for broadcasting 100 kilobyte OP_RETURNS to miners
 - Rates (so 'usd', 'jpy', etc work as they do in bit)
 
-**BitSV is so easy to use, in fact, you can do this:**
+**BitSV is so easy to use:**
+
+For normal transactions:
 
 .. code-block:: python
 
     >>> import bitsv
-    >>>
-    >>> my_key = PrivateKey('YourPrivateKeyGoesHere')
-    >>> my_key.get_balance('usd')
-    '12.51'
-    >>>
-    >>> # Let's donate!
+    >>> my_key = Key('YourPrivateKeyGoesHere')
+    >>> my_key.get_balance()
+    9000000  # satoshis
+    >>> # Can include a long list of tuples as outputs
     >>> outputs = [
-    >>>     # Wikileaks
-    >>>     ('1HB5XMLmzFVj8ALj6mfBsbifRoD4miY36v', 0.0035, 'bch'),
-    >>>     # Internet Archive
-    >>>     ('1Archive1n2C579dMsAu3iC6tWzuQJz8dN', 190, 'jpy'),
-    >>>     # The Pirate Bay
-    >>>     ('129TQVAroeehD9fZpzK51NdZGQT4TqifbG', 3, 'eur'),
-    >>>     # xkcd
-    >>>     ('14Tr4HaKkKuC1Lmpr2YMAuYVZRWqAdRTcr', 2.5, 'cad')
+    >>>     # Donate to Wikileaks
+    >>>     ('1HB5XMLmzFVj8ALj6mfBsbifRoD4miY36v', 0.0035)  # 0.0035 bsv
     >>> ]
-    >>>
     >>> my_key.send(outputs)
     '9f59f5c6757ec46fdc7440acbeb3920e614c8d1d247ac174eb6781b832710c1c'
 
 Here is the transaction `<https://blockchain.info/tx/9f59f5c6757ec46fdc7440acbeb3920e614c8d1d247ac174eb6781b832710c1c>`_.
+
+For op_return (recent addition Jan 27th 2019):
+
+.. code-block:: python
+
+    >>> import bitsv
+    >>> my_key = Key('YourPrivateKeyGoesHere')
+    >>> # input a list of tuples with (data, encoding) pairs where encoding is "utf-8" or "hex"
+    >>> # each tuple represents separate pushdata. If you want one really big push then just use one tuple.
+    >>> lst_of_pushdata = [('6d01', 'hex'), ('new_name', 'utf-8')]
+    >>> # This sets memo.cash name to "new_name" as per https://memo.cash/protocol as an example usecase of op-return metadata
+    >>> my_key.send_op_return(lst_of_pushdata)
+    
+Three lines of code!
 
 Features
 --------
@@ -84,7 +91,7 @@ If you are intrigued, continue reading. If not, continue all the same!
 Installation
 ------------
 
-BitSV is distributed on `PyPI`_ as a universal wheel and is available on Linux/macOS
+BitSV is distributed on `PyPI` as a universal wheel and is available on Linux/macOS
 and Windows and supports Python 3.5+ and PyPy3.5-v5.7.1+. ``pip`` >= 8.1.2 is required.
 
 .. code-block:: bash
@@ -95,15 +102,15 @@ Documentation
 -------------
 
 Docs are hosted by Github Pages and are automatically built and published
-by Travis after every successful commit to BitCash's ``master`` branch.
+by Travis after every successful commit to BitSV's ``master`` branch.
 
 Credits
 -------
 
 - `ofek`_ for the original bit codebase.
-- `terran-mckinney`_ for his work on the bitcash fork
+- `teran-mckinney`_ for his work on the bitcash fork
 - `bjarnemagnussen`_ for his segwit code for the necessary BIP-143 support.
 
 .. _ofek: https://github.com/ofek/bit
-.. _terran-mckinney: https://github.com/sporestack/bitcash
+.. _teran-mckinney: https://github.com/sporestack/bitcash
 .. _bjarnemagnussen: https://github.com/bjarnemagnussen/bitcash/tree/segwit
