@@ -43,6 +43,7 @@ For normal transactions:
 .. code-block:: python
 
     >>> import bitsv
+    >>> from bitsv import Key
     >>> my_key = Key('YourPrivateKeyGoesHere')
     >>> my_key.get_balance()
     9000000  # satoshis
@@ -61,6 +62,7 @@ For op_return (recent addition Jan 27th 2019):
 .. code-block:: python
 
     >>> import bitsv
+    >>> from bitsv import Key
     >>> my_key = Key('YourPrivateKeyGoesHere')
     >>> # input a list of tuples with (data, encoding) pairs where encoding is "utf-8" or "hex"
     >>> # each tuple represents separate pushdata. If you want one really big push then just use one tuple.
