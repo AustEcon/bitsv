@@ -79,9 +79,9 @@ def estimate_tx_fee(n_in, n_out, satoshis, compressed, op_return_size=0):
     estimated_size = (
         4 +  # version
         n_in * (148 if compressed else 180)
-        + len(int_to_unknown_bytes(n_in, byteorder='little'))
+        + len(int_to_varint(n_in))
         + n_out * 34  # excluding op_return outputs, dealt with separately
-        + len(int_to_unknown_bytes(n_out, byteorder='little'))
+        + len(int_to_varint(n_out))
         + op_return_size  # grand total size of op_return outputs(s) and related field(s)
         + 4  # time lock
     )
@@ -244,7 +244,7 @@ def construct_output_block(outputs, custom_pushdata=False):
 
         # Script length in wiki is "Var_int" but there's a note of "modern BitcoinQT" using a more compact "CVarInt"
         # CVarInt is what I believe we have here - No changes made. If incorrect - only breaks if 220 byte limit is increased.
-        output_block += int_to_unknown_bytes(len(script), byteorder='little')
+        output_block += int_to_varint(len(script))
         output_block += script
 
     return output_block
@@ -279,8 +279,8 @@ def create_p2pkh_transaction(private_key, unspents, outputs, custom_pushdata=Fal
     lock_time = LOCK_TIME
     # sequence = SEQUENCE
     hash_type = HASH_TYPE
-    input_count = int_to_unknown_bytes(len(unspents), byteorder='little')
-    output_count = int_to_unknown_bytes(len(outputs), byteorder='little')
+    input_count = int_to_varint(len(unspents))
+    output_count = int_to_varint(len(outputs))
 
     output_block = construct_output_block(outputs, custom_pushdata=custom_pushdata)
 
@@ -288,7 +288,7 @@ def create_p2pkh_transaction(private_key, unspents, outputs, custom_pushdata=Fal
     inputs = []
     for unspent in unspents:
         script = hex_to_bytes(unspent.script)
-        script_len = int_to_unknown_bytes(len(script), byteorder='little')
+        script_len = int_to_varint(len(script))
         txid = hex_to_bytes(unspent.txid)[::-1]
         txindex = unspent.txindex.to_bytes(4, byteorder='little')
         amount = unspent.amount.to_bytes(8, byteorder='little')
@@ -328,7 +328,7 @@ def create_p2pkh_transaction(private_key, unspents, outputs, custom_pushdata=Fal
         )
 
         inputs[i].script = script_sig
-        inputs[i].script_len = int_to_unknown_bytes(len(script_sig), byteorder='little')
+        inputs[i].script_len = int_to_varint(len(script_sig))
 
     return bytes_to_hex(
         version +
