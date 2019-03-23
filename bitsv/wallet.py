@@ -188,6 +188,7 @@ class PrivateKey(BaseKey):
         :rtype: ``str``
         """
         self.get_unspents()
+        self.balance = sum(unspent.amount for unspent in self.unspents)
         return self.balance_as(currency)
 
     def get_unspents(self):
@@ -232,7 +233,7 @@ class PrivateKey(BaseKey):
         :type combine: ``bool``
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
-                        each message will be stored in chunks of 220 bytes.
+                        each message will be stored in chunks of 100kb.
         :type message: ``str``
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the blockchain itself.
@@ -281,7 +282,7 @@ class PrivateKey(BaseKey):
         :type combine: ``bool``
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
-                        each message will be stored in chunks of 220 bytes.
+                        each message will be stored in chunks of 100kb.
         :type message: ``str``
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the blockchain itself.
@@ -329,7 +330,7 @@ class PrivateKey(BaseKey):
         :type combine: ``bool``
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
-                        each message will be stored in chunks of 220 bytes.
+                        each message will be stored in chunks of 100kb bytes.
         :type message: ``str``
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the blockchain itself.
@@ -570,7 +571,7 @@ class PrivateKeyTestnet(BaseKey):
         :type combine: ``bool``
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
-                        each message will be stored in chunks of 220 bytes.
+                        each message will be stored in chunks of 100kb bytes.
         :type message: ``str``
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the testnet blockchain itself.
@@ -619,7 +620,7 @@ class PrivateKeyTestnet(BaseKey):
         :type combine: ``bool``
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
-                        each message will be stored in chunks of 220 bytes.
+                        each message will be stored in chunks of 100kb bytes.
         :type message: ``str``
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the testnet blockchain itself.
@@ -667,7 +668,7 @@ class PrivateKeyTestnet(BaseKey):
         :type combine: ``bool``
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
-                        each message will be stored in chunks of 220 bytes.
+                        each message will be stored in chunks of 100kb bytes.
         :type message: ``str``
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the blockchain itself.

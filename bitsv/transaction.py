@@ -34,7 +34,7 @@ OP_PUSHDATA1 = b'\x4c'
 OP_PUSHDATA2 = b'\x4d'
 OP_PUSHDATA4 = b'\x4e'
 
-MESSAGE_LIMIT = 220
+MESSAGE_LIMIT = 100000 - 6  # Not sure the exact limit but this ought to be close
 
 
 class TxIn:
@@ -163,9 +163,9 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
             total_op_return_size += get_op_return_size(message, custom_pushdata=False)
 
     elif message and (custom_pushdata is True):
-        if (len(message) >= 220):
-            # FIXME add capability for >220 bytes for custom pushdata elements
-            raise ValueError("Currently cannot exceed 220 bytes with custom_pushdata.")
+        if (len(message) >= MESSAGE_LIMIT):
+            # FIXME add capability for MESSAGE_LIMIT bytes for custom pushdata elements
+            raise ValueError("Currently cannot exceed 100000 bytes with custom_pushdata.")
         else:
             messages.append((message, 0))
             total_op_return_size += get_op_return_size(message, custom_pushdata=True)

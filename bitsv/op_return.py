@@ -5,6 +5,8 @@ OP_PUSHDATA1 = b'\x4c'
 OP_PUSHDATA2 = b'\x4d'
 OP_PUSHDATA4 = b'\x4e'
 
+MESSAGE_LIMIT = 100000 - 6  # Not sure the exact limit but this ought to be close
+
 
 def get_op_pushdata_code(data):
     length_data = len(data)
@@ -70,9 +72,11 @@ def create_pushdata(lst_of_pushdata):
             hex_data_as_bytes = utils.hex_to_bytes(lst_of_pushdata[i][0])
             pushdata += get_op_pushdata_code(hex_data_as_bytes) + hex_data_as_bytes
 
-    # check for size
-    if len(pushdata) > 220:
+    # Size limit now 100kb on SV - aka "the unfuckening of OP_RETURN"
+    # Courtesy Steve Shadders and SV miners 24th Jan 2019
+    # https://www.yours.org/content/the-unfuckening-of-op_return-b10d2c4b52da
+    if len(pushdata) > MESSAGE_LIMIT:
         raise ValueError(
-            "Total bytes in OP_RETURN cannot exceed 220 bytes at present - apologies")
+            "Total bytes in OP_RETURN cannot exceed 100kb at present - apologies")
 
     return pushdata
