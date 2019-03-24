@@ -23,7 +23,7 @@ class BitIndex:
     @staticmethod
     def get_balance(address):
         """Gets utxos for given legacy address"""
-
+        address = cashaddress.to_legacy_address(address)
         headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
@@ -34,18 +34,20 @@ class BitIndex:
         return r.json()
 
     @staticmethod
-    def get_utxos(address):
-        """Gets utxos for given legacy address using bitindex api
-        NOTE: utxos need to be in Insight API format for use in creating transactions etc."""
+    def get_utxo(address):
+        """gets utxos for given address BitIndex api"""
+        address = cashaddress.to_legacy_address(address)
+        json_payload = json.dumps({"addrs": address})
 
         headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
-
-        r = requests.get('https://api.bitindex.network/api/v2/addrs/utxos?address={}'.format(address),
-                         headers=headers)
-        return r.json()
+        r = requests.post('https://api.bitindex.network/api/addrs/utxo', data=json_payload, headers=headers)
+        return [Unspent(amount = currency_to_satoshi(tx['amount'], 'bch'),
+             script = tx['scriptPubKey'],
+             txid = tx['txid'],
+             txindex = tx['vout']) for tx in r.json()]
 
     @staticmethod
     def broadcast_rawtx(rawtx):
@@ -207,12 +209,23 @@ class NetworkAPI:
                       requests.exceptions.Timeout,
                       requests.exceptions.ReadTimeout)
 
+    # Version 5.4 - BitIndex for balance, broadcast and utxos (keeps these critical functions in sync with one another)
+    GET_BALANCE_MAIN = [BitIndex.get_balance]
+    GET_TRANSACTIONS_MAIN = [BchSVExplorerDotComAPI.get_transactions]
+    GET_UNSPENT_MAIN = [BitIndex.get_utxo]
+    BROADCAST_TX_MAIN = [BitIndex.broadcast_rawtx]
+    GET_TX_MAIN = [BchSVExplorerDotComAPI.get_transaction]
+    GET_TX_AMOUNT_MAIN = [BchSVExplorerDotComAPI.get_tx_amount]
+
+    # Version 5.3
+    '''
     GET_BALANCE_MAIN = [BchSVExplorerDotComAPI.get_balance]
     GET_TRANSACTIONS_MAIN = [BchSVExplorerDotComAPI.get_transactions]
     GET_UNSPENT_MAIN = [BchSVExplorerDotComAPI.get_unspent]
     BROADCAST_TX_MAIN = [BchSVExplorerDotComAPI.broadcast_tx]
     GET_TX_MAIN = [BchSVExplorerDotComAPI.get_transaction]
     GET_TX_AMOUNT_MAIN = [BchSVExplorerDotComAPI.get_tx_amount]
+    '''
 
     '''
     GET_BALANCE_TEST = [BchSVExplorerDotComAPI.get_balance_testnet]

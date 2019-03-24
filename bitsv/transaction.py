@@ -285,6 +285,7 @@ def create_p2pkh_transaction(private_key, unspents, outputs, custom_pushdata=Fal
     output_block = construct_output_block(outputs, custom_pushdata=custom_pushdata)
 
     # Optimize for speed, not memory, by pre-computing values.
+    # Version 5.4 utxos will no longer have the "confirmations" attribute - in-keeping with BitIndex utxo format
     inputs = []
     for unspent in unspents:
         script = hex_to_bytes(unspent.script)
