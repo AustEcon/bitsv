@@ -63,7 +63,7 @@ Supported Currencies
 --------------------
 
 These are all the currencies currently supported by Bitcash. Note that converting
-satoshi to itself, ubch, mbch, or bch never requires exchange rate data and
+satoshi to itself, ubsv, mbsv, or bsv never requires exchange rate data and
 therefore no network calls are needed.
 
 .. code-block:: python
@@ -76,11 +76,11 @@ therefore no network calls are needed.
 +=========+======================+
 | satoshi | Satoshi              |
 +---------+----------------------+
-| ubch    | Microbitcoincash         |
+| ubsv    | Microbitcoincash         |
 +---------+----------------------+
-| mbch    | Millibitcoincash         |
+| mbsv    | Millibitcoincash         |
 +---------+----------------------+
-| bch     | BitcoinCash              |
+| bsv     | BitcoinCash              |
 +---------+----------------------+
 | usd     | United States Dollar |
 +---------+----------------------+
@@ -131,5 +131,5 @@ Unsupported Currencies
 ----------------------
 
 If you need to use currencies in your :ref:`transactions` that Bitcash does not
-support, convert it yourself to satoshi, ubch, mbch, or bch as these are
+support, convert it yourself to satoshi, ubsv, mbsv, or bsv as these are
 supported natively.

@@ -2,9 +2,9 @@ from time import sleep, time
 
 import bitsv
 from bitsv.network.rates import (
-    RatesAPI, bch_to_satoshi, currency_to_satoshi, currency_to_satoshi_cached,
-    mbch_to_satoshi, satoshi_to_currency, satoshi_to_currency_cached,
-    satoshi_to_satoshi, set_rate_cache_time, ubch_to_satoshi
+    RatesAPI, bsv_to_satoshi, currency_to_satoshi, currency_to_satoshi_cached,
+    mbsv_to_satoshi, satoshi_to_currency, satoshi_to_currency_cached,
+    satoshi_to_satoshi, set_rate_cache_time, ubsv_to_satoshi
 )
 from bitsv.utils import Decimal
 
@@ -27,20 +27,20 @@ def test_satoshi_to_satoshi():
     assert s == 1
 
 
-def test_ubch_to_satoshi():
-    s = ubch_to_satoshi()
+def test_ubsv_to_satoshi():
+    s = ubsv_to_satoshi()
     assert isinstance(s, int)
     assert s == 100
 
 
-def test_mbch_to_satoshi():
-    s = mbch_to_satoshi()
+def test_mbsv_to_satoshi():
+    s = mbsv_to_satoshi()
     assert isinstance(s, int)
     assert s == 100000
 
 
-def test_bch_to_satoshi():
-    s = bch_to_satoshi()
+def test_bsv_to_satoshi():
+    s = bsv_to_satoshi()
     assert isinstance(s, int)
     assert s == 100000000
 
@@ -51,14 +51,14 @@ def test_bch_to_satoshi():
 
 class TestSatoshiToCurrency:
     def test_no_exponent(self):
-        assert satoshi_to_currency(1, 'bch') == '0.00000001'
+        assert satoshi_to_currency(1, 'bsv') == '0.00000001'
 
 #     def test_zero_places(self):
 #         assert Decimal(satoshi_to_currency(100000, 'jpy')).as_tuple().exponent == 0
 
 
 def test_satoshi_to_currency_cached():
-    assert satoshi_to_currency_cached(1, 'ubch') == '0.01'
+    assert satoshi_to_currency_cached(1, 'ubsv') == '0.01'
 
 
 # def test_rates_close():

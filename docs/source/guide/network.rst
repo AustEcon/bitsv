@@ -25,7 +25,7 @@ in satoshi.
 
 .. code-block:: python
 
-    >>> key.get_balance('bch')
+    >>> key.get_balance('bsv')
     '0.82721202'
     >>> key.balance
     82721202
@@ -35,7 +35,7 @@ terms of other currencies using :func:`~bitcash.PrivateKey.balance_as`.
 
 .. code-block:: python
 
-    >>> key.balance_as('mbch')
+    >>> key.balance_as('mbsv')
     '827.21202'
     >>> key.balance_as('usd')
     '944.06'

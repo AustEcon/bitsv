@@ -10,7 +10,7 @@ from bitsv.network.transaction import Transaction, TxPart
 
 DEFAULT_TIMEOUT = 30
 
-BCH_TO_SAT_MULTIPLIER = 100000000
+BSV_TO_SAT_MULTIPLIER = 100000000
 
 
 def set_service_timeout(seconds):
@@ -44,7 +44,7 @@ class BitIndex:
             'Accept': 'application/json'
         }
         r = requests.post('https://api.bitindex.network/api/addrs/utxo', data=json_payload, headers=headers)
-        return [Unspent(amount = currency_to_satoshi(tx['amount'], 'bch'),
+        return [Unspent(amount = currency_to_satoshi(tx['amount'], 'bsv'),
              script = tx['scriptPubKey'],
              txid = tx['txid'],
              txindex = tx['vout']) for tx in r.json()]
@@ -98,9 +98,9 @@ class InsightAPI:
 
         tx = Transaction(response['txid'],
                          response['blockheight'],
-                         (Decimal(response['valueIn']) * BCH_TO_SAT_MULTIPLIER).normalize(),
-                         (Decimal(response['valueOut']) * BCH_TO_SAT_MULTIPLIER).normalize(),
-                         (Decimal(response['fees']) * BCH_TO_SAT_MULTIPLIER).normalize())
+                         (Decimal(response['valueIn']) * BSV_TO_SAT_MULTIPLIER).normalize(),
+                         (Decimal(response['valueOut']) * BSV_TO_SAT_MULTIPLIER).normalize(),
+                         (Decimal(response['fees']) * BSV_TO_SAT_MULTIPLIER).normalize())
 
         for txin in response['vin']:
             part = TxPart(txin['addr'], txin['valueSat'], txin['scriptSig']['asm'])
@@ -112,7 +112,7 @@ class InsightAPI:
                 addr = txout['scriptPubKey']['addresses'][0]
 
             part = TxPart(addr,
-                          (Decimal(txout['value']) * BCH_TO_SAT_MULTIPLIER).normalize(),
+                          (Decimal(txout['value']) * BSV_TO_SAT_MULTIPLIER).normalize(),
                           txout['scriptPubKey']['asm'])
             tx.add_output(part)
 
@@ -124,7 +124,7 @@ class InsightAPI:
         if r.status_code != 200:  # pragma: no cover
             raise ConnectionError
         response = r.json(parse_float=Decimal)
-        return (Decimal(response['vout'][txindex]['value']) * BCH_TO_SAT_MULTIPLIER).normalize()
+        return (Decimal(response['vout'][txindex]['value']) * BSV_TO_SAT_MULTIPLIER).normalize()
 
     @classmethod
     def get_unspent(cls, address):
@@ -132,7 +132,7 @@ class InsightAPI:
         if r.status_code != 200:  # pragma: no cover
             raise ConnectionError
         return [
-            Unspent(currency_to_satoshi(tx['amount'], 'bch'),
+            Unspent(currency_to_satoshi(tx['amount'], 'bsv'),
                     tx['confirmations'],
                     tx['scriptPubKey'],
                     tx['txid'],
@@ -146,7 +146,7 @@ class InsightAPI:
         return True if r.status_code == 200 else False
 
 
-class BchSVExplorerDotComAPI(InsightAPI):
+class BsvExplorerDotComAPI(InsightAPI):
     """
     Simple bitcoin SV REST API --> uses Legacy address format
     - get_balance
@@ -194,7 +194,7 @@ class BchSVExplorerDotComAPI(InsightAPI):
         if r.status_code != 200:  # pragma: no cover
             raise ConnectionError
         return [
-            Unspent(currency_to_satoshi(tx['amount'], 'bch'),
+            Unspent(currency_to_satoshi(tx['amount'], 'bsv'),
                     tx['confirmations'],
                     tx['scriptPubKey'],
                     tx['txid'],
@@ -211,11 +211,11 @@ class NetworkAPI:
 
     # Version 5.4 - BitIndex for balance, broadcast and utxos (keeps these critical functions in sync with one another)
     GET_BALANCE_MAIN = [BitIndex.get_balance]
-    GET_TRANSACTIONS_MAIN = [BchSVExplorerDotComAPI.get_transactions]
+    GET_TRANSACTIONS_MAIN = [BsvExplorerDotComAPI.get_transactions]
     GET_UNSPENT_MAIN = [BitIndex.get_utxo]
     BROADCAST_TX_MAIN = [BitIndex.broadcast_rawtx]
-    GET_TX_MAIN = [BchSVExplorerDotComAPI.get_transaction]
-    GET_TX_AMOUNT_MAIN = [BchSVExplorerDotComAPI.get_tx_amount]
+    GET_TX_MAIN = [BsvExplorerDotComAPI.get_transaction]
+    GET_TX_AMOUNT_MAIN = [BsvExplorerDotComAPI.get_tx_amount]
 
     # Version 5.3
     '''

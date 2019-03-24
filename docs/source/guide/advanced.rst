@@ -13,8 +13,8 @@ servers, you don't have to use any of our network capabilities.
   :func:`~bitcash.PrivateKey.send`
 - Supply :ref:`your own UTXOs <unspentparam>`
 - Set :ref:`your own fee <feeparam>`
-- Make sure all :ref:`outputsparam` only use these currencies: satoshi, ubch,
-  mbch, or bch.
+- Make sure all :ref:`outputsparam` only use these currencies: satoshi, ubsv,
+  mbsv, or bsv.
 
 .. _coldstorage:
 

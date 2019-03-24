@@ -1,8 +1,7 @@
 import pytest
 
 import bitsv
-from bitsv.network.services import (
-    CashExplorerBitcoinDotComAPI, BlockdozerAPI, NetworkAPI, set_service_timeout
+from bitsv.network.services import (NetworkAPI, set_service_timeout
 )
 from tests.utils import (
     catch_errors_raise_warnings, decorate_methods, raise_connection_error
@@ -58,14 +57,6 @@ class TestNetworkAPI:
         with pytest.raises(ConnectionError):
             MockBackend.get_balance(MAIN_ADDRESS_USED2)
 
-    def test_get_balance_test_equal(self):
-        results = [call(TEST_ADDRESS_USED2) for call in NetworkAPI.GET_BALANCE_TEST]
-        assert all(result == results[0] for result in results)
-
-    def test_get_balance_test_failure(self):
-        with pytest.raises(ConnectionError):
-            MockBackend.get_balance_testnet(TEST_ADDRESS_USED2)
-
     def test_get_transactions_main_equal(self):
         results = [call(MAIN_ADDRESS_USED1)[:100] for call in NetworkAPI.GET_TRANSACTIONS_MAIN]
         assert all_items_common(results)
@@ -74,14 +65,6 @@ class TestNetworkAPI:
         with pytest.raises(ConnectionError):
             MockBackend.get_transactions(MAIN_ADDRESS_USED1)
 
-    def test_get_transactions_test_equal(self):
-        results = [call(TEST_ADDRESS_USED2)[:100] for call in NetworkAPI.GET_TRANSACTIONS_TEST]
-        assert all_items_common(results)
-
-    def test_get_transactions_test_failure(self):
-        with pytest.raises(ConnectionError):
-            MockBackend.get_transactions_testnet(TEST_ADDRESS_USED2)
-
     def test_get_unspent_main_equal(self):
         results = [call(MAIN_ADDRESS_USED2) for call in NetworkAPI.GET_UNSPENT_MAIN]
         assert all_items_equal(results)
@@ -89,107 +72,3 @@ class TestNetworkAPI:
     def test_get_unspent_main_failure(self):
         with pytest.raises(ConnectionError):
             MockBackend.get_unspent(MAIN_ADDRESS_USED1)
-
-    def test_get_unspent_test_equal(self):
-        results = [call(TEST_ADDRESS_USED3) for call in NetworkAPI.GET_UNSPENT_TEST]
-        assert all_items_equal(results)
-
-    def test_get_unspent_test_failure(self):
-        with pytest.raises(ConnectionError):
-            MockBackend.get_unspent_testnet(TEST_ADDRESS_USED2)
-
-
-@decorate_methods(catch_errors_raise_warnings, NetworkAPI.IGNORED_ERRORS)
-class TestCashExplorerBitcoinDotComAPI:
-    def test_get_balance_return_type(self):
-        assert isinstance(CashExplorerBitcoinDotComAPI.get_balance(MAIN_ADDRESS_USED1), int)
-
-    def test_get_balance_main_used(self):
-        assert CashExplorerBitcoinDotComAPI.get_balance(MAIN_ADDRESS_USED1) > 0
-
-    def test_get_balance_main_unused(self):
-        assert CashExplorerBitcoinDotComAPI.get_balance(MAIN_ADDRESS_UNUSED) == 0
-
-    def test_get_balance_test_used(self):
-        assert CashExplorerBitcoinDotComAPI.get_balance_testnet(TEST_ADDRESS_USED2) > 0
-
-    def test_get_balance_test_unused(self):
-        assert CashExplorerBitcoinDotComAPI.get_balance_testnet(TEST_ADDRESS_UNUSED) == 0
-
-    def test_get_transactions_return_type(self):
-        assert iter(CashExplorerBitcoinDotComAPI.get_transactions(MAIN_ADDRESS_USED1))
-
-    def test_get_transactions_main_used(self):
-        assert len(CashExplorerBitcoinDotComAPI.get_transactions(MAIN_ADDRESS_USED1)) >= 218
-
-    def test_get_transactions_main_unused(self):
-        assert len(CashExplorerBitcoinDotComAPI.get_transactions(MAIN_ADDRESS_UNUSED)) == 0
-
-    def test_get_transactions_test_used(self):
-        assert len(CashExplorerBitcoinDotComAPI.get_transactions_testnet(TEST_ADDRESS_USED2)) >= 444
-
-    def test_get_transactions_test_unused(self):
-        assert len(CashExplorerBitcoinDotComAPI.get_transactions_testnet(TEST_ADDRESS_UNUSED)) == 0
-
-    def test_get_unspent_return_type(self):
-        assert iter(CashExplorerBitcoinDotComAPI.get_unspent(MAIN_ADDRESS_USED1))
-
-    def test_get_unspent_main_used(self):
-        assert len(CashExplorerBitcoinDotComAPI.get_unspent(MAIN_ADDRESS_USED2)) >= 1
-
-    def test_get_unspent_main_unused(self):
-        assert len(CashExplorerBitcoinDotComAPI.get_unspent(MAIN_ADDRESS_UNUSED)) == 0
-
-    def test_get_unspent_test_used(self):
-        assert len(CashExplorerBitcoinDotComAPI.get_unspent_testnet(TEST_ADDRESS_USED2)) >= 194
-
-    def test_get_unspent_test_unused(self):
-        assert len(CashExplorerBitcoinDotComAPI.get_unspent_testnet(TEST_ADDRESS_UNUSED)) == 0
-
-
-@decorate_methods(catch_errors_raise_warnings, NetworkAPI.IGNORED_ERRORS)
-class TestBlockdozerAPI:
-    def test_get_balance_return_type(self):
-        assert isinstance(BlockdozerAPI.get_balance(MAIN_ADDRESS_USED1), int)
-
-    def test_get_balance_main_used(self):
-        assert BlockdozerAPI.get_balance(MAIN_ADDRESS_USED1) > 0
-
-    def test_get_balance_main_unused(self):
-        assert BlockdozerAPI.get_balance(MAIN_ADDRESS_UNUSED) == 0
-
-    def test_get_balance_test_used(self):
-        assert BlockdozerAPI.get_balance_testnet(TEST_ADDRESS_USED2) > 0
-
-    def test_get_balance_test_unused(self):
-        assert BlockdozerAPI.get_balance_testnet(TEST_ADDRESS_UNUSED) == 0
-
-    def test_get_transactions_return_type(self):
-        assert iter(BlockdozerAPI.get_transactions(MAIN_ADDRESS_USED1))
-
-    def test_get_transactions_main_used(self):
-        assert len(BlockdozerAPI.get_transactions(MAIN_ADDRESS_USED1)) >= 218
-
-    def test_get_transactions_main_unused(self):
-        assert len(BlockdozerAPI.get_transactions(MAIN_ADDRESS_UNUSED)) == 0
-
-    def test_get_transactions_test_used(self):
-        assert len(BlockdozerAPI.get_transactions_testnet(TEST_ADDRESS_USED2)) >= 444
-
-    def test_get_transactions_test_unused(self):
-        assert len(BlockdozerAPI.get_transactions_testnet(TEST_ADDRESS_UNUSED)) == 0
-
-    def test_get_unspent_return_type(self):
-        assert iter(BlockdozerAPI.get_unspent(MAIN_ADDRESS_USED1))
-
-    def test_get_unspent_main_used(self):
-        assert len(BlockdozerAPI.get_unspent(MAIN_ADDRESS_USED2)) >= 1
-
-    def test_get_unspent_main_unused(self):
-        assert len(BlockdozerAPI.get_unspent(MAIN_ADDRESS_UNUSED)) == 0
-
-    def test_get_unspent_test_used(self):
-        assert len(BlockdozerAPI.get_unspent_testnet(TEST_ADDRESS_USED2)) >= 194
-
-    def test_get_unspent_test_unused(self):
-        assert len(BlockdozerAPI.get_unspent_testnet(TEST_ADDRESS_UNUSED)) == 0
