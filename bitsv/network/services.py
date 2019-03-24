@@ -146,7 +146,7 @@ class InsightAPI:
         return True if r.status_code == 200 else False
 
 
-class BsvExplorerDotComAPI(InsightAPI):
+class BchSVExplorerDotComAPI(InsightAPI):
     """
     Simple bitcoin SV REST API --> uses Legacy address format
     - get_balance
@@ -211,11 +211,11 @@ class NetworkAPI:
 
     # Version 5.4 - BitIndex for balance, broadcast and utxos (keeps these critical functions in sync with one another)
     GET_BALANCE_MAIN = [BitIndex.get_balance]
-    GET_TRANSACTIONS_MAIN = [BsvExplorerDotComAPI.get_transactions]
+    GET_TRANSACTIONS_MAIN = [BchSVExplorerDotComAPI.get_transactions]
     GET_UNSPENT_MAIN = [BitIndex.get_utxo]
     BROADCAST_TX_MAIN = [BitIndex.broadcast_rawtx]
-    GET_TX_MAIN = [BsvExplorerDotComAPI.get_transaction]
-    GET_TX_AMOUNT_MAIN = [BsvExplorerDotComAPI.get_tx_amount]
+    GET_TX_MAIN = [BchSVExplorerDotComAPI.get_transaction]
+    GET_TX_AMOUNT_MAIN = [BchSVExplorerDotComAPI.get_tx_amount]
 
     # Version 5.3
     '''
