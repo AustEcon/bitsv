@@ -290,7 +290,7 @@ class PrivateKey(BaseKey):
         :returns: The transaction ID.
         :rtype: ``str``
         """
-
+        self.get_unspents()
         tx_hex = self.create_transaction(
             outputs, fee=fee, leftover=leftover, combine=combine, message=message, unspents=unspents
         )
