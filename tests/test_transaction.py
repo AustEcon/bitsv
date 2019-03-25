@@ -45,7 +45,6 @@ INPUT_BLOCK = ('8878399d83ec25c627cfbf753ff9ca3602373eac437ab2676154a3c2da23adf3
                'f3f03b42f4a2b255bfc9aa9e3ffffffff')
 UNSPENTS = [
     Unspent(83727960,
-            15,
             '76a91492461bde6283b461ece7ddf4dbf1e0a48bd113d888ac',
             'f3ad23dac2a3546167b27a43ac3e370236caf93f75bfcf27c625ec839d397888',
             1)
@@ -98,8 +97,8 @@ class TestSanitizeTxData:
             sanitize_tx_data([], [], 70, '')
 
     def test_message(self):
-        unspents_original = [Unspent(10000, 0, '', '', 0),
-                             Unspent(10000, 0, '', '', 0)]
+        unspents_original = [Unspent(10000, '', '', 0),
+                             Unspent(10000, '', '', 0)]
         outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 1000, 'satoshi')]
 
         unspents, outputs = sanitize_tx_data(
@@ -112,8 +111,8 @@ class TestSanitizeTxData:
         assert outputs[2][1] == 0
 
     def test_message_pushdata(self):
-        unspents_original = [Unspent(10000, 0, '', '', 0),
-                             Unspent(10000, 0, '', '', 0)]
+        unspents_original = [Unspent(10000, '', '', 0),
+                             Unspent(10000, '', '', 0)]
         outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 1000, 'satoshi')]
 
         BYTES = len(b'hello').to_bytes(1, byteorder='little') + b'hello'
@@ -128,8 +127,8 @@ class TestSanitizeTxData:
         assert outputs[2][1] == 0
 
     def test_fee_applied(self):
-        unspents_original = [Unspent(1000, 0, '', '', 0),
-                             Unspent(1000, 0, '', '', 0)]
+        unspents_original = [Unspent(1000, '', '', 0),
+                             Unspent(1000, '', '', 0)]
         outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2000, 'satoshi')]
 
         with pytest.raises(InsufficientFunds):
@@ -139,8 +138,8 @@ class TestSanitizeTxData:
             )
 
     def test_zero_remaining(self):
-        unspents_original = [Unspent(1000, 0, '', '', 0),
-                             Unspent(1000, 0, '', '', 0)]
+        unspents_original = [Unspent(1000, '', '', 0),
+                             Unspent(1000, '', '', 0)]
         outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2000, 'satoshi')]
 
         unspents, outputs = sanitize_tx_data(
@@ -152,8 +151,8 @@ class TestSanitizeTxData:
         assert outputs == [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2000)]
 
     def test_combine_remaining(self):
-        unspents_original = [Unspent(1000, 0, '', '', 0),
-                             Unspent(1000, 0, '', '', 0)]
+        unspents_original = [Unspent(1000, '', '', 0),
+                             Unspent(1000, '', '', 0)]
         outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 500, 'satoshi')]
 
         unspents, outputs = sanitize_tx_data(
@@ -167,8 +166,8 @@ class TestSanitizeTxData:
         assert outputs[1][1] == 1500
 
     def test_combine_insufficient_funds(self):
-        unspents_original = [Unspent(1000, 0, '', '', 0),
-                             Unspent(1000, 0, '', '', 0)]
+        unspents_original = [Unspent(1000, '', '', 0),
+                             Unspent(1000, '', '', 0)]
         outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2500, 'satoshi')]
 
         with pytest.raises(InsufficientFunds):
@@ -178,8 +177,8 @@ class TestSanitizeTxData:
             )
 
     def test_no_combine_remaining(self):
-        unspents_original = [Unspent(7000, 0, '', '', 0),
-                             Unspent(3000, 0, '', '', 0)]
+        unspents_original = [Unspent(7000, '', '', 0),
+                             Unspent(3000, '', '', 0)]
         outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2000, 'satoshi')]
 
         unspents, outputs = sanitize_tx_data(
@@ -187,15 +186,15 @@ class TestSanitizeTxData:
             combine=False, message=None
         )
 
-        assert unspents == [Unspent(3000, 0, '', '', 0)]
+        assert unspents == [Unspent(3000, '', '', 0)]
         assert len(outputs) == 2
         assert outputs[1][0] == RETURN_ADDRESS
         assert outputs[1][1] == 1000
 
     def test_no_combine_remaining_small_inputs(self):
-        unspents_original = [Unspent(1500, 0, '', '', 0),
-                             Unspent(1600, 0, '', '', 0),
-                             Unspent(1700, 0, '', '', 0)]
+        unspents_original = [Unspent(1500, '', '', 0),
+                             Unspent(1600, '', '', 0),
+                             Unspent(1700, '', '', 0)]
         outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2000, 'satoshi')]
 
         unspents, outputs = sanitize_tx_data(
@@ -203,7 +202,7 @@ class TestSanitizeTxData:
             combine=False, message=None
         )
         print(unspents)
-        assert unspents == [Unspent(1500, 0, '', '', 0), Unspent(1600, 0, '', '', 0)]
+        assert unspents == [Unspent(1500, '', '', 0), Unspent(1600, '', '', 0)]
         assert len(outputs) == 2
         assert outputs[1][0] == RETURN_ADDRESS
         assert outputs[1][1] == 1100
@@ -212,9 +211,9 @@ class TestSanitizeTxData:
         """
         Verify that unused unspents do not increase fee.
         """
-        unspents_single = [Unspent(5000, 0, '', '', 0)]
-        unspents_original = [Unspent(5000, 0, '', '', 0),
-                             Unspent(5000, 0, '', '', 0)]
+        unspents_single = [Unspent(5000, '', '', 0)]
+        unspents_original = [Unspent(5000, '', '', 0),
+                             Unspent(5000, '', '', 0)]
         outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 1000, 'satoshi')]
 
         unspents, outputs = sanitize_tx_data(
@@ -227,8 +226,8 @@ class TestSanitizeTxData:
             combine=False, message=None
         )
 
-        assert unspents == [Unspent(5000, 0, '', '', 0)]
-        assert unspents_single == [Unspent(5000, 0, '', '', 0)]
+        assert unspents == [Unspent(5000, '', '', 0)]
+        assert unspents_single == [Unspent(5000, '', '', 0)]
         assert len(outputs) == 2
         assert len(outputs_single) == 2
         assert outputs[1][0] == RETURN_ADDRESS
@@ -236,8 +235,8 @@ class TestSanitizeTxData:
         assert outputs[1][1] == outputs_single[1][1]
 
     def test_no_combine_insufficient_funds(self):
-        unspents_original = [Unspent(1000, 0, '', '', 0),
-                             Unspent(1000, 0, '', '', 0)]
+        unspents_original = [Unspent(1000, '', '', 0),
+                             Unspent(1000, '', '', 0)]
         outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2500, 'satoshi')]
 
         with pytest.raises(InsufficientFunds):
@@ -276,7 +275,7 @@ class TestConstructOutputBlock:
     def test_long_message(self):
         amount = b'\x00\x00\x00\x00\x00\x00\x00\x00'
         _, outputs = sanitize_tx_data(
-            UNSPENTS, [(out[0], out[1], 'satoshi') for out in OUTPUTS], 0, RETURN_ADDRESS, message='hello'*50
+            UNSPENTS, [(out[0], out[1], 'satoshi') for out in OUTPUTS], 0, RETURN_ADDRESS, message='hello'*20000
         )
         assert construct_output_block(outputs).count(amount) == 2
 
@@ -285,11 +284,11 @@ class TestConstructOutputBlock:
         assert construct_output_block(OUTPUTS + [(BYTES, 0)], custom_pushdata=True) == hex_to_bytes(OUTPUT_BLOCK_MESSAGE_PUSHDATA)
 
     def test_long_pushdata(self):
-        BYTES = len(b'hello').to_bytes(1, byteorder='little') + b'hello'  # 6 bytes each * 40 = 240 bytes
+        BYTES = len(b'hello').to_bytes(1, byteorder='little') + b'hello'  # 6 bytes each * 20000 = 120k bytes
 
         with pytest.raises(ValueError):
             sanitize_tx_data(UNSPENTS, [(out[0], out[1], 'satoshi') for out in OUTPUTS], 0,
-                             RETURN_ADDRESS, message=BYTES*40, custom_pushdata=True)
+                             RETURN_ADDRESS, message=BYTES*20000, custom_pushdata=True)
 
     def test_string_pushdata(self):
         # Preferable to raise TypeError if string input with custom_pushdata=True.

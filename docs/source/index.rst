@@ -39,7 +39,7 @@ effortless to use, and have readable source code. It is heavily inspired by
     >>> # Let's donate!
     >>> outputs = [
     >>>     # Wikileaks
-    >>>     ('1HB5XMLmzFVj8ALj6mfBsbifRoD4miY36v', 0.0035, 'bch'),
+    >>>     ('1HB5XMLmzFVj8ALj6mfBsbifRoD4miY36v', 0.0035, 'bsv'),
     >>>     # Internet Archive
     >>>     ('1Archive1n2C579dMsAu3iC6tWzuQJz8dN', 190, 'jpy'),
     >>>     # The Pirate Bay

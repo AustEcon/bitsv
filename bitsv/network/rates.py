@@ -10,20 +10,20 @@ from bitsv.utils import Decimal
 DEFAULT_CACHE_TIME = 60
 
 # Constant for use in deriving exchange
-# rates when given in terms of 1 BCH.
+# rates when given in terms of 1 BSV.
 ONE = Decimal(1)
 
 # https://en.bitcoin.it/wiki/Units
 SATOSHI = 1
-uBCH = 10 ** 2
-mBCH = 10 ** 5
-BCH = 10 ** 8
+uBSV = 10 ** 2
+mBSV = 10 ** 5
+BSV = 10 ** 8
 
 SUPPORTED_CURRENCIES = OrderedDict([
     ('satoshi', 'Satoshi'),
-    ('ubch', 'Microbitcoincash'),
-    ('mbch', 'Millibitcoincash'),
-    ('bch', 'BitcoinCash'),
+    ('ubsv', 'Microbitcoincash'),
+    ('mbsv', 'Millibitcoincash'),
+    ('bsv', 'BitcoinCash'),
     ('usd', 'United States Dollar'),
     ('eur', 'Eurozone Euro'),
     ('gbp', 'Pound Sterling'),
@@ -50,9 +50,9 @@ SUPPORTED_CURRENCIES = OrderedDict([
 # https://en.wikipedia.org/wiki/ISO_4217
 CURRENCY_PRECISION = {
     'satoshi': 0,
-    'ubch': 2,
-    'mbch': 5,
-    'bch': 8,
+    'ubsv': 2,
+    'mbsv': 5,
+    'bsv': 8,
     'usd': 2,
     'eur': 2,
     'gbp': 2,
@@ -86,16 +86,16 @@ def satoshi_to_satoshi():
     return SATOSHI
 
 
-def ubch_to_satoshi():
-    return uBCH
+def ubsv_to_satoshi():
+    return uBSV
 
 
-def mbch_to_satoshi():
-    return mBCH
+def mbsv_to_satoshi():
+    return mBSV
 
 
-def bch_to_satoshi():
-    return BCH
+def bsv_to_satoshi():
+    return BSV
 
 
 class BitpayRates:
@@ -104,7 +104,7 @@ class BitpayRates:
     @classmethod
     def currency_to_satoshi(cls, currency):
         rate = requests.get(cls.SINGLE_RATE + currency).json()['rate']
-        return int(ONE / Decimal(rate) * BCH)
+        return int(ONE / Decimal(rate) * BSV)
 
     @classmethod
     def usd_to_satoshi(cls):  # pragma: no cover
@@ -197,7 +197,7 @@ class BlockchainRates:
     @classmethod
     def currency_to_satoshi(cls, currency):
         rate = requests.get(cls.SINGLE_RATE.format(currency)).json()
-        return int(Decimal(rate) * BCH)
+        return int(Decimal(rate) * BSV)
 
     @classmethod
     def usd_to_satoshi(cls):  # pragma: no cover
@@ -547,9 +547,9 @@ class RatesAPI:
 
 EXCHANGE_RATES = {
     'satoshi': satoshi_to_satoshi,
-    'ubch': ubch_to_satoshi,
-    'mbch': mbch_to_satoshi,
-    'bch': bch_to_satoshi,
+    'ubsv': ubsv_to_satoshi,
+    'mbsv': mbsv_to_satoshi,
+    'bsv': bsv_to_satoshi,
     'usd': RatesAPI.usd_to_satoshi,
     'eur': RatesAPI.eur_to_satoshi,
     'gbp': RatesAPI.gbp_to_satoshi,
