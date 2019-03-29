@@ -1,4 +1,4 @@
-BitSV: Bitcoin SV made easy
+BitSV: Bitcoin SV made easy.
 ============================
 
 Forked from Ofek's awesome Bit library: https://github.com/ofek/bit

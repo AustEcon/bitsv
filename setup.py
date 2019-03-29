@@ -14,7 +14,7 @@ setup(
     author='AustEcon',
     author_email='AustEcon0922@gmail.com',
     maintainer='AustEcon',
-    maintainer_email='sega01@go-beyond.org',
+    maintainer_email='AustEcon0922@gmail.com',
     url='https://github.com/AustEcon/bitsv',
     download_url='https://github.com/AustEcon/bitsv/tarball/{}'.format(version),
     license='MIT',
