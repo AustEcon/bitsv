@@ -61,6 +61,61 @@ class BitIndex:
         r = requests.post('https://api.bitindex.network/api/v2/tx/send', data=json_payload, headers=headers)
         return r.json()
 
+    @staticmethod
+    def xpub_register(xpub, api_key):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'api_key': api_key
+        }
+        r = requests.post('https://api.bitindex.network/api/v2/xpub/register?xpub={}'.format(xpub),
+                          headers=headers)
+        return r
+
+    @staticmethod
+    def get_xpub_status(xpub, api_key):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'api_key': api_key
+        }
+        r = requests.get('https://api.bitindex.network/api/v2/xpub/status?xpub={}'.format(xpub),
+                         headers=headers)
+        return r.json()
+
+    @staticmethod
+    def get_xpub_balance(xpub, api_key):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'api_key': api_key
+        }
+        r = requests.get('https://api.bitindex.network/api/v2/xpub/balance?xpub={}'.format(xpub),
+                         headers=headers)
+        return r.json()
+
+    @staticmethod
+    def get_xpub_utxos(xpub, api_key):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'api_key': api_key
+        }
+        r = requests.get('https://api.bitindex.network/api/v2/xpub/utxos?xpub={}'.format(xpub),
+                         headers=headers)
+        return r.json()
+
+    @staticmethod
+    def get_xpub_tx(xpub, api_key):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'api_key': api_key
+        }
+        r = requests.get('https://api.bitindex.network/api/v2/xpub/txs?xpub={}'.format(xpub),
+                         headers=headers)
+        return r.json()
+
 
 class InsightAPI:
     """

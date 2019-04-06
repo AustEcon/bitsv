@@ -316,7 +316,7 @@ def create_p2pkh_transaction(private_key, unspents, outputs, custom_pushdata=Fal
             lock_time +
             hash_type
         )
-        hashed = sha256(to_be_hashed)  # BIP-143: Used for Bitcoin Cash
+        hashed = sha256(to_be_hashed)  # BIP-143: Used for Bitcoin SV
 
         # signature = private_key.sign(hashed) + b'\x01'
         signature = private_key.sign(hashed) + b'\x41'

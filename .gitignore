@@ -4,6 +4,7 @@
 __pycache__
 /.cache
 /.idea
+/bitsv/.idea
 /.coverage
 /.pytest_cache
 /bitsv.egg-info

@@ -37,9 +37,11 @@ of the transaction related functions.
 What needs fixing
 -----------------
 
+- Finish adding all query functions to BitIndex api
+- Documentation page and examples
+- Make new repos (powered by bitsv) for interfacing with BitPaste api and others
 - Testing modules / coverage
 - Testnet api
-- Documentation page and examples
 
 ----------------------------
 
@@ -59,13 +61,13 @@ Examples
     >>> # Can include a long list of tuples as outputs
     >>> outputs = [
     >>>     # Donate to AustEcon! (Currency conversion via api)
-    >>>     ('1PdvVPTzXmo4cSs68HctLUxAdW917UZtC8', 0.10, 'usd')  # $USD 0.10 as bsv
+    >>>     ('1PdvVPTzXmo4cSs68HctLUxAdW917UZtC8', 0.10, 'usd'),  # $USD 0.10 as bsv
     >>>     ('1PdvVPTzXmo4cSs68HctLUxAdW917UZtC8', 0.0001, 'bsv')
     >>> ]
     >>> my_key.send(outputs)
     'dec895d1aa0e820984c5748984ba36854163ec3d6847c94e82a921765c5b23e1'
 
-Here's the transaction `<https://bchsvexplorer.com/tx/dec895d1aa0e820984c5748984ba36854163ec3d6847c94e82a921765c5b23e1>`_.
+Here's the transaction `<https://whatsonchain.com/tx/dec895d1aa0e820984c5748984ba36854163ec3d6847c94e82a921765c5b23e1>`_.
 
 2. OP_RETURN - 100kb size limit now supported:
 
@@ -123,4 +125,4 @@ Donate
 
 - If you have found this library useful, please consider donating. It really helps.
 - HandCash: $AustEcon
-- 1HvuVG6TJ3uVyNHpWuDD59mFT9j23cabXj
+- 1PdvVPTzXmo4cSs68HctLUxAdW917UZtC8
