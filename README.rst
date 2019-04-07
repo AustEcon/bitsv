@@ -37,8 +37,8 @@ of the transaction related functions.
 What needs fixing
 -----------------
 
-- Finish adding all query functions to BitIndex api
-- Documentation page and examples
+- A few more additions to BitIndex api
+- Documentation and examples
 - Make new repos (powered by bitsv) for interfacing with BitPaste api and others
 - Testing modules / coverage
 - Testnet api
@@ -84,16 +84,44 @@ Here's the transaction `<https://whatsonchain.com/tx/dec895d1aa0e820984c5748984b
     >>> my_key.send_op_return(lst_of_pushdata)  # default fee = 1 sat/byte
 
 
+3. Hierarchical Deterministic wallet functions (added 7/04/19):
+
+.. code-block:: python
+
+    >>> import bitsv
+    >>> xprv = bitsv.Bip32utils.get_xprv_bip32_node("xprv9s21ZrQH143K4Un4SHjdvXpzzdQjpm7vVhQ79BMi5V58nptUo4NGqytwH68XAVj5LkDxjSqdVjdDinFCT8WqfBT7zigdtaGcrffTmBdwFH5")
+    >>> # Receiving addresses
+    >>> bitsv.Bip32utils.get_addresses_from_xprv(xprv, derivation_path='0', index_end=3)
+    ['1PPro3nLxMB7A1BJXfZkRDHCRugj8z4d7R',
+    '169YSZGMvtHvKbRHTpYCQZWx1phfJp2DCe',
+    '1PhGu2V5T5g26bHi6qKg2KmxpUQLuNwyKT']
+    >>> # Change addresses
+    >>> bitsv.Bip32utils.get_addresses_from_xprv(xprv, derivation_path='1', index_end=3)
+    ['1FUT1Yn7RcsXADpkfweiVrfkPurkFBDfuU',
+    '1M126MVQst5XGGqV6gVuXxCAwTGkwwgspk',
+    '1BX2BzUhuWCod14BMLYUFyMiXX2qhJbNX5']
+    >>> # Receiving private keys
+    >>> bitsv.Bip32utils.get_private_keys(xprv, derivation_path='0', index_end=3)
+    [private_for <xpub6AJDyEAwA8V7aVsF4dU3Kfdp9dH7W85F8iaWqgXqoeXEGWKBP3e7PeW2s76FM4krswNPkuHHUxaDPLD8aYG3CGyYU539MpHUsWCXk2W4pfV>,
+     private_for <xpub6AJDyEAwA8V7ec7QFow54ssKpgtys6JY2gUzmpKQnDGvs6UoqYbpuu1a9JYxWJZ4UkWoZLAsRF2w8QA2pxDpMjyuzHDmYMTB7mpuPk5bpM5>,
+     private_for <xpub6AJDyEAwA8V7ho8mZJyWFcz9kWzb8QcCSizGLsHgjKZj4eFT9LeuhUFyRXNzCzZJCPfmR2fXG9VXhHKVWJa9ZPUWK89rmjdkhTbQDUTTLfA>]
+    >>> # Change address private keys
+    >>> bitsv.Bip32utils.get_private_keys(xprv, derivation_path='1', index_end=3)
+    [private_for <xpub6BWD9MXYKixkSVevXDmDqFbG9TxKPEaCddPVCeNYMHQtQAZrppDBZjbspf31PNoosbfqdq2Db6FS1hQcPe5RaCxH7D2M91smfXhigkMPKd2>,
+     private_for <xpub6BWD9MXYKixkWH7pdjuUgkwMnQgq3Pndiynz6fP8FpgSLo7GLvYWALgvmy5eY35z95yVST455jAsKrUEF2WkGhfxX5i8WEUSEffYf1wiP13>,
+     private_for <xpub6BWD9MXYKixkYkmyDGYQSkR4YdQzQqfkafw4zLCof9XYfp6pLSPrEvuNZftfHgcdxj57AzKQ7AgXMz1LDbyeTnzw3FjuCGf962TWipBydgR>]
+    >>> # If you only have xpub key you can still generate the addresses to "view only"
+    >>> # Use the BitIndex api to query the network directly for xpub total balance etc.
+    >>> # xpub queries on BitIndex require an API key from https://www.bitindex.network/#get-api-key
+
 Features
 --------
 
 - Python's fastest available implementation (100x faster than closest library)
 - 100kb OP_RETURN transactions made very simple
-- Seamless integration with existing server setups
-- Supports keys in cold storage
+- Hierarchical deterministic key support (thanks to pycoin)
 - Fully supports 21 different currencies via exchange rate API
 - First class support for storing data in the blockchain
-- Optimal transaction fee API
 - Compressed public keys by default
 - Multiple representations of private keys; WIF, PEM, DER, etc.
 - Standard P2PKH transactions
@@ -114,11 +142,11 @@ Credits
 
 - `ofek`_ for the original bit codebase.
 - `teran-mckinney`_ for his work on the bitcash fork
-- `bjarnemagnussen`_ for his segwit code for the necessary BIP-143 support.
+- `richardkiss`_ for his work on pycoin (for Hierarchical Deterministic wallet functions)
 
 .. _ofek: https://github.com/ofek/bit
 .. _teran-mckinney: https://github.com/sporestack/bitcash
-.. _bjarnemagnussen: https://github.com/bjarnemagnussen/bitcash/tree/segwit
+.. _richardkiss: https://github.com/richardkiss/pycoin
 
 Donate
 --------
