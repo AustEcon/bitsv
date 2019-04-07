@@ -100,16 +100,21 @@ Here's the transaction `<https://whatsonchain.com/tx/dec895d1aa0e820984c5748984b
     ['1FUT1Yn7RcsXADpkfweiVrfkPurkFBDfuU',
     '1M126MVQst5XGGqV6gVuXxCAwTGkwwgspk',
     '1BX2BzUhuWCod14BMLYUFyMiXX2qhJbNX5']
-    >>> # Receiving private keys
+    >>> # Receiving address private key objects (have a wif() function to return Base58 key)
     >>> bitsv.Bip32utils.get_private_keys(xprv, derivation_path='0', index_end=3)
     [private_for <xpub6AJDyEAwA8V7aVsF4dU3Kfdp9dH7W85F8iaWqgXqoeXEGWKBP3e7PeW2s76FM4krswNPkuHHUxaDPLD8aYG3CGyYU539MpHUsWCXk2W4pfV>,
      private_for <xpub6AJDyEAwA8V7ec7QFow54ssKpgtys6JY2gUzmpKQnDGvs6UoqYbpuu1a9JYxWJZ4UkWoZLAsRF2w8QA2pxDpMjyuzHDmYMTB7mpuPk5bpM5>,
      private_for <xpub6AJDyEAwA8V7ho8mZJyWFcz9kWzb8QcCSizGLsHgjKZj4eFT9LeuhUFyRXNzCzZJCPfmR2fXG9VXhHKVWJa9ZPUWK89rmjdkhTbQDUTTLfA>]
-    >>> # Change address private keys
+    >>> # Change address private key objects (have a wif() function to return Base58 key)
     >>> bitsv.Bip32utils.get_private_keys(xprv, derivation_path='1', index_end=3)
     [private_for <xpub6BWD9MXYKixkSVevXDmDqFbG9TxKPEaCddPVCeNYMHQtQAZrppDBZjbspf31PNoosbfqdq2Db6FS1hQcPe5RaCxH7D2M91smfXhigkMPKd2>,
      private_for <xpub6BWD9MXYKixkWH7pdjuUgkwMnQgq3Pndiynz6fP8FpgSLo7GLvYWALgvmy5eY35z95yVST455jAsKrUEF2WkGhfxX5i8WEUSEffYf1wiP13>,
      private_for <xpub6BWD9MXYKixkYkmyDGYQSkR4YdQzQqfkafw4zLCof9XYfp6pLSPrEvuNZftfHgcdxj57AzKQ7AgXMz1LDbyeTnzw3FjuCGf962TWipBydgR>]
+    >>> # WIF Format keys for use in bitsv.PrivateKey() to access related functions for each respective address
+    >>> bitsv.Bip32utils.get_private_keys(xprv, derivation_path='1', index_end=3, wif_format=True)
+    ['L5ieGMBFteTHJTdA4ERA6eBbvojXqpbNHBqiSDAeFdXxZDnjNtkF',
+     'KyGbQzXanN84fTrNrm2uvtw3qK1bHRLVMp7dT5Dnp5TcRsW6newc',
+     'Kzt26jcyzQtiPjaxcTSjRCYxSg8gLV7tV3w2tuBVHejYwgpsBBxx']
     >>> # If you only have xpub key you can still generate the addresses to "view only"
     >>> # Use the BitIndex api to query the network directly for xpub total balance etc.
     >>> # xpub queries on BitIndex require an API key from https://www.bitindex.network/#get-api-key
