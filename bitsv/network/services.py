@@ -47,7 +47,8 @@ class BitIndex:
         return [Unspent(amount = currency_to_satoshi(tx['amount'], 'bsv'),
              script = tx['scriptPubKey'],
              txid = tx['txid'],
-             txindex = tx['vout']) for tx in r.json()]
+             txindex = tx['vout'],
+             confirmations = tx['confirmations']) for tx in r.json()]
 
     @staticmethod
     def broadcast_rawtx(rawtx):

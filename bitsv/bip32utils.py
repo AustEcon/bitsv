@@ -10,7 +10,6 @@ DERIVATION_PATH_ELECTRUM_SV = '0'
 class Bip32utils:
     """All functions (except for 'get_xprv_bip32_node()' and 'get_xpub_bip32_node()' constructors)
     use bip32 node objects as the input value rather than a string of the xprv or xpub keys"""
-
     # Functions for generating pycoin.key.BIP32Node objects
     get_xprv_bip32_node = pycoin.key.Key.from_text
     get_xpub_bip32_node = pycoin.key.Key.from_text
@@ -43,3 +42,5 @@ class Bip32utils:
         if wif_format:
             keys_list = [x.wif() for x in keys_list]
         return keys_list
+
+    get_addresses_from_xprv = get_addresses_from_xpub  # If path ends in ".pub", function always returns a pub (but takes either xprv or xpub as input)
