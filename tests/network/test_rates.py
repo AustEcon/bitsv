@@ -14,10 +14,10 @@ from bitsv.utils import Decimal
 #     original = bitsv.network.rates.DEFAULT_CACHE_TIME
 #     set_rate_cache_time(30)
 #     updated = bitsv.network.rates.DEFAULT_CACHE_TIME
-# 
+#
 #     assert original != updated
 #     assert updated == 30
-# 
+#
 #     set_rate_cache_time(original)
 
 
@@ -71,35 +71,35 @@ def test_satoshi_to_currency_cached():
 # class TestRateCache:
 #     def test_cache(self):
 #         sleep(0.2)
-# 
+#
 #         start_time = time()
 #         set_rate_cache_time(0)
 #         currency_to_satoshi_cached(1, 'usd')
 #         initial_time = time() - start_time
-# 
+#
 #         start_time = time()
 #         set_rate_cache_time(60)
 #         currency_to_satoshi_cached(1, 'usd')
 #         cached_time = time() - start_time
-# 
+#
 #         assert initial_time > cached_time
-# 
+#
 #     def test_expires(self):
 #         sleep(0.2)
-# 
+#
 #         set_rate_cache_time(0)
 #         currency_to_satoshi_cached(1, 'usd')
-# 
+#
 #         start_time = time()
 #         set_rate_cache_time(60)
 #         currency_to_satoshi_cached(1, 'usd')
 #         cached_time = time() - start_time
-# 
+#
 #         sleep(0.2)
-# 
+#
 #         start_time = time()
 #         set_rate_cache_time(0.1)
 #         currency_to_satoshi_cached(1, 'usd')
 #         update_time = time() - start_time
-# 
+#
 #         assert update_time > cached_time
