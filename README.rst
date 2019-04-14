@@ -3,17 +3,17 @@ BitSV: Bitcoin SV made easy.
 
 Forked from Ofek's awesome Bit library: https://github.com/ofek/bit
 
-.. image:: https://img.shields.io/pypi/v/bitcash.svg?style=flat-square
-    :target: https://pypi.org/project/bitcash
+.. image:: https://img.shields.io/pypi/v/bitsv.svg?style=flat-square
+    :target: https://pypi.org/project/bitsv
 
-.. image:: https://img.shields.io/travis/sporestack/bitcash.svg?branch=master&style=flat-square
-    :target: https://travis-ci.org/sporestack/bitcash
+.. image:: https://img.shields.io/travis/AustEcon/bitsv.svg?branch=master&style=flat-square
+    :target: https://travis-ci.org/AustEcon/bitsv
 
-.. image:: https://img.shields.io/codecov/c/github/sporestack/bitcash.svg?style=flat-square
-    :target: https://codecov.io/gh/sporestack/bitcash
+.. image:: https://img.shields.io/codecov/c/github/AustEcon/bitsv.svg?style=flat-square
+    :target: https://codecov.io/gh/austecon/bitsv
 
-.. image:: https://img.shields.io/pypi/pyversions/bitcash.svg?style=flat-square
-    :target: https://pypi.org/project/bitcash
+.. image:: https://img.shields.io/pypi/pyversions/bitsv.svg?style=flat-square
+    :target: https://pypi.org/project/bitsv
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
     :target: https://en.wikipedia.org/wiki/MIT_License
