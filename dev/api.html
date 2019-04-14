@@ -1,0 +1,1690 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Developer Interface &#8212; BitSV 0.6.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="https://assets.readthedocs.org/static/javascript/readthedocs-doc-embed.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Authors" href="../community/authors.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+<div class="documentwrapper">
+  <div class="bodywrapper">
+    <div class="body" role="main">
+    
+  <div class="section" id="module-bitsv">
+<span id="developer-interface"></span><span id="api"></span><h1>Developer Interface<a class="headerlink" href="#module-bitsv" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="keys">
+<span id="keysapi"></span><h2>Keys<a class="headerlink" href="#keys" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="bitsv.Key">
+<code class="descclassname">bitsv.</code><code class="descname">Key</code><a class="headerlink" href="#bitsv.Key" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">bitsv.wallet.PrivateKey</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="bitsv.PrivateKey">
+<em class="property">class </em><code class="descclassname">bitsv.</code><code class="descname">PrivateKey</code><span class="sig-paren">(</span><em>wif=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class represents a BitcoinCash private key. <code class="docutils literal notranslate"><span class="pre">Key</span></code> is an alias.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wif</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A private key serialized to the Wallet Import Format. If the
+argument is not supplied, a new private key will be created.
+The WIF compression flag will be adhered to, but the version
+byte is disregarded. Compression will be used by all new keys.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If <code class="docutils literal notranslate"><span class="pre">wif</span></code> is not a <code class="docutils literal notranslate"><span class="pre">str</span></code>.</p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="bitsv.PrivateKey.address">
+<code class="descname">address</code><a class="headerlink" href="#bitsv.PrivateKey.address" title="Permalink to this definition">¶</a></dt>
+<dd><p>The public address you share with others to receive funds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.balance_as">
+<code class="descname">balance_as</code><span class="sig-paren">(</span><em>currency</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.balance_as" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns your balance as a formatted string in a particular currency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>currency</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – One of the <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">Supported Currencies</span></a>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.create_op_return_rawtx">
+<code class="descname">create_op_return_rawtx</code><span class="sig-paren">(</span><em>lst_of_pushdata</em>, <em>fee=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.create_op_return_rawtx" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a rawtx with OP_RETURN metadata ready for broadcast.</p>
+<p>lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either “hex” or “utf-8”
+fee : sat/byte (defaults to 1 satoshi per byte)</p>
+<p>rawtx ready to broadcast</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.create_transaction">
+<code class="descname">create_transaction</code><span class="sig-paren">(</span><em>outputs</em>, <em>fee=None</em>, <em>leftover=None</em>, <em>combine=True</em>, <em>message=None</em>, <em>unspents=None</em>, <em>custom_pushdata=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.create_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a signed P2PKH transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outputs</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code>) – A sequence of outputs you wish to send in the form
+<code class="docutils literal notranslate"><span class="pre">(destination,</span> <span class="pre">amount,</span> <span class="pre">currency)</span></code>. The amount can
+be either an int, float, or string as long as it is
+a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
+must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi per byte to pay to miners. By default
+Bitcash will poll <a class="reference external" href="https://bitcoincashfees.earn.com">https://bitcoincashfees.earn.com</a> and use a fee
+that will allow your transaction to be confirmed as soon as
+possible.</p></li>
+<li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
+transaction. By default Bitcash will send any change to
+the same address you sent from.</p></li>
+<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
+make future transactions smaller and therefore reduce
+fees. By default Bitcash will consolidate UTXOs.</p></li>
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A message to include in the transaction. This will be
+stored in the blockchain forever. Due to size limits,
+each message will be stored in chunks of 100kb.</p></li>
+<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
+communicate with the blockchain itself.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The signed transaction as hex.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.PrivateKey.from_bytes">
+<em class="property">classmethod </em><code class="descname">from_bytes</code><span class="sig-paren">(</span><em>bytestr</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.from_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bytestr</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – A private key previously encoded as hex.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bitsv.PrivateKey" title="bitsv.PrivateKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKey</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.PrivateKey.from_der">
+<em class="property">classmethod </em><code class="descname">from_der</code><span class="sig-paren">(</span><em>der</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.from_der" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>der</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – A private key previously encoded as DER.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bitsv.PrivateKey" title="bitsv.PrivateKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKey</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.PrivateKey.from_hex">
+<em class="property">classmethod </em><code class="descname">from_hex</code><span class="sig-paren">(</span><em>hexed</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.from_hex" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hexed</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A private key previously encoded as hex.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bitsv.PrivateKey" title="bitsv.PrivateKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKey</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.PrivateKey.from_int">
+<em class="property">classmethod </em><code class="descname">from_int</code><span class="sig-paren">(</span><em>num</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.from_int" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>num</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – A private key in raw integer form.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bitsv.PrivateKey" title="bitsv.PrivateKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKey</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.PrivateKey.from_pem">
+<em class="property">classmethod </em><code class="descname">from_pem</code><span class="sig-paren">(</span><em>pem</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.from_pem" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pem</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – A private key previously encoded as PEM.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bitsv.PrivateKey" title="bitsv.PrivateKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKey</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.get_balance">
+<code class="descname">get_balance</code><span class="sig-paren">(</span><em>currency='satoshi'</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.get_balance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches the current balance by calling
+<a class="reference internal" href="#bitsv.PrivateKey.get_unspents" title="bitsv.PrivateKey.get_unspents"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_unspents()</span></code></a> and returns it using
+<a class="reference internal" href="#bitsv.PrivateKey.balance_as" title="bitsv.PrivateKey.balance_as"><code class="xref py py-func docutils literal notranslate"><span class="pre">balance_as()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>currency</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – One of the <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">Supported Currencies</span></a>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.get_transactions">
+<code class="descname">get_transactions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.get_transactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches transaction history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code> transaction IDs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.get_unspents">
+<code class="descname">get_unspents</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.get_unspents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches all available unspent transaction outputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.is_compressed">
+<code class="descname">is_compressed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.is_compressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether or not this private key corresponds to a compressed
+public key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.PrivateKey.prepare_transaction">
+<em class="property">classmethod </em><code class="descname">prepare_transaction</code><span class="sig-paren">(</span><em>address</em>, <em>outputs</em>, <em>compressed=True</em>, <em>fee=None</em>, <em>leftover=None</em>, <em>combine=True</em>, <em>message=None</em>, <em>unspents=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.prepare_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepares a P2PKH transaction for offline signing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The address the funds will be sent from.</p></li>
+<li><p><strong>outputs</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code>) – A sequence of outputs you wish to send in the form
+<code class="docutils literal notranslate"><span class="pre">(destination,</span> <span class="pre">amount,</span> <span class="pre">currency)</span></code>. The amount can
+be either an int, float, or string as long as it is
+a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
+must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
+<li><p><strong>compressed</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not the <code class="docutils literal notranslate"><span class="pre">address</span></code> corresponds to a
+compressed public key. This influences the fee.</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – <p>The number of satoshi per byte to pay to miners. By default
+Bitcash will poll <a class="reference external" href="https://bitcoincashfees.earn.com">https://bitcoincashfees.earn.com</a> and use a fee
+that will allow your transaction to be confirmed as soon as
+possible.</p>
+</p></li>
+<li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
+transaction. By default Bitcash will send any change to
+the same address you sent from.</p></li>
+<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
+make future transactions smaller and therefore reduce
+fees. By default Bitcash will consolidate UTXOs.</p></li>
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A message to include in the transaction. This will be
+stored in the blockchain forever. Due to size limits,
+each message will be stored in chunks of 100kb bytes.</p></li>
+<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
+communicate with the blockchain itself.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON storing data required to create an offline transaction.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.PrivateKey.public_key">
+<code class="descname">public_key</code><a class="headerlink" href="#bitsv.PrivateKey.public_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>The public point serialized to bytes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.PrivateKey.public_point">
+<code class="descname">public_point</code><a class="headerlink" href="#bitsv.PrivateKey.public_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>The public point (x, y).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.PrivateKey.scriptcode">
+<code class="descname">scriptcode</code><a class="headerlink" href="#bitsv.PrivateKey.scriptcode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.send">
+<code class="descname">send</code><span class="sig-paren">(</span><em>outputs</em>, <em>fee=None</em>, <em>leftover=None</em>, <em>combine=True</em>, <em>message=None</em>, <em>unspents=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a signed P2PKH transaction and attempts to broadcast it on
+the blockchain. This accepts the same arguments as
+<a class="reference internal" href="#bitsv.PrivateKey.create_transaction" title="bitsv.PrivateKey.create_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_transaction()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outputs</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code>) – A sequence of outputs you wish to send in the form
+<code class="docutils literal notranslate"><span class="pre">(destination,</span> <span class="pre">amount,</span> <span class="pre">currency)</span></code>. The amount can
+be either an int, float, or string as long as it is
+a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
+must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – <p>The number of satoshi per byte to pay to miners. By default
+Bitcash will poll <a class="reference external" href="https://bitcoincashfees.earn.com">https://bitcoincashfees.earn.com</a> and use a fee
+that will allow your transaction to be confirmed as soon as
+possible.</p>
+</p></li>
+<li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
+transaction. By default Bitcash will send any change to
+the same address you sent from.</p></li>
+<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
+make future transactions smaller and therefore reduce
+fees. By default Bitcash will consolidate UTXOs.</p></li>
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A message to include in the transaction. This will be
+stored in the blockchain forever. Due to size limits,
+each message will be stored in chunks of 100kb.</p></li>
+<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
+communicate with the blockchain itself.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The transaction ID.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.send_op_return">
+<code class="descname">send_op_return</code><span class="sig-paren">(</span><em>lst_of_pushdata</em>, <em>fee=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.send_op_return" title="Permalink to this definition">¶</a></dt>
+<dd><p>All-in-one function both generates and sends a rawtx with desired OP_RETURN metadata.</p>
+<p>lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either “hex” or “utf-8”
+fee : sat/byte (defaults to 1 satoshi per byte)</p>
+<p>broadcasts rawtx</p>
+<p>lst_of_pushdata = [(‘6d01’,’hex’), (‘my_new_memocash_name’, ‘utf-8’)]
+send_op_return(my_key, lst_of_pushdata)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.sign">
+<code class="descname">sign</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.sign" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signs some data which can be verified later by others using
+the public key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – The message to sign.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A signature compliant with BIP-62.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.sign_transaction">
+<code class="descname">sign_transaction</code><span class="sig-paren">(</span><em>tx_data</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.sign_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a signed P2PKH transaction using previously prepared
+transaction data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tx_data</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – Output of <a class="reference internal" href="#bitsv.PrivateKey.prepare_transaction" title="bitsv.PrivateKey.prepare_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">prepare_transaction()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The signed transaction as hex.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.to_bytes">
+<code class="descname">to_bytes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.to_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.to_der">
+<code class="descname">to_der</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.to_der" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.to_hex">
+<code class="descname">to_hex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.to_hex" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.to_int">
+<code class="descname">to_int</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.to_int" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.to_pem">
+<code class="descname">to_pem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.to_pem" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.to_wif">
+<code class="descname">to_wif</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.to_wif" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.verify">
+<code class="descname">verify</code><span class="sig-paren">(</span><em>signature</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verifies some data was signed by this private key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signature</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – The signature to verify.</p></li>
+<li><p><strong>data</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – The data that was supposedly signed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bitsv.PrivateKeyTestnet">
+<em class="property">class </em><code class="descclassname">bitsv.</code><code class="descname">PrivateKeyTestnet</code><span class="sig-paren">(</span><em>wif=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class represents a testnet BitcoinCash private key. <strong>Note:</strong> coins
+on the test network have no monetary value!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wif</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A private key serialized to the Wallet Import Format. If the
+argument is not supplied, a new private key will be created.
+The WIF compression flag will be adhered to, but the version
+byte is disregarded. Compression will be used by all new keys.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If <code class="docutils literal notranslate"><span class="pre">wif</span></code> is not a <code class="docutils literal notranslate"><span class="pre">str</span></code>.</p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="bitsv.PrivateKeyTestnet.address">
+<code class="descname">address</code><a class="headerlink" href="#bitsv.PrivateKeyTestnet.address" title="Permalink to this definition">¶</a></dt>
+<dd><p>The public address you share with others to receive funds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.balance_as">
+<code class="descname">balance_as</code><span class="sig-paren">(</span><em>currency</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.balance_as" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns your balance as a formatted string in a particular currency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>currency</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – One of the <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">Supported Currencies</span></a>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.create_transaction">
+<code class="descname">create_transaction</code><span class="sig-paren">(</span><em>outputs</em>, <em>fee=None</em>, <em>leftover=None</em>, <em>combine=True</em>, <em>message=None</em>, <em>unspents=None</em>, <em>custom_pushdata=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.create_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a signed P2PKH transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outputs</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code>) – A sequence of outputs you wish to send in the form
+<code class="docutils literal notranslate"><span class="pre">(destination,</span> <span class="pre">amount,</span> <span class="pre">currency)</span></code>. The amount can
+be either an int, float, or string as long as it is
+a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
+must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – <p>The number of satoshi per byte to pay to miners. By default
+Bitcash will poll <a class="reference external" href="https://bitcoincashfees.earn.com">https://bitcoincashfees.earn.com</a> and use a fee
+that will allow your transaction to be confirmed as soon as
+possible.</p>
+</p></li>
+<li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
+transaction. By default Bitcash will send any change to
+the same address you sent from.</p></li>
+<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
+make future transactions smaller and therefore reduce
+fees. By default Bitcash will consolidate UTXOs.</p></li>
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A message to include in the transaction. This will be
+stored in the blockchain forever. Due to size limits,
+each message will be stored in chunks of 100kb bytes.</p></li>
+<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
+communicate with the testnet blockchain itself.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The signed transaction as hex.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.PrivateKeyTestnet.from_bytes">
+<em class="property">classmethod </em><code class="descname">from_bytes</code><span class="sig-paren">(</span><em>bytestr</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.from_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bytestr</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – A private key previously encoded as hex.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bitsv.PrivateKeyTestnet" title="bitsv.PrivateKeyTestnet"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKeyTestnet</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.PrivateKeyTestnet.from_der">
+<em class="property">classmethod </em><code class="descname">from_der</code><span class="sig-paren">(</span><em>der</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.from_der" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>der</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – A private key previously encoded as DER.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bitsv.PrivateKeyTestnet" title="bitsv.PrivateKeyTestnet"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKeyTestnet</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.PrivateKeyTestnet.from_hex">
+<em class="property">classmethod </em><code class="descname">from_hex</code><span class="sig-paren">(</span><em>hexed</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.from_hex" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hexed</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A private key previously encoded as hex.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bitsv.PrivateKeyTestnet" title="bitsv.PrivateKeyTestnet"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKeyTestnet</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.PrivateKeyTestnet.from_int">
+<em class="property">classmethod </em><code class="descname">from_int</code><span class="sig-paren">(</span><em>num</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.from_int" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>num</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – A private key in raw integer form.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bitsv.PrivateKeyTestnet" title="bitsv.PrivateKeyTestnet"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKeyTestnet</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.PrivateKeyTestnet.from_pem">
+<em class="property">classmethod </em><code class="descname">from_pem</code><span class="sig-paren">(</span><em>pem</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.from_pem" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pem</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – A private key previously encoded as PEM.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bitsv.PrivateKeyTestnet" title="bitsv.PrivateKeyTestnet"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKeyTestnet</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.get_balance">
+<code class="descname">get_balance</code><span class="sig-paren">(</span><em>currency='satoshi'</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.get_balance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches the current balance by calling
+<a class="reference internal" href="#bitsv.PrivateKeyTestnet.get_unspents" title="bitsv.PrivateKeyTestnet.get_unspents"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_unspents()</span></code></a> and returns it using
+<a class="reference internal" href="#bitsv.PrivateKeyTestnet.balance_as" title="bitsv.PrivateKeyTestnet.balance_as"><code class="xref py py-func docutils literal notranslate"><span class="pre">balance_as()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>currency</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – One of the <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">Supported Currencies</span></a>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.get_transactions">
+<code class="descname">get_transactions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.get_transactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches transaction history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code> transaction IDs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.get_unspents">
+<code class="descname">get_unspents</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.get_unspents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches all available unspent transaction outputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.is_compressed">
+<code class="descname">is_compressed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.is_compressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether or not this private key corresponds to a compressed
+public key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.PrivateKeyTestnet.prepare_transaction">
+<em class="property">classmethod </em><code class="descname">prepare_transaction</code><span class="sig-paren">(</span><em>address</em>, <em>outputs</em>, <em>compressed=True</em>, <em>fee=None</em>, <em>leftover=None</em>, <em>combine=True</em>, <em>message=None</em>, <em>unspents=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.prepare_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepares a P2PKH transaction for offline signing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The address the funds will be sent from.</p></li>
+<li><p><strong>outputs</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code>) – A sequence of outputs you wish to send in the form
+<code class="docutils literal notranslate"><span class="pre">(destination,</span> <span class="pre">amount,</span> <span class="pre">currency)</span></code>. The amount can
+be either an int, float, or string as long as it is
+a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
+must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
+<li><p><strong>compressed</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not the <code class="docutils literal notranslate"><span class="pre">address</span></code> corresponds to a
+compressed public key. This influences the fee.</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – <p>The number of satoshi per byte to pay to miners. By default
+Bitcash will poll <a class="reference external" href="https://bitcoincashfees.earn.com">https://bitcoincashfees.earn.com</a> and use a fee
+that will allow your transaction to be confirmed as soon as
+possible.</p>
+</p></li>
+<li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
+transaction. By default Bitcash will send any change to
+the same address you sent from.</p></li>
+<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
+make future transactions smaller and therefore reduce
+fees. By default Bitcash will consolidate UTXOs.</p></li>
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A message to include in the transaction. This will be
+stored in the blockchain forever. Due to size limits,
+each message will be stored in chunks of 100kb bytes.</p></li>
+<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
+communicate with the blockchain itself.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON storing data required to create an offline transaction.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.PrivateKeyTestnet.public_key">
+<code class="descname">public_key</code><a class="headerlink" href="#bitsv.PrivateKeyTestnet.public_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>The public point serialized to bytes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.PrivateKeyTestnet.public_point">
+<code class="descname">public_point</code><a class="headerlink" href="#bitsv.PrivateKeyTestnet.public_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>The public point (x, y).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.PrivateKeyTestnet.scriptcode">
+<code class="descname">scriptcode</code><a class="headerlink" href="#bitsv.PrivateKeyTestnet.scriptcode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.send">
+<code class="descname">send</code><span class="sig-paren">(</span><em>outputs</em>, <em>fee=None</em>, <em>leftover=None</em>, <em>combine=True</em>, <em>message=None</em>, <em>unspents=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a signed P2PKH transaction and attempts to broadcast it on
+the testnet blockchain. This accepts the same arguments as
+<a class="reference internal" href="#bitsv.PrivateKeyTestnet.create_transaction" title="bitsv.PrivateKeyTestnet.create_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_transaction()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outputs</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code>) – A sequence of outputs you wish to send in the form
+<code class="docutils literal notranslate"><span class="pre">(destination,</span> <span class="pre">amount,</span> <span class="pre">currency)</span></code>. The amount can
+be either an int, float, or string as long as it is
+a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
+must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – <p>The number of satoshi per byte to pay to miners. By default
+Bitcash will poll <a class="reference external" href="https://bitcoincashfees.earn.com">https://bitcoincashfees.earn.com</a> and use a fee
+that will allow your transaction to be confirmed as soon as
+possible.</p>
+</p></li>
+<li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
+transaction. By default Bitcash will send any change to
+the same address you sent from.</p></li>
+<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
+make future transactions smaller and therefore reduce
+fees. By default Bitcash will consolidate UTXOs.</p></li>
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A message to include in the transaction. This will be
+stored in the blockchain forever. Due to size limits,
+each message will be stored in chunks of 100kb bytes.</p></li>
+<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
+communicate with the testnet blockchain itself.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The transaction ID.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.sign">
+<code class="descname">sign</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.sign" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signs some data which can be verified later by others using
+the public key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – The message to sign.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A signature compliant with BIP-62.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.sign_transaction">
+<code class="descname">sign_transaction</code><span class="sig-paren">(</span><em>tx_data</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.sign_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a signed P2PKH transaction using previously prepared
+transaction data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tx_data</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – Output of <a class="reference internal" href="#bitsv.PrivateKeyTestnet.prepare_transaction" title="bitsv.PrivateKeyTestnet.prepare_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">prepare_transaction()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The signed transaction as hex.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.to_bytes">
+<code class="descname">to_bytes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.to_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.to_der">
+<code class="descname">to_der</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.to_der" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.to_hex">
+<code class="descname">to_hex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.to_hex" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.to_int">
+<code class="descname">to_int</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.to_int" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.to_pem">
+<code class="descname">to_pem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.to_pem" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.to_wif">
+<code class="descname">to_wif</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.to_wif" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKeyTestnet.verify">
+<code class="descname">verify</code><span class="sig-paren">(</span><em>signature</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet.verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verifies some data was signed by this private key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signature</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – The signature to verify.</p></li>
+<li><p><strong>data</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – The data that was supposedly signed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bitsv.wallet.BaseKey">
+<em class="property">class </em><code class="descclassname">bitsv.wallet.</code><code class="descname">BaseKey</code><span class="sig-paren">(</span><em>wif=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.wallet.BaseKey" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class represents a point on the elliptic curve secp256k1 and
+provides all necessary cryptographic functionality. You shouldn’t use
+this class directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wif</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A private key serialized to the Wallet Import Format. If the
+argument is not supplied, a new private key will be created.
+The WIF compression flag will be adhered to, but the version
+byte is disregarded. Compression will be used by all new keys.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If <code class="docutils literal notranslate"><span class="pre">wif</span></code> is not a <code class="docutils literal notranslate"><span class="pre">str</span></code>.</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="bitsv.wallet.BaseKey.is_compressed">
+<code class="descname">is_compressed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.wallet.BaseKey.is_compressed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether or not this private key corresponds to a compressed
+public key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.wallet.BaseKey.public_key">
+<code class="descname">public_key</code><a class="headerlink" href="#bitsv.wallet.BaseKey.public_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>The public point serialized to bytes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.wallet.BaseKey.public_point">
+<code class="descname">public_point</code><a class="headerlink" href="#bitsv.wallet.BaseKey.public_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>The public point (x, y).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.wallet.BaseKey.sign">
+<code class="descname">sign</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.wallet.BaseKey.sign" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signs some data which can be verified later by others using
+the public key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – The message to sign.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A signature compliant with BIP-62.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.wallet.BaseKey.to_bytes">
+<code class="descname">to_bytes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.wallet.BaseKey.to_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.wallet.BaseKey.to_der">
+<code class="descname">to_der</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.wallet.BaseKey.to_der" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.wallet.BaseKey.to_hex">
+<code class="descname">to_hex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.wallet.BaseKey.to_hex" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.wallet.BaseKey.to_int">
+<code class="descname">to_int</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.wallet.BaseKey.to_int" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.wallet.BaseKey.to_pem">
+<code class="descname">to_pem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.wallet.BaseKey.to_pem" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.wallet.BaseKey.verify">
+<code class="descname">verify</code><span class="sig-paren">(</span><em>signature</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.wallet.BaseKey.verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verifies some data was signed by this private key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signature</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – The signature to verify.</p></li>
+<li><p><strong>data</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – The data that was supposedly signed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="network">
+<h2>Network<a class="headerlink" href="#network" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bitsv.network.NetworkAPI">
+<em class="property">class </em><code class="descclassname">bitsv.network.</code><code class="descname">NetworkAPI</code><a class="headerlink" href="#bitsv.network.NetworkAPI" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="bitsv.network.NetworkAPI.BROADCAST_TX_MAIN">
+<code class="descname">BROADCAST_TX_MAIN</code><em class="property"> = [&lt;function BitIndex.broadcast_rawtx&gt;]</em><a class="headerlink" href="#bitsv.network.NetworkAPI.BROADCAST_TX_MAIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.NetworkAPI.GET_BALANCE_MAIN">
+<code class="descname">GET_BALANCE_MAIN</code><em class="property"> = [&lt;function BitIndex.get_balance&gt;]</em><a class="headerlink" href="#bitsv.network.NetworkAPI.GET_BALANCE_MAIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.NetworkAPI.GET_TRANSACTIONS_MAIN">
+<code class="descname">GET_TRANSACTIONS_MAIN</code><em class="property"> = [&lt;bound method BchSVExplorerDotComAPI.get_transactions of &lt;class 'bitsv.network.services.BchSVExplorerDotComAPI'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.NetworkAPI.GET_TRANSACTIONS_MAIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.NetworkAPI.GET_TX_AMOUNT_MAIN">
+<code class="descname">GET_TX_AMOUNT_MAIN</code><em class="property"> = [&lt;bound method InsightAPI.get_tx_amount of &lt;class 'bitsv.network.services.BchSVExplorerDotComAPI'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.NetworkAPI.GET_TX_AMOUNT_MAIN" title="Permalink to this definition">¶</a></dt>
+<dd><p>GET_BALANCE_MAIN = [BchSVExplorerDotComAPI.get_balance]
+GET_TRANSACTIONS_MAIN = [BchSVExplorerDotComAPI.get_transactions]
+GET_UNSPENT_MAIN = [BchSVExplorerDotComAPI.get_unspent]
+BROADCAST_TX_MAIN = [BchSVExplorerDotComAPI.broadcast_tx]
+GET_TX_MAIN = [BchSVExplorerDotComAPI.get_transaction]
+GET_TX_AMOUNT_MAIN = [BchSVExplorerDotComAPI.get_tx_amount]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.NetworkAPI.GET_TX_MAIN">
+<code class="descname">GET_TX_MAIN</code><em class="property"> = [&lt;bound method InsightAPI.get_transaction of &lt;class 'bitsv.network.services.BchSVExplorerDotComAPI'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.NetworkAPI.GET_TX_MAIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.NetworkAPI.GET_UNSPENT_MAIN">
+<code class="descname">GET_UNSPENT_MAIN</code><em class="property"> = [&lt;function BitIndex.get_utxo&gt;]</em><a class="headerlink" href="#bitsv.network.NetworkAPI.GET_UNSPENT_MAIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.NetworkAPI.IGNORED_ERRORS">
+<code class="descname">IGNORED_ERRORS</code><em class="property"> = (&lt;class 'ConnectionError'&gt;, &lt;class 'requests.exceptions.ConnectionError'&gt;, &lt;class 'requests.exceptions.Timeout'&gt;, &lt;class 'requests.exceptions.ReadTimeout'&gt;)</em><a class="headerlink" href="#bitsv.network.NetworkAPI.IGNORED_ERRORS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.NetworkAPI.broadcast_tx">
+<em class="property">classmethod </em><code class="descname">broadcast_tx</code><span class="sig-paren">(</span><em>tx_hex</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.NetworkAPI.broadcast_tx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Broadcasts a transaction to the blockchain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tx_hex</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A signed transaction in hex form.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ConnectionError</strong> – If all API services fail.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.NetworkAPI.get_balance">
+<em class="property">classmethod </em><code class="descname">get_balance</code><span class="sig-paren">(</span><em>address</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.NetworkAPI.get_balance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the balance of an address in satoshis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>address</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The address in question.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ConnectionError</strong> – If all API services fail.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.NetworkAPI.get_transaction">
+<em class="property">classmethod </em><code class="descname">get_transaction</code><span class="sig-paren">(</span><em>txid</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.NetworkAPI.get_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the full transaction details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>txid</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The transaction id in question.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ConnectionError</strong> – If all API services fail.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Transaction</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.NetworkAPI.get_transactions">
+<em class="property">classmethod </em><code class="descname">get_transactions</code><span class="sig-paren">(</span><em>address</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.NetworkAPI.get_transactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the ID of all transactions related to an address.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>address</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The address in question.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ConnectionError</strong> – If all API services fail.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.NetworkAPI.get_tx_amount">
+<em class="property">classmethod </em><code class="descname">get_tx_amount</code><span class="sig-paren">(</span><em>txid</em>, <em>txindex</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.NetworkAPI.get_tx_amount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the amount of a given transaction output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>txid</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The transaction id in question.</p></li>
+<li><p><strong>txindex</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The transaction index in question.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ConnectionError</strong> – If all API services fail.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Decimal</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.NetworkAPI.get_unspent">
+<em class="property">classmethod </em><code class="descname">get_unspent</code><span class="sig-paren">(</span><em>address</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.NetworkAPI.get_unspent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all unspent transaction outputs belonging to an address.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>address</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The address in question.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ConnectionError</strong> – If all API services fail.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bitsv.network.meta.Unspent">
+<em class="property">class </em><code class="descclassname">bitsv.network.meta.</code><code class="descname">Unspent</code><span class="sig-paren">(</span><em>amount</em>, <em>script</em>, <em>txid</em>, <em>txindex</em>, <em>confirmations</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.meta.Unspent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an unspent transaction output (UTXO).</p>
+<dl class="attribute">
+<dt id="bitsv.network.meta.Unspent.amount">
+<code class="descname">amount</code><a class="headerlink" href="#bitsv.network.meta.Unspent.amount" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.meta.Unspent.confirmations">
+<code class="descname">confirmations</code><a class="headerlink" href="#bitsv.network.meta.Unspent.confirmations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.meta.Unspent.from_dict">
+<em class="property">classmethod </em><code class="descname">from_dict</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.meta.Unspent.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.meta.Unspent.script">
+<code class="descname">script</code><a class="headerlink" href="#bitsv.network.meta.Unspent.script" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bitsv.network.meta.Unspent.to_dict">
+<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.meta.Unspent.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.meta.Unspent.txid">
+<code class="descname">txid</code><a class="headerlink" href="#bitsv.network.meta.Unspent.txid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.meta.Unspent.txindex">
+<code class="descname">txindex</code><a class="headerlink" href="#bitsv.network.meta.Unspent.txindex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="exchange-rates">
+<h2>Exchange Rates<a class="headerlink" href="#exchange-rates" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bitsv.network.currency_to_satoshi">
+<code class="descclassname">bitsv.network.</code><code class="descname">currency_to_satoshi</code><span class="sig-paren">(</span><em>amount</em>, <em>currency</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.currency_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a given amount of currency to the equivalent number of
+satoshi. The amount can be either an int, float, or string as long as
+it is a valid input to <code class="xref py py-class docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>amount</strong> – The quantity of currency.</p></li>
+<li><p><strong>currency</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – One of the <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">Supported Currencies</span></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="bitsv.network.currency_to_satoshi_cached">
+<code class="descclassname">bitsv.network.</code><code class="descname">currency_to_satoshi_cached</code><span class="sig-paren">(</span><em>amount</em>, <em>currency</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.currency_to_satoshi_cached" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a given amount of currency to the equivalent number of
+satoshi. The amount can be either an int, float, or string as long as
+it is a valid input to <code class="xref py py-class docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. Results are cached
+using a decorator for 60 seconds by default. See <a class="reference internal" href="../guide/advanced.html#cache-times"><span class="std std-ref">Cache Times</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>amount</strong> – The quantity of currency.</p></li>
+<li><p><strong>currency</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – One of the <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">Supported Currencies</span></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="bitsv.network.satoshi_to_currency">
+<code class="descclassname">bitsv.network.</code><code class="descname">satoshi_to_currency</code><span class="sig-paren">(</span><em>num</em>, <em>currency</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.satoshi_to_currency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a given number of satoshi to another currency as a formatted
+string rounded down to the proper number of decimal places.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi.</p></li>
+<li><p><strong>currency</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – One of the <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">Supported Currencies</span></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="bitsv.network.satoshi_to_currency_cached">
+<code class="descclassname">bitsv.network.</code><code class="descname">satoshi_to_currency_cached</code><span class="sig-paren">(</span><em>num</em>, <em>currency</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.satoshi_to_currency_cached" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a given number of satoshi to another currency as a formatted
+string rounded down to the proper number of decimal places. Results are
+cached using a decorator for 60 seconds by default. See <a class="reference internal" href="../guide/advanced.html#cache-times"><span class="std std-ref">Cache Times</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi.</p></li>
+<li><p><strong>currency</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – One of the <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">Supported Currencies</span></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="bitsv.network.rates.RatesAPI">
+<em class="property">class </em><code class="descclassname">bitsv.network.rates.</code><code class="descname">RatesAPI</code><a class="headerlink" href="#bitsv.network.rates.RatesAPI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Each method converts exactly 1 unit of the currency to the equivalent
+number of satoshi.</p>
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.AUD_RATES">
+<code class="descname">AUD_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.aud_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.AUD_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.BRL_RATES">
+<code class="descname">BRL_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.brl_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.BRL_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.CAD_RATES">
+<code class="descname">CAD_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.cad_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.CAD_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.CHF_RATES">
+<code class="descname">CHF_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.chf_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.CHF_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.CLP_RATES">
+<code class="descname">CLP_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.clp_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.CLP_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.CNY_RATES">
+<code class="descname">CNY_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.cny_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.CNY_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.DKK_RATES">
+<code class="descname">DKK_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.dkk_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.DKK_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.EUR_RATES">
+<code class="descname">EUR_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.eur_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.EUR_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.GBP_RATES">
+<code class="descname">GBP_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.gbp_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.GBP_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.HKD_RATES">
+<code class="descname">HKD_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.hkd_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.HKD_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.IGNORED_ERRORS">
+<code class="descname">IGNORED_ERRORS</code><em class="property"> = (&lt;class 'requests.exceptions.ConnectionError'&gt;, &lt;class 'requests.exceptions.Timeout'&gt;)</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.IGNORED_ERRORS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.ISK_RATES">
+<code class="descname">ISK_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.isk_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.ISK_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.JPY_RATES">
+<code class="descname">JPY_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.jpy_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.JPY_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.KRW_RATES">
+<code class="descname">KRW_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.krw_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.KRW_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.NZD_RATES">
+<code class="descname">NZD_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.nzd_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.NZD_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.PLN_RATES">
+<code class="descname">PLN_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.pln_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.PLN_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.RUB_RATES">
+<code class="descname">RUB_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.rub_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.RUB_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.SEK_RATES">
+<code class="descname">SEK_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.sek_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.SEK_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.SGD_RATES">
+<code class="descname">SGD_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.sgd_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.SGD_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.THB_RATES">
+<code class="descname">THB_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.thb_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.THB_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.TWD_RATES">
+<code class="descname">TWD_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.twd_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.TWD_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bitsv.network.rates.RatesAPI.USD_RATES">
+<code class="descname">USD_RATES</code><em class="property"> = [&lt;bound method BitcoinSVRates.usd_to_satoshi of &lt;class 'bitsv.network.rates.BitcoinSVRates'&gt;&gt;]</em><a class="headerlink" href="#bitsv.network.rates.RatesAPI.USD_RATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.aud_to_satoshi">
+<em class="property">classmethod </em><code class="descname">aud_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.aud_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.brl_to_satoshi">
+<em class="property">classmethod </em><code class="descname">brl_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.brl_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.cad_to_satoshi">
+<em class="property">classmethod </em><code class="descname">cad_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.cad_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.chf_to_satoshi">
+<em class="property">classmethod </em><code class="descname">chf_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.chf_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.clp_to_satoshi">
+<em class="property">classmethod </em><code class="descname">clp_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.clp_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.cny_to_satoshi">
+<em class="property">classmethod </em><code class="descname">cny_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.cny_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.dkk_to_satoshi">
+<em class="property">classmethod </em><code class="descname">dkk_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.dkk_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.eur_to_satoshi">
+<em class="property">classmethod </em><code class="descname">eur_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.eur_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.gbp_to_satoshi">
+<em class="property">classmethod </em><code class="descname">gbp_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.gbp_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.hkd_to_satoshi">
+<em class="property">classmethod </em><code class="descname">hkd_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.hkd_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.isk_to_satoshi">
+<em class="property">classmethod </em><code class="descname">isk_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.isk_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.jpy_to_satoshi">
+<em class="property">classmethod </em><code class="descname">jpy_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.jpy_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.krw_to_satoshi">
+<em class="property">classmethod </em><code class="descname">krw_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.krw_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.nzd_to_satoshi">
+<em class="property">classmethod </em><code class="descname">nzd_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.nzd_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.pln_to_satoshi">
+<em class="property">classmethod </em><code class="descname">pln_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.pln_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.rub_to_satoshi">
+<em class="property">classmethod </em><code class="descname">rub_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.rub_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.sek_to_satoshi">
+<em class="property">classmethod </em><code class="descname">sek_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.sek_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.sgd_to_satoshi">
+<em class="property">classmethod </em><code class="descname">sgd_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.sgd_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.thb_to_satoshi">
+<em class="property">classmethod </em><code class="descname">thb_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.thb_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.twd_to_satoshi">
+<em class="property">classmethod </em><code class="descname">twd_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.twd_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="bitsv.network.rates.RatesAPI.usd_to_satoshi">
+<em class="property">classmethod </em><code class="descname">usd_to_satoshi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.rates.RatesAPI.usd_to_satoshi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="fees">
+<h2>Fees<a class="headerlink" href="#fees" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bitsv.network.get_fee">
+<code class="descclassname">bitsv.network.</code><code class="descname">get_fee</code><span class="sig-paren">(</span><em>speed='slow'</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.get_fee" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the recommended satoshi per byte fee.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>speed</strong> (<code class="docutils literal notranslate"><span class="pre">string</span></code>) – One of: ‘fast’, ‘medium’, ‘slow’.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="utilities">
+<h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bitsv.verify_sig">
+<code class="descclassname">bitsv.</code><code class="descname">verify_sig</code><span class="sig-paren">(</span><em>signature</em>, <em>data</em>, <em>public_key</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.verify_sig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verifies some data was signed by the owner of a public key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signature</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – The signature to verify.</p></li>
+<li><p><strong>data</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – The data that was supposedly signed.</p></li>
+<li><p><strong>public_key</strong> (<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) – The public key.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if all checks pass, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="bitsv.exceptions.InsufficientFunds">
+<em class="property">exception </em><code class="descclassname">bitsv.exceptions.</code><code class="descname">InsufficientFunds</code><a class="headerlink" href="#bitsv.exceptions.InsufficientFunds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+    <br>
+    <ul>
+      <li>
+        Previous topic: <a href="../community/authors.html">Authors</a>
+      </li>
+    </ul>
+    </div>
+  </div>
+</div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><!-- From https://github.com/kennethreitz/requests/blob/master/docs/_templates/sidebarlogo.html -->
+
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/bitcash.png"/>
+  </a>
+</p>
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ofek&repo=bitcash&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+<p>
+  BitSV is a modern BitSV library designed to be a pleasure to use for developers and end users alike.
+</p>
+
+<h3>Stay Informed</h3>
+<p>Receive updates on new releases and upcoming projects.</p>
+
+<p><iframe src="https://ghbtns.com/github-btn.html?user=ofek&type=follow&count=false"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200" height="20"></iframe></p>
+
+<p><a href="https://twitter.com/excalibur0922" class="twitter-follow-button" data-show-count="false">Follow @AustEcon</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
+
+
+<h3>Other Projects</h3>
+
+<p>More <a href="https://github.com/AustEcon">AustEcon</a> projects:</p>
+<ul>
+    <li><a href="https://github.com/ofek/bitsv_paste">bitsv_paste</a></li>
+</ul>
+
+<h3>Useful Links</h3>
+<ul>
+  <li><a href="https://github.com/AustEcon/bitsv">BitSV @ GitHub</a></li>
+  <li><a href="https://pypi.org/project/bitsv">BitSV @ PyPI</a></li>
+  <li><a href="https://github.com/AustEcon/bitsv/issues">Issue Tracker</a></li>
+</ul>
+
+<h3>Dependencies</h3>
+<ul>
+  <li><a href="https://github.com/ofek/coincurve">Coincurve</a></li>
+  <li><a href="https://github.com/kennethreitz/requests">Requests</a></li>
+</ul>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../guide/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/keys.html">Keys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/network.html">Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/transactions.html">Transactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/rates.html">Exchange Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/advanced.html">Advanced</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../community/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/vulnerabilities.html">Vulnerability Disclosure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/updates.html">Stay Informed</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/updates.html#release-history">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/authors.html">Authors</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#keys">Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#network">Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exchange-rates">Exchange Rates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fees">Fees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utilities">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../community/authors.html" title="previous chapter">Authors</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/dev/api.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script><!-- From https://github.com/kennethreitz/requests/blob/master/docs/_templates/hacks.html -->
+
+<!-- Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments (I'm very picky.) -->
+<style type="text/css">
+
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+
+</style>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, AustEcon.
+      
+      |
+      <a href="../_sources/dev/api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/AustEcon/bitsv" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Development &#8212; BitSV 0.6.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="https://assets.readthedocs.org/static/javascript/readthedocs-doc-embed.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Support" href="support.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+<div class="documentwrapper">
+  <div class="bodywrapper">
+    <div class="body" role="main">
+    
+  <div class="section" id="development">
+<h1>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="oversight">
+<h2>Oversight<a class="headerlink" href="#oversight" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/AustEcon">AustEcon</a>, who is also the only current maintainer,
+has the final say regarding any new features or API changes.</p>
+</div>
+<div class="section" id="philosophy">
+<h2>Philosophy<a class="headerlink" href="#philosophy" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Complex workflows can always be enabled through simple APIs</p></li>
+<li><p>With planning, simple APIs can always be constructed using clear and concise
+code</p></li>
+<li><p>Satisfy the general use cases, then specialize</p></li>
+</ul>
+</div>
+<div class="section" id="continuous-integration">
+<h2>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://travis-ci.org">Travis CI</a> is used for testing and <a class="reference external" href="https://codecov.io">Codecov</a> is used for detailing code
+coverage. No pull request will be merged without passing the test suite and
+achieving 100% code coverage.</p>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>Docs are hosted by <a class="reference external" href="https://pages.github.com">GitHub Pages</a> and are automatically built and published
+by Travis after every successful commit to Bitcash’s <code class="docutils literal notranslate"><span class="pre">master</span></code> branch.</p>
+</div>
+<div class="section" id="version-scheme">
+<h2>Version Scheme<a class="headerlink" href="#version-scheme" title="Permalink to this headline">¶</a></h2>
+<p>BitSV tries to adhere to <a class="reference external" href="https://goo.gl/iQwd4o">semantic versioning</a> as much as possible.</p>
+</div>
+</div>
+
+
+    <br>
+    <ul>
+      <li>
+        Previous topic: <a href="support.html">Support</a>
+      </li>
+      <li>
+        Next topic: <a href="contributing.html">Contributing</a>
+      </li>
+    </ul>
+    </div>
+  </div>
+</div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><!-- From https://github.com/kennethreitz/requests/blob/master/docs/_templates/sidebarlogo.html -->
+
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/bitcash.png"/>
+  </a>
+</p>
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ofek&repo=bitcash&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+<p>
+  BitSV is a modern BitSV library designed to be a pleasure to use for developers and end users alike.
+</p>
+
+<h3>Stay Informed</h3>
+<p>Receive updates on new releases and upcoming projects.</p>
+
+<p><iframe src="https://ghbtns.com/github-btn.html?user=ofek&type=follow&count=false"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200" height="20"></iframe></p>
+
+<p><a href="https://twitter.com/excalibur0922" class="twitter-follow-button" data-show-count="false">Follow @AustEcon</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
+
+
+<h3>Other Projects</h3>
+
+<p>More <a href="https://github.com/AustEcon">AustEcon</a> projects:</p>
+<ul>
+    <li><a href="https://github.com/ofek/bitsv_paste">bitsv_paste</a></li>
+</ul>
+
+<h3>Useful Links</h3>
+<ul>
+  <li><a href="https://github.com/AustEcon/bitsv">BitSV @ GitHub</a></li>
+  <li><a href="https://pypi.org/project/bitsv">BitSV @ PyPI</a></li>
+  <li><a href="https://github.com/AustEcon/bitsv/issues">Issue Tracker</a></li>
+</ul>
+
+<h3>Dependencies</h3>
+<ul>
+  <li><a href="https://github.com/ofek/coincurve">Coincurve</a></li>
+  <li><a href="https://github.com/kennethreitz/requests">Requests</a></li>
+</ul>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../guide/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/keys.html">Keys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/network.html">Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/transactions.html">Transactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/rates.html">Exchange Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/advanced.html">Advanced</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#oversight">Oversight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#philosophy">Philosophy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#continuous-integration">Continuous Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-scheme">Version Scheme</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vulnerabilities.html">Vulnerability Disclosure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="updates.html">Stay Informed</a></li>
+<li class="toctree-l1"><a class="reference internal" href="updates.html#release-history">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/api.html">Developer Interface</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="support.html" title="previous chapter">Support</a></li>
+      <li>Next: <a href="contributing.html" title="next chapter">Contributing</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/community/development.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script><!-- From https://github.com/kennethreitz/requests/blob/master/docs/_templates/hacks.html -->
+
+<!-- Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments (I'm very picky.) -->
+<style type="text/css">
+
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+
+</style>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, AustEcon.
+      
+      |
+      <a href="../_sources/community/development.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/AustEcon/bitsv" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Exchange Rates &#8212; BitSV 0.6.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="https://assets.readthedocs.org/static/javascript/readthedocs-doc-embed.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Advanced" href="advanced.html" />
+    <link rel="prev" title="Transactions" href="transactions.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+<div class="documentwrapper">
+  <div class="bodywrapper">
+    <div class="body" role="main">
+    
+  <div class="section" id="exchange-rates">
+<span id="id1"></span><h1>Exchange Rates<a class="headerlink" href="#exchange-rates" title="Permalink to this headline">¶</a></h1>
+<p>BitSV gets exchange rate data from trusted third-party APIs. Specifically,
+it can access:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://bitcashpay.com/bitcoincash-exchange-rates">https://bitcashpay.com/bitcoincash-exchange-rates</a> via :class: <cite>~bitsv.network.rates.BitpayRates</cite></p></li>
+<li><p><a class="reference external" href="https://blockchain.info/api/exchange_rates_api">https://blockchain.info/api/exchange_rates_api</a> via :class: <cite>~bitsv.network.rates.BlockchainRates</cite></p></li>
+</ul>
+<div class="section" id="ratesapi">
+<h2>RatesAPI<a class="headerlink" href="#ratesapi" title="Permalink to this headline">¶</a></h2>
+<p>Core operations use :class: <cite>~bitsv.network.rates.RatesAPI</cite>. For each method,
+it polls a service and if an error occurs it tries another.</p>
+<p>You will likely never use this directly.</p>
+</div>
+<div class="section" id="currency-to-satoshi">
+<h2>Currency to Satoshi<a class="headerlink" href="#currency-to-satoshi" title="Permalink to this headline">¶</a></h2>
+<p>Bitcash exposes 2 ways to convert a given amount of currency to the equivalent
+number of satoshi: :func: <cite>~bitsv.network.currency_to_satoshi</cite> and
+:func: <cite>~bitsv.network.currency_to_satoshi_cached</cite>. The latter function will
+cache results for 1 minute :ref: <cite>by default &lt;cache times&gt;</cite>.</p>
+<p>Bitcash uses :func: <cite>~bitsv.network.currency_to_satoshi_cached</cite> in transactions to convert the
+amount in each output to spendable satoshi.</p>
+<p>To illustrate, here is how your outputs in <cite>(destination, amount, currency)</cite>
+format are converted to <cite>(destination, satoshi)</cite> format for spending during
+transactions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bitsv.network</span> <span class="kn">import</span> <span class="n">currency_to_satoshi_cached</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">output</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">outputs</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">dest</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">currency</span> <span class="o">=</span> <span class="n">output</span>
+<span class="gp">... </span>    <span class="n">outputs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">currency_to_satoshi_cached</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span> <span class="n">currency</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="satoshi-to-currency">
+<h2>Satoshi to Currency<a class="headerlink" href="#satoshi-to-currency" title="Permalink to this headline">¶</a></h2>
+<p>Converting satoshi to another currency as a formatted string can be done using
+:func: <cite>~bitsv.network.satoshi_to_currency</cite> or :func: <cite>~bitsv.network.satoshi_to_currency_cached</cite>.
+The result will be rounded down to the proper number of decimal places for each currency.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bitsv.network</span> <span class="kn">import</span> <span class="n">satoshi_to_currency_cached</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">satoshi_to_currency_cached</span><span class="p">(</span><span class="mi">56789</span><span class="p">,</span> <span class="s1">&#39;usd&#39;</span><span class="p">)</span>
+<span class="go">&#39;0.59&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">satoshi_to_currency_cached</span><span class="p">(</span><span class="s1">&#39;56789&#39;</span><span class="p">,</span> <span class="s1">&#39;jpy&#39;</span><span class="p">)</span>
+<span class="go">&#39;82&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="supported-currencies">
+<span id="id2"></span><h2>Supported Currencies<a class="headerlink" href="#supported-currencies" title="Permalink to this headline">¶</a></h2>
+<p>These are all the currencies currently supported by BitSV. Note that converting
+satoshi to itself, ubsv, mbsv, or bsv never requires exchange rate data and
+therefore no network calls are needed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bitsv</span> <span class="kn">import</span> <span class="n">SUPPORTED_CURRENCIES</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">SUPPORTED_CURRENCIES</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 71%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Code</p></th>
+<th class="head"><p>Currency</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>satoshi</p></td>
+<td><p>Satoshi</p></td>
+</tr>
+<tr class="row-odd"><td><p>ubsv</p></td>
+<td><p>Microbitcoincash</p></td>
+</tr>
+<tr class="row-even"><td><p>mbsv</p></td>
+<td><p>Millibitcoincash</p></td>
+</tr>
+<tr class="row-odd"><td><p>bsv</p></td>
+<td><p>BitSV</p></td>
+</tr>
+<tr class="row-even"><td><p>usd</p></td>
+<td><p>United States Dollar</p></td>
+</tr>
+<tr class="row-odd"><td><p>eur</p></td>
+<td><p>Eurozone Euro</p></td>
+</tr>
+<tr class="row-even"><td><p>gbp</p></td>
+<td><p>Pound Sterling</p></td>
+</tr>
+<tr class="row-odd"><td><p>jpy</p></td>
+<td><p>Japanese Yen</p></td>
+</tr>
+<tr class="row-even"><td><p>cny</p></td>
+<td><p>Chinese Yuan</p></td>
+</tr>
+<tr class="row-odd"><td><p>cad</p></td>
+<td><p>Canadian Dollar</p></td>
+</tr>
+<tr class="row-even"><td><p>aud</p></td>
+<td><p>Australian Dollar</p></td>
+</tr>
+<tr class="row-odd"><td><p>nzd</p></td>
+<td><p>New Zealand Dollar</p></td>
+</tr>
+<tr class="row-even"><td><p>rub</p></td>
+<td><p>Russian Ruble</p></td>
+</tr>
+<tr class="row-odd"><td><p>brl</p></td>
+<td><p>Brazilian Real</p></td>
+</tr>
+<tr class="row-even"><td><p>chf</p></td>
+<td><p>Swiss Franc</p></td>
+</tr>
+<tr class="row-odd"><td><p>sek</p></td>
+<td><p>Swedish Krona</p></td>
+</tr>
+<tr class="row-even"><td><p>dkk</p></td>
+<td><p>Danish Krone</p></td>
+</tr>
+<tr class="row-odd"><td><p>isk</p></td>
+<td><p>Icelandic Krona</p></td>
+</tr>
+<tr class="row-even"><td><p>pln</p></td>
+<td><p>Polish Zloty</p></td>
+</tr>
+<tr class="row-odd"><td><p>hkd</p></td>
+<td><p>Hong Kong Dollar</p></td>
+</tr>
+<tr class="row-even"><td><p>krw</p></td>
+<td><p>South Korean Won</p></td>
+</tr>
+<tr class="row-odd"><td><p>sgd</p></td>
+<td><p>Singapore Dollar</p></td>
+</tr>
+<tr class="row-even"><td><p>thb</p></td>
+<td><p>Thai Baht</p></td>
+</tr>
+<tr class="row-odd"><td><p>twd</p></td>
+<td><p>New Taiwan Dollar</p></td>
+</tr>
+<tr class="row-even"><td><p>clp</p></td>
+<td><p>Chilean Peso</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="unsupported-currencies">
+<span id="id3"></span><h2>Unsupported Currencies<a class="headerlink" href="#unsupported-currencies" title="Permalink to this headline">¶</a></h2>
+<p>If you need to use currencies in your :ref: <cite>transactions</cite> that BitSV does not
+support, convert it yourself to satoshi, ubsv, mbsv, or bsv as these are
+supported natively.</p>
+</div>
+</div>
+
+
+    <br>
+    <ul>
+      <li>
+        Previous topic: <a href="transactions.html">Transactions</a>
+      </li>
+      <li>
+        Next topic: <a href="advanced.html">Advanced</a>
+      </li>
+    </ul>
+    </div>
+  </div>
+</div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><!-- From https://github.com/kennethreitz/requests/blob/master/docs/_templates/sidebarlogo.html -->
+
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/bitcash.png"/>
+  </a>
+</p>
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ofek&repo=bitcash&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+<p>
+  BitSV is a modern BitSV library designed to be a pleasure to use for developers and end users alike.
+</p>
+
+<h3>Stay Informed</h3>
+<p>Receive updates on new releases and upcoming projects.</p>
+
+<p><iframe src="https://ghbtns.com/github-btn.html?user=ofek&type=follow&count=false"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200" height="20"></iframe></p>
+
+<p><a href="https://twitter.com/excalibur0922" class="twitter-follow-button" data-show-count="false">Follow @AustEcon</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
+
+
+<h3>Other Projects</h3>
+
+<p>More <a href="https://github.com/AustEcon">AustEcon</a> projects:</p>
+<ul>
+    <li><a href="https://github.com/ofek/bitsv_paste">bitsv_paste</a></li>
+</ul>
+
+<h3>Useful Links</h3>
+<ul>
+  <li><a href="https://github.com/AustEcon/bitsv">BitSV @ GitHub</a></li>
+  <li><a href="https://pypi.org/project/bitsv">BitSV @ PyPI</a></li>
+  <li><a href="https://github.com/AustEcon/bitsv/issues">Issue Tracker</a></li>
+</ul>
+
+<h3>Dependencies</h3>
+<ul>
+  <li><a href="https://github.com/ofek/coincurve">Coincurve</a></li>
+  <li><a href="https://github.com/kennethreitz/requests">Requests</a></li>
+</ul>
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="keys.html">Keys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="network.html">Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transactions.html">Transactions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Exchange Rates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ratesapi">RatesAPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#currency-to-satoshi">Currency to Satoshi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#satoshi-to-currency">Satoshi to Currency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-currencies">Supported Currencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unsupported-currencies">Unsupported Currencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../community/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/vulnerabilities.html">Vulnerability Disclosure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/updates.html">Stay Informed</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/updates.html#release-history">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/authors.html">Authors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/api.html">Developer Interface</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="transactions.html" title="previous chapter">Transactions</a></li>
+      <li>Next: <a href="advanced.html" title="next chapter">Advanced</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/guide/rates.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script><!-- From https://github.com/kennethreitz/requests/blob/master/docs/_templates/hacks.html -->
+
+<!-- Alabaster (krTheme++) Hacks -->
+
+<!-- CSS Adjustments (I'm very picky.) -->
+<style type="text/css">
+
+  /* Rezzy requires precise alignment. */
+  img.logo {margin-left: -20px!important;}
+
+  /* "Quick Search" should be capitalized. */
+  div#searchbox h3 {text-transform: capitalize;}
+
+  /* Make the document a little wider, less code is cut-off. */
+  div.document {width: 1008px;}
+
+  /* Much-improved spacing around code blocks. */
+  div.highlight pre {padding: 11px 14px;}
+
+  /* Remain Responsive! */
+  @media screen and (max-width: 1008px) {
+    div.sphinxsidebar {display: none;}
+    div.document {width: 100%!important;}
+
+    /* Have code blocks escape the document right-margin. */
+    div.highlight pre {margin-right: -30px;}
+  }
+
+</style>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, AustEcon.
+      
+      |
+      <a href="../_sources/guide/rates.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/AustEcon/bitsv" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
