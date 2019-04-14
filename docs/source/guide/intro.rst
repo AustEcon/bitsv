@@ -3,10 +3,10 @@
 Introduction
 ============
 
-Bitcash is a fast and compliant BitcoinCash library with an extremely easy-to-use API.
+BitSV is a fast and compliant BitcoinCash library with an extremely easy-to-use API.
 
-Why Bitcash?
---------
+Why BitSV?
+------------
 
 - Robust API with sane defaults, making development a breeze
 - Python's fastest available implementation (100x faster than closest library)
@@ -15,14 +15,18 @@ Why Bitcash?
 - Available on all major platforms
 - Extensive documentation
 
-Python's BitcoinCash story was pretty bleak. All libraries in use prior to Bitcash were
+Origins
+-------
+BitSv is a fork of the library Bit by ofek_. What follows is his story of the origins:
+
+Python's Bit story was pretty bleak. All libraries in use prior to Bit were
 marred by unfriendly APIs, lack of testing, lack of documentation, lack of
 cross-platform support, and/or slow implementations.
 
-When I originally went to experiment with sending BitcoinCash there were really no
+When I originally went to experiment with sending Bitcoin there were really no
 good choices. Two choices were out almost immediately: `pybitcoincashtools`_ was
 `scary`_, unpleasant to use, and not very maintained, while `python-bitcoincashlib`_,
-was far too low level. That left `pycoin`_, which was a bitcash better but still no
+was far too low level. That left `pycoin`_, which was a bit better but still no
 docs, and 2 libraries from VC funded companies: `two1`_ from `21`_, which had
 decent documentation but had an incorrect implementation of the standardized
 compressed public keys (meaning such keys could literally not spend money), and
@@ -35,7 +39,7 @@ Instantiate a compressed private key and get its computed public key:
 
 .. code-block:: bash
 
-    $ python -m timeit -s "from bitcash import Key" "Key('L3jsepcttyuJK3HKezD4qqRKGtwc8d2d1Nw6vsoPDX9cMcUxqqMv').public_key"
+    $ python -m timeit -s "from bitsv import Key" "Key('L3jsepcttyuJK3HKezD4qqRKGtwc8d2d1Nw6vsoPDX9cMcUxqqMv').public_key"
     1000 loops, best of 3: 89 usec per loop
     $ python -m timeit -s "from two1.bitcoincash.crypto import PrivateKey" "PrivateKey.from_b58check('L3jsepcttyuJK3HKezD4qqRKGtwc8d2d1Nw6vsoPDX9cMcUxqqMv').public_key.compressed_bytes"
     100 loops, best of 3: 11 msec per loop
@@ -44,11 +48,11 @@ Instantiate a compressed private key and get its computed public key:
     (py2) >python -m timeit -s "from pybitcoincash import BitcoinCashPrivateKey" "BitcoinCashPrivateKey('c28a9f80738f770d527803a566cf6fc3edf6cea586c4fc4a5223a5ad797e1ac3').public_key().to_hex()"
     10 loops, best of 3: 190 msec per loop
 
-We'll use two1 only as that was the closest to Bitcash. Getting the address:
+We'll use two1 only as that was the closest to Bit. Getting the address:
 
 .. code-block:: bash
 
-    $ python -m timeit -s "from bitcash import Key;k=Key()" "k.address"
+    $ python -m timeit -s "from bitsv import Key;k=Key()" "k.address"
     1000000 loops, best of 3: 0.249 usec per loop
     $ python -m timeit -s "from two1.bitcoincash.crypto import PrivateKey;k=PrivateKey.from_random()" "k.public_key.address()"
     10000 loops, best of 3: 31.1 usec per loop
@@ -57,28 +61,31 @@ Signing, which is the most used operation:
 
 .. code-block:: bash
 
-    $ python -m timeit -s "from bitcash import Key;k=Key()" "k.sign(b'data')"
+    $ python -m timeit -s "from bitsv import Key;k=Key()" "k.sign(b'data')"
     1000 loops, best of 3: 91 usec per loop
     $ python -m timeit -s "from two1.bitcoincash.crypto import PrivateKey;k=PrivateKey.from_random()" "k.raw_sign(b'data')"
     100 loops, best of 3: 10.7 msec per loop
 
 .. note::
 
-    The author of pycoin `has informed me <https://github.com/ofek/bitcash/issues/4>`_
+    The author of pycoin `informed <https://github.com/ofek/bit/issues/4>`_
     that a flag can be set on Linux to make some operations faster.
 
 License
 -------
 
-Bitcash is licensed under terms of the `MIT License`_.
+BitSV is licensed under terms of the `MIT License`_.
 
 Credits
 -------
 
-- Logo courtesy of `<https://textcraft.net>`_
-- `Gregory Maxwell`_ (BitcoinCash core dev) for teaching me a bitcash of `ECC`_ math
-- `arubi`_ in #bitcoincash for helping me understand transaction gotchas
-- `fuzeman`_ for bestowing me the name `bitcash` on the `Python Package Index`_
+- `ofek`_ for the original bit codebase.
+- `teran-mckinney`_ for his work on the bitcash fork
+- `richardkiss`_ for his work on pycoin (for Hierarchical Deterministic wallet functions)
+
+.. _ofek: https://github.com/ofek/bit
+.. _teran-mckinney: https://github.com/sporestack/bitcash
+.. _richardkiss: https://github.com/richardkiss/pycoin
 
 .. _pybitcoincashtools: https://github.com/vbuterin/pybitcoincashtools
 .. _scary: https://github.com/JoinMarket-Org/joinmarket/issues/61

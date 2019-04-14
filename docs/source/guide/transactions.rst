@@ -4,9 +4,9 @@ Transactions
 ============
 
 Keys in Bitcash allow 2 ways of handling transactions: a
-:func:`~bitcash.PrivateKey.create_transaction` method that creates a signed
+:func: `~bitsv.PrivateKey.create_transaction` method that creates a signed
 transaction and returns the aforementioned transaction in hex, and a
-:func:`~bitcash.PrivateKey.send` method that does the same thing but will
+:func: `~bitsv.PrivateKey.send` method that does the same thing but will
 attempt to broadcast the transaction, returning instead the transaction id
 for future lookup. Both methods take the exact same arguments.
 
@@ -26,7 +26,7 @@ Output Format
 
 Each output should be a tuple of arity 3 in the form `(destination, amount, currency)`.
 The amount can be either an int, float, or string as long as it is a valid input to
-:py:class:`decimal.Decimal`. The currency must be :ref:`supported <supported currencies>`.
+:py:class: `decimal.Decimal`. The currency must be :ref: `supported <supported currencies>`.
 
 Change Address
 --------------
@@ -64,9 +64,6 @@ Fee
 
     -- Coinbase
 
-By default, Bitcash will poll `<https://bitcoincashfees.earn.com>`_ and use a fee that
-will allow your transaction to be confirmed as soon as possible.
-
 You can change the satoshi per byte fee like so:
 
 .. code-block:: python
@@ -78,7 +75,7 @@ For more information about transaction fees `read this`_.
 Unspent Consolidation
 ---------------------
 
-By default Bitcash will use all of your available UTXOs to make future transactions
+By default BitSV will use all of your available UTXOs to make future transactions
 smaller and therefore reduce fees.
 
 If you don't desire this behavior and only wish to use what is needed, do this:
@@ -133,7 +130,7 @@ or
     >>> unspents = [Unspent(...), Unspent(...), ...]
     >>> key.create_transaction(..., unspents=unspents)
 
-Each item must be an instance of :class:`~bitcash.network.meta.Unspent`.
+Each item must be an instance of :class: `~bitsv.network.meta.Unspent`.
 
 .. _decimal.Decimal: https://docs.python.org/3/library/decimal.html#decimal.Decimal
 .. _read this: https://blog.blockchain.com/2016/12/15/bitcoincash-transaction-fees-what-are-they-why-should-you-care

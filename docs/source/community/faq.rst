@@ -11,8 +11,8 @@ Why Python 3 only?
 How so fast?
 ------------
 
-Bitcash uses `BitcoinCash Core <https://github.com/bitcoincash/bitcoincash>`_'s heavily
-optimized C library `libsecp256k1 <https://github.com/bitcoincash-core/secp256k1>`_
+BitSV uses Bitcoin's heavily
+optimized C library `electrumsv-secp256k1 <https://github.com/electrumsv/electrumsv-secp256k1>`_
 for all elliptic curve operations.
 
 Why GitHub Pages instead of ReadtheDocs?

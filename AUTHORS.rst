@@ -1,9 +1,9 @@
-BitCash is a fork of Ofek's Bit.
+BitSV is a fork of Ofek's Bit.
 
 Maintainers
 -----------
 
-- Teran McKinney
+- AustEcon
 
 Contributors
 ------------

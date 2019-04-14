@@ -4,27 +4,27 @@ Contributing
 Filing an Issue
 ---------------
 
-This is the way to report :ref:`non-security related <vulnerabilities>` issues
+This is the way to report :ref: `non-security related <vulnerabilities>` issues
 and also to request features.
 
-1. Go to `Bitcash's GitHub Issues <https://github.com/ofek/bitcash/issues>`_.
+1. Go to `BitSV's GitHub Issues <https://github.com/AustEcon/bitsv/issues>`_.
 2. Look through open and closed issues to see if there has already been a
    similar bug report or feature request.
-   `GitHub's search <https://github.com/ofek/bitcash/search>`_ feature may aid
+   `GitHub's search <https://github.com/AustEcon/bitsv/search>`_ feature may aid
    you as well.
 3. If your issue doesn't appear to be a duplicate,
-   `file an issue <https://github.com/ofek/bitcash/issues/new>`_.
+   `file an issue <https://github.com/AustEcon/bitsv/issues/new>`_.
 4. Please be as descriptive as possible!
 
 Pull Request
 ------------
 
-1. Fork the repository `on GitHub <https://github.com/ofek/bitcash>`_.
+1. Fork the repository `on GitHub <https://github.com/AustEcon/bitsv>`_.
 2. Create a new branch for your work.
 3. Make your changes (see below).
 4. If this is your first contribution, add yourself to
-   `AUTHORS.rst <https://github.com/ofek/bitcash/blob/master/AUTHORS.rst>`_.
-5. Send a GitHub Pull Request to the ``master`` branch of ``ofek/bitcash``.
+   `AUTHORS.rst <https://github.com/AustEcon/bitsv/blob/master/AUTHORS.rst>`_.
+5. Send a GitHub Pull Request to the ``master`` branch of ``AustEcon/bitsv``.
 
 Step 3 is different depending on if you are contributing to the code base or
 documentation.
@@ -41,12 +41,12 @@ Code
    process go smoothly.
 4. Run the tests again and make any necessary changes to ensure all tests pass.
 5. Add any changes to the **Unreleased** section of
-   `HISTORY.rst <https://github.com/ofek/bitcash/blob/master/HISTORY.rst>`_.
+   `HISTORY.rst <https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst>`_.
 
 Documentation
 ^^^^^^^^^^^^^
 
-1. Enter the `docs <https://github.com/ofek/bitcash/tree/master/docs>`_ directory.
+1. Enter the `docs <https://github.com/AustEcon/bitsv/tree/master/docs>`_ directory.
 2. Make your changes to any files in ``source/``.
 3. Run ``make clean && make html``. This will generate html files in a new
    ``build/html/`` directory.
