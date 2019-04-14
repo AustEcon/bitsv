@@ -44,11 +44,11 @@ class BitIndex:
             'Accept': 'application/json'
         }
         r = requests.post('https://api.bitindex.network/api/addrs/utxo', data=json_payload, headers=headers)
-        return [Unspent(amount = currency_to_satoshi(tx['amount'], 'bsv'),
-             script = tx['scriptPubKey'],
-             txid = tx['txid'],
-             txindex = tx['vout'],
-             confirmations = tx['confirmations']) for tx in r.json()]
+        return [Unspent(amount=currency_to_satoshi(tx['amount'], 'bsv'),
+             script=tx['scriptPubKey'],
+             txid=tx['txid'],
+             txindex=tx['vout'],
+             confirmations=tx['confirmations']) for tx in r.json()]
 
     @staticmethod
     def broadcast_rawtx(rawtx):
