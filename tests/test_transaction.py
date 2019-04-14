@@ -187,7 +187,7 @@ class TestSanitizeTxData:
             combine=False, message=None
         )
 
-        assert unspents == [Unspent(3000, '', '', 0)]
+        assert unspents == [Unspent(3000, 0, '', '', 0)]
         assert len(outputs) == 2
         assert outputs[1][0] == RETURN_ADDRESS
         assert outputs[1][1] == 1000
