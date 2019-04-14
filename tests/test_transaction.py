@@ -45,6 +45,7 @@ INPUT_BLOCK = ('8878399d83ec25c627cfbf753ff9ca3602373eac437ab2676154a3c2da23adf3
                'f3f03b42f4a2b255bfc9aa9e3ffffffff')
 UNSPENTS = [
     Unspent(83727960,
+            15,
             '76a91492461bde6283b461ece7ddf4dbf1e0a48bd113d888ac',
             'f3ad23dac2a3546167b27a43ac3e370236caf93f75bfcf27c625ec839d397888',
             1)
