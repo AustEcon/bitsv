@@ -17,7 +17,7 @@ BitSV: BitSV made easy.
 -----
 
 BitSV is Python's `fastest <https://github.com/AustEcon/bitsv>`_
-BitSV library and was designed from the beginning to feel intuitive, be
+Bitcoin library and was designed from the beginning to feel intuitive, be
 effortless to use, and have readable source code. It is heavily inspired by
 `Requests <https://github.com/kennethreitz/requests>`_ and
 `Keras <https://github.com/fchollet/keras>`_.
