@@ -1,6 +1,5 @@
 import pycoin
 
-from pycoin import key
 
 # Popular derivation paths
 DERIVATION_PATH_HANDCASH = '0'
