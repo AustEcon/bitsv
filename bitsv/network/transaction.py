@@ -61,4 +61,3 @@ class TxPart:
             return "OP_RETURN data with {:.0f} satoshi burned".format(self.amount)
         else:
             return "{} with {:.0f} satoshi".format(self.address, self.amount)
-
