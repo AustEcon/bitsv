@@ -1,12 +1,9 @@
-from time import sleep, time
 
-import bitsv
 from bitsv.network.rates import (
     RatesAPI, bsv_to_satoshi, currency_to_satoshi, currency_to_satoshi_cached,
     mbsv_to_satoshi, satoshi_to_currency, satoshi_to_currency_cached,
     satoshi_to_satoshi, set_rate_cache_time, ubsv_to_satoshi
 )
-from bitsv.utils import Decimal
 
 
 # FIXME: No API, so taking this out for now.
