@@ -26,7 +26,7 @@ class Unspent:
                 self.confirmations == other.confirmations and
                 self.script == other.script and
                 self.txid == other.txid and
-                self.txindex == other.txindex and)
+                self.txindex == other.txindex)
 
     def __repr__(self):
         return 'Unspent(amount={}, confirmations={}, script={}, txid={}, txindex={})'.format(
