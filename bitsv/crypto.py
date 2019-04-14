@@ -1,6 +1,5 @@
 from hashlib import new, sha256 as _sha256
 
-from coincurve import PrivateKey as ECPrivateKey, PublicKey as ECPublicKey
 
 
 def sha256(bytestr):
