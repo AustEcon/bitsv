@@ -178,6 +178,3 @@ texinfo_documents = [
      author, 'BitSV', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
