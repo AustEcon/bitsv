@@ -1,4 +1,4 @@
-BitSV: BitSV made easy.
+BitSV: Bitcoin made easy.
 ===============================
 
 
@@ -16,8 +16,8 @@ BitSV: BitSV made easy.
 
 -----
 
-BitSV is Python's `fastest <https://github.com/AustEcon/bitsv>`_
-Bitcoin library and was designed from the beginning to feel intuitive, be
+BitSV is Python's `fastest <https://austecon.github.io/bitsv/guide/intro.html>`_
+Bitcoin SV library and was designed from the beginning to feel intuitive, be
 effortless to use, and have readable source code. It is heavily inspired by
 `Requests <https://github.com/kennethreitz/requests>`_ and
 `Keras <https://github.com/fchollet/keras>`_.
@@ -48,12 +48,19 @@ Features
 
 - Python's fastest available implementation (100x faster than closest library)
 - 100kb OP_RETURN transactions made very simple
-- Hierarchical deterministic key support (thanks to pycoin)
-- Fully supports 21 different currencies via exchange rate API
+- Hierarchical deterministic key support (thanks to pycoin_)
+- Fully supports 21 different currencies via BitcoinSVRates_ API
 - First class support for storing data in the blockchain
 - Compressed public keys by default
 - Multiple representations of private keys; WIF, PEM, DER, etc.
 - Standard P2PKH transactions
+
+.. _BitcoinSVRates : http://bitcoinsv-rates.com/api/rates/
+.. _pycoin : https://github.com/richardkiss/pycoin
+
+Coming Soon
+-----------
+- bitsv_paste_ for posting html, audio, images, video directly to the blockchain
 
 User Guide
 ----------
@@ -104,3 +111,5 @@ pedantry, or lack thereof.
 
 Well done! There will be more soon, but right now you have nothing left to see.
 Remember, `a watched pot never boils <https://www.youtube.com/watch?v=EPr-JrW-a8o>`_.
+
+.. _bitsv_paste : https://github.com/AustEcon/bitsv_paste

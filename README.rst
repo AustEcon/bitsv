@@ -38,10 +38,8 @@ What needs fixing
 -----------------
 
 - A few more additions to BitIndex api
-- Documentation and examples
-- Make new repos (powered by bitsv) for interfacing with BitPaste api and others
-- Testing modules / coverage
-- Testnet api
+- Improved coverage of testing modules (currently at 87%)
+- Testnet API
 
 ----------------------------
 
