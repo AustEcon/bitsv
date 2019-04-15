@@ -4,4 +4,4 @@ from bitsv.network.services import set_service_timeout
 from bitsv.wallet import Key, PrivateKey, PrivateKeyTestnet, wif_to_key
 from bitsv.bip32utils import Bip32utils
 
-__version__ = '0.6.0'
+__version__ = '0.6.1'
