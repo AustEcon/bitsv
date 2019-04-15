@@ -37,19 +37,19 @@
 <p>If you only want to use BitSV for its raw speed to lessen the load on your
 servers, you don’t have to use any of our network capabilities.</p>
 <ul class="simple">
-<li><p>Use :func: <cite>~bitsv.PrivateKey.create_transaction</cite> instead of
-:func: <cite>~bitsv.PrivateKey.send</cite></p></li>
-<li><p>Supply :ref: <cite>your own UTXOs &lt;unspentparam&gt;</cite></p></li>
-<li><p>Set :ref: <cite>your own fee &lt;feeparam&gt;</cite></p></li>
-<li><p>Make sure all :ref: <cite>outputsparam</cite> only use these currencies: satoshi, ubsv,
+<li><p>Use <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.create_transaction" title="bitsv.PrivateKey.create_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_transaction()</span></code></a> instead of
+<a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.send" title="bitsv.PrivateKey.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code></a></p></li>
+<li><p>Supply <a class="reference internal" href="transactions.html#unspentparam"><span class="std std-ref">your own UTXOs</span></a></p></li>
+<li><p>Set <a class="reference internal" href="transactions.html#feeparam"><span class="std std-ref">your own fee</span></a></p></li>
+<li><p>Make sure all <a class="reference internal" href="transactions.html#outputsparam"><span class="std std-ref">Outputs</span></a> only use these currencies: satoshi, ubsv,
 mbsv, or bsv.</p></li>
 </ul>
 </div>
 <div class="section" id="offline-transactions">
 <span id="coldstorage"></span><h2>Offline Transactions<a class="headerlink" href="#offline-transactions" title="Permalink to this headline">¶</a></h2>
-<p>Bitcash supports the signing of transactions for keys in cold storage. First you
+<p>BitSV supports the signing of transactions for keys in cold storage. First you
 need to prepare a transaction while connected to the internet using the
-:func: <cite>~bitsv.PrivateKey.prepare_transaction</cite> class method of a private key.
+<a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.prepare_transaction" title="bitsv.PrivateKey.prepare_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">prepare_transaction()</span></code></a> class method of a private key.
 You must know your address.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bitsv</span> <span class="kn">import</span> <span class="n">PrivateKeyTestnet</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bitsv.network</span> <span class="kn">import</span> <span class="n">NetworkAPI</span><span class="p">,</span> <span class="n">satoshi_to_currency</span>
@@ -63,7 +63,7 @@ You must know your address.</p>
 </div>
 <p>This performs validation and returns a JSON string containing all the required
 information to create a transaction. You should then take this to your offline
-machine and use the :func: <cite>~bitsv.PrivateKey.sign_transaction</cite> method of your
+machine and use the <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.sign_transaction" title="bitsv.PrivateKey.sign_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">sign_transaction()</span></code></a> method of your
 private key.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tx_hex</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">sign_transaction</span><span class="p">(</span><span class="n">tx_data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tx_hex</span>
@@ -78,9 +78,9 @@ private key.</p>
 </div>
 <div class="section" id="blockchain-storage">
 <h2>Blockchain Storage<a class="headerlink" href="#blockchain-storage" title="Permalink to this headline">¶</a></h2>
-<p>Bitcash allows you to easily <a class="reference external" href="https://en.bitcoin.it/wiki/OP_RETURN">store messages or data</a> in the blockchain itself
-using the <code class="docutils literal notranslate"><span class="pre">message</span></code> parameter of :func: <cite>~bitsv.PrivateKey.create_transaction</cite>
-or :func: <cite>~bitsv.PrivateKey.send</cite>:</p>
+<p>BitSV allows you to easily <a class="reference external" href="https://en.bitcoin.it/wiki/OP_RETURN">store messages or data</a> in the blockchain itself
+using the <code class="docutils literal notranslate"><span class="pre">message</span></code> parameter of <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.create_transaction" title="bitsv.PrivateKey.create_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_transaction()</span></code></a>
+or <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.send" title="bitsv.PrivateKey.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Simplicity level is over 9000!!!&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -168,7 +168,7 @@ metadata. To convert your hex keys to WIF to use certain properties, do this:</p
 <p><iframe src="https://ghbtns.com/github-btn.html?user=austecon&type=follow&count=false"
   allowtransparency="true" frameborder="0" scrolling="0" width="200" height="20"></iframe></p>
 
-<p><a href="https://twitter.com/excalibur0922" class="twitter-follow-button" data-show-count="false">Follow @AustEcon</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
+<p><a href="https://twitter.com/excalibur0922" class="twitter-follow-button" data-show-count="false">Follow AustEcon</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
 
 
 <h3>Other Projects</h3>

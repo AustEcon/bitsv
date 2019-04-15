@@ -32,7 +32,7 @@
     
   <div class="section" id="introduction">
 <span id="intro"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>BitSV is a fast and compliant BitcoinCash library with an extremely easy-to-use API.</p>
+<p>BitSV is a fast and compliant Bitcoin SV library with an extremely easy-to-use API.</p>
 <div class="section" id="why-bitsv">
 <h2>Why BitSV?<a class="headerlink" href="#why-bitsv" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -46,42 +46,42 @@
 </div>
 <div class="section" id="origins">
 <h2>Origins<a class="headerlink" href="#origins" title="Permalink to this headline">¶</a></h2>
-<p>BitSv is a fork of the library Bit by <a class="reference external" href="https://github.com/ofek/bit">ofek</a>. What follows is his story of the origins:</p>
+<p>BitSv is a fork of the library Bit by <a class="reference external" href="https://github.com/ofek/bit">Ofek Lev</a>. What follows is his story of the origins:</p>
 <p>Python’s Bit story was pretty bleak. All libraries in use prior to Bit were
 marred by unfriendly APIs, lack of testing, lack of documentation, lack of
 cross-platform support, and/or slow implementations.</p>
 <p>When I originally went to experiment with sending Bitcoin there were really no
-good choices. Two choices were out almost immediately: <a class="reference external" href="https://github.com/vbuterin/pybitcoincashtools">pybitcoincashtools</a> was
-<a class="reference external" href="https://github.com/JoinMarket-Org/joinmarket/issues/61">scary</a>, unpleasant to use, and not very maintained, while <a class="reference external" href="https://github.com/petertodd/python-bitcoincashlib">python-bitcoincashlib</a>,
+good choices. Two choices were out almost immediately: <a class="reference external" href="https://github.com/vbuterin/pybitcointools">pybitcointools</a> was
+<a class="reference external" href="https://github.com/JoinMarket-Org/joinmarket/issues/61">scary</a>, unpleasant to use, and not very maintained, while <a class="reference external" href="https://github.com/petertodd/python-bitcoinlib">python-bitcoinlib</a>,
 was far too low level. That left <a class="reference external" href="https://github.com/richardkiss/pycoin">pycoin</a>, which was a bit better but still no
 docs, and 2 libraries from VC funded companies: <a class="reference external" href="https://github.com/21dotco/two1-python">two1</a> from <a class="reference external" href="https://angel.co/21">21</a>, which had
 decent documentation but had an incorrect implementation of the standardized
 compressed public keys (meaning such keys could literally not spend money), and
-<a class="reference external" href="https://github.com/blockstack/pybitcoincash">pybitcoincash</a> from <a class="reference external" href="https://angel.co/blockstack">Blockstack</a> which did not support Python 3 and had limited
+<a class="reference external" href="https://github.com/blockstack/pybitcoin">pybitcoin</a> from <a class="reference external" href="https://angel.co/blockstack">Blockstack</a> which did not support Python 3 and had limited
 docs.</p>
 <p>All of these libraries are also slow. Let’s take a look at some common operations.</p>
 <p>Instantiate a compressed private key and get its computed public key:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python -m timeit -s <span class="s2">&quot;from bitsv import Key&quot;</span> <span class="s2">&quot;Key(&#39;L3jsepcttyuJK3HKezD4qqRKGtwc8d2d1Nw6vsoPDX9cMcUxqqMv&#39;).public_key&quot;</span>
 <span class="m">1000</span> loops, best of <span class="m">3</span>: <span class="m">89</span> usec per loop
-$ python -m timeit -s <span class="s2">&quot;from two1.bitcoincash.crypto import PrivateKey&quot;</span> <span class="s2">&quot;PrivateKey.from_b58check(&#39;L3jsepcttyuJK3HKezD4qqRKGtwc8d2d1Nw6vsoPDX9cMcUxqqMv&#39;).public_key.compressed_bytes&quot;</span>
+$ python -m timeit -s <span class="s2">&quot;from two1.bitcoin.crypto import PrivateKey&quot;</span> <span class="s2">&quot;PrivateKey.from_b58check(&#39;L3jsepcttyuJK3HKezD4qqRKGtwc8d2d1Nw6vsoPDX9cMcUxqqMv&#39;).public_key.compressed_bytes&quot;</span>
 <span class="m">100</span> loops, best of <span class="m">3</span>: <span class="m">11</span> msec per loop
 $ python -m timeit -s <span class="s2">&quot;from pycoin.key import Key&quot;</span> <span class="s2">&quot;Key.from_text(&#39;L3jsepcttyuJK3HKezD4qqRKGtwc8d2d1Nw6vsoPDX9cMcUxqqMv&#39;).sec()&quot;</span>
 <span class="m">10</span> loops, best of <span class="m">3</span>: <span class="m">48</span>.2 msec per loop
-<span class="o">(</span>py2<span class="o">)</span> &gt;python -m timeit -s <span class="s2">&quot;from pybitcoincash import BitcoinCashPrivateKey&quot;</span> <span class="s2">&quot;BitcoinCashPrivateKey(&#39;c28a9f80738f770d527803a566cf6fc3edf6cea586c4fc4a5223a5ad797e1ac3&#39;).public_key().to_hex()&quot;</span>
+<span class="o">(</span>py2<span class="o">)</span> &gt;python -m timeit -s <span class="s2">&quot;from pybitcoin import BitcoinPrivateKey&quot;</span> <span class="s2">&quot;BitcoinPrivateKey(&#39;c28a9f80738f770d527803a566cf6fc3edf6cea586c4fc4a5223a5ad797e1ac3&#39;).public_key().to_hex()&quot;</span>
 <span class="m">10</span> loops, best of <span class="m">3</span>: <span class="m">190</span> msec per loop
 </pre></div>
 </div>
 <p>We’ll use two1 only as that was the closest to Bit. Getting the address:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python -m timeit -s <span class="s2">&quot;from bitsv import Key;k=Key()&quot;</span> <span class="s2">&quot;k.address&quot;</span>
 <span class="m">1000000</span> loops, best of <span class="m">3</span>: <span class="m">0</span>.249 usec per loop
-$ python -m timeit -s <span class="s2">&quot;from two1.bitcoincash.crypto import PrivateKey;k=PrivateKey.from_random()&quot;</span> <span class="s2">&quot;k.public_key.address()&quot;</span>
+$ python -m timeit -s <span class="s2">&quot;from two1.bitcoin.crypto import PrivateKey;k=PrivateKey.from_random()&quot;</span> <span class="s2">&quot;k.public_key.address()&quot;</span>
 <span class="m">10000</span> loops, best of <span class="m">3</span>: <span class="m">31</span>.1 usec per loop
 </pre></div>
 </div>
 <p>Signing, which is the most used operation:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python -m timeit -s <span class="s2">&quot;from bitsv import Key;k=Key()&quot;</span> <span class="s2">&quot;k.sign(b&#39;data&#39;)&quot;</span>
 <span class="m">1000</span> loops, best of <span class="m">3</span>: <span class="m">91</span> usec per loop
-$ python -m timeit -s <span class="s2">&quot;from two1.bitcoincash.crypto import PrivateKey;k=PrivateKey.from_random()&quot;</span> <span class="s2">&quot;k.raw_sign(b&#39;data&#39;)&quot;</span>
+$ python -m timeit -s <span class="s2">&quot;from two1.bitcoin.crypto import PrivateKey;k=PrivateKey.from_random()&quot;</span> <span class="s2">&quot;k.raw_sign(b&#39;data&#39;)&quot;</span>
 <span class="m">100</span> loops, best of <span class="m">3</span>: <span class="m">10</span>.7 msec per loop
 </pre></div>
 </div>
@@ -97,9 +97,13 @@ that a flag can be set on Linux to make some operations faster.</p>
 </div>
 <div class="section" id="credits">
 <h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
+<p>Special mention to:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/ofek/bit">ofek</a> for the original bit codebase.</p></li>
-<li><p><a class="reference external" href="https://github.com/sporestack/bitcash">teran-mckinney</a> for his work on the bitcash fork</p></li>
+<li><p><a class="reference external" href="https://github.com/ofek/bit">Ofek Lev</a> Lev [<a class="reference external" href="https://github.com/ofek">https://github.com/ofek</a>] the man himself, for his original work in creating “bit”. Your contribution will always be remembered and you are welcome any time to take a leadership role with bitsv if you so wish in the future.</p></li>
+</ul>
+<p>Other significant contributors</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/teran-mckinney">Teran McKinney</a> for his work on bitcash</p></li>
 <li><p><a class="reference external" href="https://github.com/richardkiss/pycoin">richardkiss</a> for his work on pycoin (for Hierarchical Deterministic wallet functions)</p></li>
 </ul>
 </div>
@@ -141,7 +145,7 @@ that a flag can be set on Linux to make some operations faster.</p>
 <p><iframe src="https://ghbtns.com/github-btn.html?user=austecon&type=follow&count=false"
   allowtransparency="true" frameborder="0" scrolling="0" width="200" height="20"></iframe></p>
 
-<p><a href="https://twitter.com/excalibur0922" class="twitter-follow-button" data-show-count="false">Follow @AustEcon</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
+<p><a href="https://twitter.com/excalibur0922" class="twitter-follow-button" data-show-count="false">Follow AustEcon</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
 
 
 <h3>Other Projects</h3>

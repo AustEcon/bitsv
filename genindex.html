@@ -51,6 +51,7 @@
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#X"><strong>X</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -66,9 +67,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dev/api.html#bitsv.network.meta.Unspent.amount">amount (bitsv.network.meta.Unspent attribute)</a>
 </li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.AUD_RATES">AUD_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.aud_to_satoshi">aud_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.aud_to_satoshi">aud_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -84,13 +83,17 @@
       </ul></li>
       <li><a href="dev/api.html#bitsv.wallet.BaseKey">BaseKey (class in bitsv.wallet)</a>
 </li>
-      <li><a href="dev/api.html#module-bitsv">bitsv (module)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates">BitcoinSVRates (class in bitsv.network.rates)</a>
+</li>
+      <li><a href="dev/api.html#bitsv.network.services.BitIndex">BitIndex (class in bitsv.network.services)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.BRL_RATES">BRL_RATES (bitsv.network.rates.RatesAPI attribute)</a>
+      <li><a href="dev/api.html#module-bitsv">bitsv (module)</a>
 </li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.brl_to_satoshi">brl_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.brl_to_satoshi">brl_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
+</li>
+      <li><a href="dev/api.html#bitsv.network.services.BitIndex.broadcast_rawtx">broadcast_rawtx() (bitsv.network.services.BitIndex static method)</a>
 </li>
       <li><a href="dev/api.html#bitsv.network.NetworkAPI.broadcast_tx">broadcast_tx() (bitsv.network.NetworkAPI class method)</a>
 </li>
@@ -102,26 +105,18 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.CAD_RATES">CAD_RATES (bitsv.network.rates.RatesAPI attribute)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.cad_to_satoshi">cad_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.cad_to_satoshi">cad_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.chf_to_satoshi">chf_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.CHF_RATES">CHF_RATES (bitsv.network.rates.RatesAPI attribute)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.clp_to_satoshi">clp_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.chf_to_satoshi">chf_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.CLP_RATES">CLP_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.clp_to_satoshi">clp_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.CNY_RATES">CNY_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.cny_to_satoshi">cny_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.cny_to_satoshi">cny_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
       <li><a href="dev/api.html#bitsv.network.meta.Unspent.confirmations">confirmations (bitsv.network.meta.Unspent attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dev/api.html#bitsv.PrivateKey.create_op_return_rawtx">create_op_return_rawtx() (bitsv.PrivateKey method)</a>
 </li>
       <li><a href="dev/api.html#bitsv.PrivateKey.create_transaction">create_transaction() (bitsv.PrivateKey method)</a>
@@ -130,8 +125,12 @@
         <li><a href="dev/api.html#bitsv.PrivateKeyTestnet.create_transaction">(bitsv.PrivateKeyTestnet method)</a>
 </li>
       </ul></li>
-      <li><a href="dev/api.html#bitsv.network.currency_to_satoshi">currency_to_satoshi() (in module bitsv.network)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.currency_to_satoshi">currency_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
+
+      <ul>
+        <li><a href="dev/api.html#bitsv.network.currency_to_satoshi">(in module bitsv.network)</a>
 </li>
+      </ul></li>
       <li><a href="dev/api.html#bitsv.network.currency_to_satoshi_cached">currency_to_satoshi_cached() (in module bitsv.network)</a>
 </li>
   </ul></td>
@@ -140,11 +139,7 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.DKK_RATES">DKK_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.dkk_to_satoshi">dkk_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.dkk_to_satoshi">dkk_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -152,11 +147,7 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.EUR_RATES">EUR_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.eur_to_satoshi">eur_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.eur_to_satoshi">eur_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -204,9 +195,7 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.GBP_RATES">GBP_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.gbp_to_satoshi">gbp_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.gbp_to_satoshi">gbp_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
       <li><a href="dev/api.html#bitsv.network.NetworkAPI.get_balance">get_balance() (bitsv.network.NetworkAPI class method)</a>
 
@@ -214,6 +203,8 @@
         <li><a href="dev/api.html#bitsv.PrivateKey.get_balance">(bitsv.PrivateKey method)</a>
 </li>
         <li><a href="dev/api.html#bitsv.PrivateKeyTestnet.get_balance">(bitsv.PrivateKeyTestnet method)</a>
+</li>
+        <li><a href="dev/api.html#bitsv.network.services.BitIndex.get_balance">(bitsv.network.services.BitIndex static method)</a>
 </li>
       </ul></li>
       <li><a href="dev/api.html#bitsv.network.NetworkAPI.GET_BALANCE_MAIN">GET_BALANCE_MAIN (bitsv.network.NetworkAPI attribute)</a>
@@ -230,10 +221,10 @@
         <li><a href="dev/api.html#bitsv.PrivateKeyTestnet.get_transactions">(bitsv.PrivateKeyTestnet method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dev/api.html#bitsv.network.NetworkAPI.GET_TRANSACTIONS_MAIN">GET_TRANSACTIONS_MAIN (bitsv.network.NetworkAPI attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dev/api.html#bitsv.network.NetworkAPI.get_tx_amount">get_tx_amount() (bitsv.network.NetworkAPI class method)</a>
 </li>
       <li><a href="dev/api.html#bitsv.network.NetworkAPI.GET_TX_AMOUNT_MAIN">GET_TX_AMOUNT_MAIN (bitsv.network.NetworkAPI attribute)</a>
@@ -250,17 +241,23 @@
         <li><a href="dev/api.html#bitsv.PrivateKeyTestnet.get_unspents">(bitsv.PrivateKeyTestnet method)</a>
 </li>
       </ul></li>
+      <li><a href="dev/api.html#bitsv.network.services.BitIndex.get_utxo">get_utxo() (bitsv.network.services.BitIndex static method)</a>
+</li>
+      <li><a href="dev/api.html#bitsv.network.services.BitIndex.get_xpub_balance">get_xpub_balance() (bitsv.network.services.BitIndex static method)</a>
+</li>
+      <li><a href="dev/api.html#bitsv.network.services.BitIndex.get_xpub_status">get_xpub_status() (bitsv.network.services.BitIndex static method)</a>
+</li>
+      <li><a href="dev/api.html#bitsv.network.services.BitIndex.get_xpub_tx">get_xpub_tx() (bitsv.network.services.BitIndex static method)</a>
+</li>
+      <li><a href="dev/api.html#bitsv.network.services.BitIndex.get_xpub_utxos">get_xpub_utxos() (bitsv.network.services.BitIndex static method)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.HKD_RATES">HKD_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.hkd_to_satoshi">hkd_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.hkd_to_satoshi">hkd_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -269,11 +266,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dev/api.html#bitsv.network.NetworkAPI.IGNORED_ERRORS">IGNORED_ERRORS (bitsv.network.NetworkAPI attribute)</a>
-
-      <ul>
-        <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.IGNORED_ERRORS">(bitsv.network.rates.RatesAPI attribute)</a>
 </li>
-      </ul></li>
       <li><a href="dev/api.html#bitsv.exceptions.InsufficientFunds">InsufficientFunds</a>
 </li>
       <li><a href="dev/api.html#bitsv.PrivateKey.is_compressed">is_compressed() (bitsv.PrivateKey method)</a>
@@ -286,9 +279,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.ISK_RATES">ISK_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.isk_to_satoshi">isk_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.isk_to_satoshi">isk_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -296,11 +287,7 @@
 <h2 id="J">J</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.JPY_RATES">JPY_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.jpy_to_satoshi">jpy_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.jpy_to_satoshi">jpy_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -312,9 +299,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.KRW_RATES">KRW_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.krw_to_satoshi">krw_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.krw_to_satoshi">krw_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -326,9 +311,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.NZD_RATES">NZD_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.nzd_to_satoshi">nzd_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.nzd_to_satoshi">nzd_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -336,9 +319,7 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.PLN_RATES">PLN_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.pln_to_satoshi">pln_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.pln_to_satoshi">pln_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
       <li><a href="dev/api.html#bitsv.PrivateKey.prepare_transaction">prepare_transaction() (bitsv.PrivateKey class method)</a>
 
@@ -374,13 +355,7 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI">RatesAPI (class in bitsv.network.rates)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.RUB_RATES">RUB_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.rub_to_satoshi">rub_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.rub_to_satoshi">rub_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -400,9 +375,7 @@
         <li><a href="dev/api.html#bitsv.PrivateKeyTestnet.scriptcode">(bitsv.PrivateKeyTestnet attribute)</a>
 </li>
       </ul></li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.SEK_RATES">SEK_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.sek_to_satoshi">sek_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.sek_to_satoshi">sek_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
       <li><a href="dev/api.html#bitsv.PrivateKey.send">send() (bitsv.PrivateKey method)</a>
 
@@ -414,9 +387,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dev/api.html#bitsv.PrivateKey.send_op_return">send_op_return() (bitsv.PrivateKey method)</a>
 </li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.SGD_RATES">SGD_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.sgd_to_satoshi">sgd_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.sgd_to_satoshi">sgd_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
       <li><a href="dev/api.html#bitsv.PrivateKey.sign">sign() (bitsv.PrivateKey method)</a>
 
@@ -432,15 +403,15 @@
         <li><a href="dev/api.html#bitsv.PrivateKeyTestnet.sign_transaction">(bitsv.PrivateKeyTestnet method)</a>
 </li>
       </ul></li>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.SINGLE_RATE">SINGLE_RATE (bitsv.network.rates.BitcoinSVRates attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.THB_RATES">THB_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.thb_to_satoshi">thb_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.thb_to_satoshi">thb_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
       <li><a href="dev/api.html#bitsv.PrivateKey.to_bytes">to_bytes() (bitsv.PrivateKey method)</a>
 
@@ -492,9 +463,7 @@
         <li><a href="dev/api.html#bitsv.PrivateKeyTestnet.to_wif">(bitsv.PrivateKeyTestnet method)</a>
 </li>
       </ul></li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.TWD_RATES">TWD_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.twd_to_satoshi">twd_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.twd_to_satoshi">twd_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
       <li><a href="dev/api.html#bitsv.network.meta.Unspent.txid">txid (bitsv.network.meta.Unspent attribute)</a>
 </li>
@@ -510,9 +479,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.USD_RATES">USD_RATES (bitsv.network.rates.RatesAPI attribute)</a>
-</li>
-      <li><a href="dev/api.html#bitsv.network.rates.RatesAPI.usd_to_satoshi">usd_to_satoshi() (bitsv.network.rates.RatesAPI class method)</a>
+      <li><a href="dev/api.html#bitsv.network.rates.BitcoinSVRates.usd_to_satoshi">usd_to_satoshi() (bitsv.network.rates.BitcoinSVRates class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -531,6 +498,14 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dev/api.html#bitsv.verify_sig">verify_sig() (in module bitsv)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dev/api.html#bitsv.network.services.BitIndex.xpub_register">xpub_register() (bitsv.network.services.BitIndex static method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -566,7 +541,7 @@
 <p><iframe src="https://ghbtns.com/github-btn.html?user=austecon&type=follow&count=false"
   allowtransparency="true" frameborder="0" scrolling="0" width="200" height="20"></iframe></p>
 
-<p><a href="https://twitter.com/excalibur0922" class="twitter-follow-button" data-show-count="false">Follow @AustEcon</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
+<p><a href="https://twitter.com/excalibur0922" class="twitter-follow-button" data-show-count="false">Follow AustEcon</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
 
 
 <h3>Other Projects</h3>

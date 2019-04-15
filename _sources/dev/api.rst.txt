@@ -33,18 +33,10 @@ Network
     :members:
     :undoc-members:
 
-.. autoclass:: bitsv.network.services.BitpayAPI
+.. autoclass:: bitsv.network.services.BitIndex
     :members:
     :undoc-members:
     :inherited-members:
-
-.. autoclass:: bitsv.network.services.BlockchainAPI
-    :members:
-    :undoc-members:
-
-.. autoclass:: bitsv.network.services.SmartbitcashAPI
-    :members:
-    :undoc-members:
 
 .. autoclass:: bitsv.network.meta.Unspent
     :members:
@@ -58,18 +50,9 @@ Exchange Rates
 .. autofunction:: bitsv.network.satoshi_to_currency
 .. autofunction:: bitsv.network.satoshi_to_currency_cached
 
-.. autoclass:: bitsv.network.rates.RatesAPI
+.. autoclass:: bitsv.network.rates.BitcoinSVRates
     :members:
     :undoc-members:
-
-.. autoclass:: bitsv.network.rates.BitpayRates
-    :members:
-    :undoc-members:
-
-.. autoclass:: bitsv.network.rates.BlockchainRates
-    :members:
-    :undoc-members:
-
 Fees
 ----
 

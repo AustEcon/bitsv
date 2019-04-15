@@ -16,7 +16,7 @@ and Windows and supports Python 3.5+ and PyPy3.5-v5.7.1+. ``pip`` >= 8.1.2 is re
 Source Code
 -----------
 
-BitSv is hosted by GitHub `here`_, where it is actively developed.
+BitSV is hosted by GitHub `here`_, where it is actively developed.
 
 You can clone it like this:
 

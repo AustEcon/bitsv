@@ -44,8 +44,8 @@ internal balance will always be in <a class="reference external" href="https://e
 </pre></div>
 </div>
 <p>You can query the <a class="reference external" href="https://en.bitcoin.it/wiki/Block_chain">blockchain</a> for the current balance by calling
-:func: <cite>~bitsv.PrivateKey.get_balance</cite>. It takes an optional argument <code class="docutils literal notranslate"><span class="pre">currency</span></code>
-(see :ref: <cite>supported currencies</cite>) and returns a formatted string rounded down
+<a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.get_balance" title="bitsv.PrivateKey.get_balance"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_balance()</span></code></a>. It takes an optional argument <code class="docutils literal notranslate"><span class="pre">currency</span></code>
+(see <a class="reference internal" href="rates.html#supported-currencies"><span class="std std-ref">Supported Currencies</span></a>) and returns a formatted string rounded down
 to the proper number of decimal places. By default it will return the balance
 in satoshi.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">get_balance</span><span class="p">(</span><span class="s1">&#39;bsv&#39;</span><span class="p">)</span>
@@ -55,7 +55,7 @@ in satoshi.</p>
 </pre></div>
 </div>
 <p>After you communicate with the network, you can view the internal balance in
-terms of other currencies using :func: <cite>~bitsv.PrivateKey.balance_as</cite>.</p>
+terms of other currencies using <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.balance_as" title="bitsv.PrivateKey.balance_as"><code class="xref py py-func docutils literal notranslate"><span class="pre">balance_as()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">balance_as</span><span class="p">(</span><span class="s1">&#39;mbsv&#39;</span><span class="p">)</span>
 <span class="go">&#39;827.21202&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">balance_as</span><span class="p">(</span><span class="s1">&#39;usd&#39;</span><span class="p">)</span>
@@ -66,12 +66,12 @@ terms of other currencies using :func: <cite>~bitsv.PrivateKey.balance_as</cite>
 <span class="go">&#39;6485.39&#39;</span>
 </pre></div>
 </div>
-<p>See also :ref: <cite>unsupported currencies</cite>.</p>
+<p>See also <a class="reference internal" href="rates.html#unsupported-currencies"><span class="std std-ref">Unsupported Currencies</span></a>.</p>
 </div>
 <div class="section" id="unspent">
 <h2>Unspent<a class="headerlink" href="#unspent" title="Permalink to this headline">¶</a></h2>
 <p>You can see what <a class="reference external" href="https://en.bitcoin.it/wiki/Transaction#Input">unspent transaction outputs</a> (commonly referred to as UTXO)
-you have available to spend by calling :func: <cite>~bitsv.PrivateKey.get_unspents</cite>.</p>
+you have available to spend by calling <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.get_unspents" title="bitsv.PrivateKey.get_unspents"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_unspents()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span> <span class="o">=</span> <span class="n">PrivateKeyTestnet</span><span class="p">(</span><span class="s1">&#39;cU6s7jckL3bZUUkb3Q2CD9vNu8F1o58K5R5a3JFtidoccMbhEGKZ&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">unspents</span>
 <span class="go">[]</span>
@@ -82,13 +82,13 @@ you have available to spend by calling :func: <cite>~bitsv.PrivateKey.get_unspen
 </pre></div>
 </div>
 <p>As you can see, this address has 1 available UTXO to spend worth 82721202
-satoshi. :func: <cite>~bitsv.PrivateKey.get_balance</cite> uses this method by totalling the
+satoshi. <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.get_balance" title="bitsv.PrivateKey.get_balance"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_balance()</span></code></a> uses this method by totalling the
 amount of all UTXO. You will never have to use this directly.</p>
 </div>
 <div class="section" id="transaction-history">
 <h2>Transaction History<a class="headerlink" href="#transaction-history" title="Permalink to this headline">¶</a></h2>
 <p>Get a list of all transactions from newest to oldest by calling
-:func: <cite>~bitsv.PrivateKey.get_transactions</cite>.</p>
+<a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.get_transactions" title="bitsv.PrivateKey.get_transactions"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_transactions()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span> <span class="o">=</span> <span class="n">PrivateKeyTestnet</span><span class="p">(</span><span class="s1">&#39;cU6s7jckL3bZUUkb3Q2CD9vNu8F1o58K5R5a3JFtidoccMbhEGKZ&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">transactions</span>
 <span class="go">[]</span>
@@ -126,13 +126,11 @@ a future release they will become proper objects.</p>
 <p>BitSV communicates with the blockchain using trusted third-party APIs.
 Specifically, it can access:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://insight.bitcashpay.com">https://insight.bitcashpay.com</a> via :class: <cite>~bitsv.network.services.BitpayAPI</cite></p></li>
-<li><p><a class="reference external" href="https://blockchain.info">https://blockchain.info</a> via :class: <cite>~bitsv.network.services.BlockchainAPI</cite></p></li>
-<li><p><a class="reference external" href="https://smartbitcash.com.au">https://smartbitcash.com.au</a> via :class: <cite>~bitsv.network.services.SmartbitcashAPI</cite></p></li>
+<li><p><a class="reference external" href="https://https://www.bitindex.network/docs.html">https://https://www.bitindex.network/docs.html</a> via <a class="reference internal" href="../dev/api.html#bitsv.network.services.BitIndex" title="bitsv.network.services.BitIndex"><code class="xref py py-class docutils literal notranslate"><span class="pre">BitIndex</span></code></a></p></li>
 </ul>
 <div class="section" id="networkapi">
 <h3>NetworkAPI<a class="headerlink" href="#networkapi" title="Permalink to this headline">¶</a></h3>
-<p>Private key network operations use :class: <cite>~bitsv.network.NetworkAPI</cite>. For each method,
+<p>Private key network operations use <a class="reference internal" href="../dev/api.html#bitsv.network.NetworkAPI" title="bitsv.network.NetworkAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">NetworkAPI</span></code></a>. For each method,
 it polls a service and if an error occurs it tries another.</p>
 </div>
 </div>
@@ -174,7 +172,7 @@ it polls a service and if an error occurs it tries another.</p>
 <p><iframe src="https://ghbtns.com/github-btn.html?user=austecon&type=follow&count=false"
   allowtransparency="true" frameborder="0" scrolling="0" width="200" height="20"></iframe></p>
 
-<p><a href="https://twitter.com/excalibur0922" class="twitter-follow-button" data-show-count="false">Follow @AustEcon</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
+<p><a href="https://twitter.com/excalibur0922" class="twitter-follow-button" data-show-count="false">Follow AustEcon</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
 
 
 <h3>Other Projects</h3>

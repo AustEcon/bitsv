@@ -18,7 +18,7 @@ for all elliptic curve operations.
 Why GitHub Pages instead of ReadtheDocs?
 ----------------------------------------
 
-GitHub Pages has better page load times and is a bitcash more reliable. Also,
+GitHub Pages has better page load times and is a bit more reliable. Also,
 not only does `GitHub itself`_ use it, but other large projects like `React`_,
 `Bootstrap`_, etc. do too.
 
