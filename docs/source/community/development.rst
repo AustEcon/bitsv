@@ -26,7 +26,7 @@ Documentation
 -------------
 
 Docs are hosted by `GitHub Pages`_ and are automatically built and published
-by Travis after every successful commit to Bitcash's ``master`` branch.
+by Travis after every successful commit to BitSV's ``master`` branch.
 
 Version Scheme
 --------------

@@ -5,10 +5,10 @@ BitSV: BitSV made easy.
 .. image:: https://img.shields.io/pypi/v/bitsv.svg?style=flat-square
     :target: https://pypi.org/project/bitsv
 
-.. image:: https://img.shields.io/travis/ofek/bitcash.svg?branch=master&style=flat-square
+.. image:: https://img.shields.io/travis/AustEcon/bitsv.svg?branch=master&style=flat-square
     :target: https://travis-ci.org/AustEcon/bitsv
 
-.. image:: https://img.shields.io/pypi/pyversions/bitcash.svg?style=flat-square
+.. image:: https://img.shields.io/pypi/pyversions/bitsv.svg?style=flat-square
     :target: https://pypi.org/project/bitsv
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square

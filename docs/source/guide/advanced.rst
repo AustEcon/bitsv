@@ -9,11 +9,11 @@ Server Integration
 If you only want to use BitSV for its raw speed to lessen the load on your
 servers, you don't have to use any of our network capabilities.
 
-- Use :func: `~bitsv.PrivateKey.create_transaction` instead of
-  :func: `~bitsv.PrivateKey.send`
-- Supply :ref: `your own UTXOs <unspentparam>`
-- Set :ref: `your own fee <feeparam>`
-- Make sure all :ref: `outputsparam` only use these currencies: satoshi, ubsv,
+- Use :func:`~bitsv.PrivateKey.create_transaction` instead of
+  :func:`~bitsv.PrivateKey.send`
+- Supply :ref:`your own UTXOs <unspentparam>`
+- Set :ref:`your own fee <feeparam>`
+- Make sure all :ref:`outputsparam` only use these currencies: satoshi, ubsv,
   mbsv, or bsv.
 
 .. _coldstorage:
@@ -21,9 +21,9 @@ servers, you don't have to use any of our network capabilities.
 Offline Transactions
 --------------------
 
-Bitcash supports the signing of transactions for keys in cold storage. First you
+BitSV supports the signing of transactions for keys in cold storage. First you
 need to prepare a transaction while connected to the internet using the
-:func: `~bitsv.PrivateKey.prepare_transaction` class method of a private key.
+:func:`~bitsv.PrivateKey.prepare_transaction` class method of a private key.
 You must know your address.
 
 .. code-block:: python
@@ -39,7 +39,7 @@ You must know your address.
 
 This performs validation and returns a JSON string containing all the required
 information to create a transaction. You should then take this to your offline
-machine and use the :func: `~bitsv.PrivateKey.sign_transaction` method of your
+machine and use the :func:`~bitsv.PrivateKey.sign_transaction` method of your
 private key.
 
 .. code-block:: python
@@ -58,9 +58,9 @@ Finally, bring this transaction back to your connected device and broadcast it.
 Blockchain Storage
 ------------------
 
-Bitcash allows you to easily `store messages or data`_ in the blockchain itself
-using the ``message`` parameter of :func: `~bitsv.PrivateKey.create_transaction`
-or :func: `~bitsv.PrivateKey.send`:
+BitSV allows you to easily `store messages or data`_ in the blockchain itself
+using the ``message`` parameter of :func:`~bitsv.PrivateKey.create_transaction`
+or :func:`~bitsv.PrivateKey.send`:
 
 .. code-block:: python
 

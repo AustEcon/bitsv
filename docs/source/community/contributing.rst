@@ -4,7 +4,7 @@ Contributing
 Filing an Issue
 ---------------
 
-This is the way to report :ref: `non-security related <vulnerabilities>` issues
+This is the way to report :ref:`non-security related <vulnerabilities>` issues
 and also to request features.
 
 1. Go to `BitSV's GitHub Issues <https://github.com/AustEcon/bitsv/issues>`_.
