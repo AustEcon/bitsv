@@ -79,6 +79,7 @@ of best practices.
     guide/transactions
     guide/rates
     guide/fees
+    guide/op_return
     guide/advanced
 
 Community
