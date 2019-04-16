@@ -87,7 +87,7 @@ derive your address and is needed in the construction of every transaction.
 Address
 -------
 
-All keys possess an :func: `~bitsv.PrivateKey.address` property which is derived from your public key:
+All keys possess an :func:`~bitsv.PrivateKey.address` property which is derived from your public key:
 
 .. code-block:: python
 

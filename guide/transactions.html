@@ -32,12 +32,13 @@
     
   <div class="section" id="transactions">
 <span id="id1"></span><h1>Transactions<a class="headerlink" href="#transactions" title="Permalink to this headline">¶</a></h1>
-<p>Keys in Bitcash allow 2 ways of handling transactions: a
+<p>Keys in BitSV allow 2 ways of handling transactions: a
 <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.create_transaction" title="bitsv.PrivateKey.create_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_transaction()</span></code></a> method that creates a signed
 transaction and returns the aforementioned transaction in hex, and a
 <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.send" title="bitsv.PrivateKey.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code></a> method that does the same thing but will
 attempt to broadcast the transaction, returning instead the transaction id
 for future lookup. Both methods take the exact same arguments.</p>
+<p>Note: See the <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey.send_op_return" title="bitsv.PrivateKey.send_op_return"><code class="xref py py-func docutils literal notranslate"><span class="pre">send_op_return()</span></code></a> function for a</p>
 <div class="section" id="outputs">
 <span id="outputsparam"></span><h2>Outputs<a class="headerlink" href="#outputs" title="Permalink to this headline">¶</a></h2>
 <p>The only required argument is a list of outputs.</p>
@@ -80,7 +81,7 @@ transactions to be verified quickly.”</p>
 <p class="attribution">—Coinbase</p>
 </div></blockquote>
 <p>You can change the satoshi per byte fee like so:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">create_transaction</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">fee</span><span class="o">=</span><span class="mi">70</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">create_transaction</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">fee</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 1 satoshi / byte</span>
 </pre></div>
 </div>
 <p>For more information about transaction fees <a class="reference external" href="https://blog.blockchain.com/2016/12/15/bitcoincash-transaction-fees-what-are-they-why-should-you-care">read this</a>.</p>
@@ -93,7 +94,7 @@ smaller and therefore reduce fees.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">create_transaction</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For example, if your had the following UTXOs available:</p>
+<p>For example, if you had the following UTXOs available:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Unspent</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 <span class="n">Unspent</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 <span class="n">Unspent</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>

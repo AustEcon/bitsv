@@ -105,11 +105,15 @@ the same address you sent from.</p></li>
 <li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
 make future transactions smaller and therefore reduce
 fees. By default Bitcash will consolidate UTXOs.</p></li>
-<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A message to include in the transaction. This will be
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb.</p></li>
 <li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
 communicate with the blockchain itself.</p></li>
+<li><p><strong>custom_pushdata</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Adds control over push_data elements inside of the op_return by adding the
+“custom_pushdata” = True / False parameter as a “switch” to the
+<a class="reference internal" href="#bitsv.PrivateKey.send" title="bitsv.PrivateKey.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code></a> function and the
+<a class="reference internal" href="#bitsv.PrivateKey.create_transaction" title="bitsv.PrivateKey.create_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_transaction()</span></code></a> functions.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -238,7 +242,7 @@ public key.</p>
 
 <dl class="classmethod">
 <dt id="bitsv.PrivateKey.prepare_transaction">
-<em class="property">classmethod </em><code class="descname">prepare_transaction</code><span class="sig-paren">(</span><em>address</em>, <em>outputs</em>, <em>compressed=True</em>, <em>fee=None</em>, <em>leftover=None</em>, <em>combine=True</em>, <em>message=None</em>, <em>unspents=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.prepare_transaction" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">prepare_transaction</code><span class="sig-paren">(</span><em>address</em>, <em>outputs</em>, <em>compressed=True</em>, <em>fee=None</em>, <em>leftover=None</em>, <em>combine=True</em>, <em>message=None</em>, <em>unspents=None</em>, <em>custom_pushdata=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.prepare_transaction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepares a P2PKH transaction for offline signing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -262,11 +266,15 @@ the same address you sent from.</p></li>
 <li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
 make future transactions smaller and therefore reduce
 fees. By default Bitcash will consolidate UTXOs.</p></li>
-<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A message to include in the transaction. This will be
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb bytes.</p></li>
 <li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
 communicate with the blockchain itself.</p></li>
+<li><p><strong>custom_pushdata</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Adds control over push_data elements inside of the op_return by adding the
+“custom_pushdata” = True / False parameter as a “switch” to the
+<a class="reference internal" href="#bitsv.PrivateKey.send" title="bitsv.PrivateKey.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code></a> function and the
+<a class="reference internal" href="#bitsv.PrivateKey.create_transaction" title="bitsv.PrivateKey.create_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_transaction()</span></code></a> functions.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -297,7 +305,7 @@ communicate with the blockchain itself.</p></li>
 
 <dl class="method">
 <dt id="bitsv.PrivateKey.send">
-<code class="descname">send</code><span class="sig-paren">(</span><em>outputs</em>, <em>fee=None</em>, <em>leftover=None</em>, <em>combine=True</em>, <em>message=None</em>, <em>unspents=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.send" title="Permalink to this definition">¶</a></dt>
+<code class="descname">send</code><span class="sig-paren">(</span><em>outputs</em>, <em>fee=None</em>, <em>leftover=None</em>, <em>combine=True</em>, <em>message=None</em>, <em>unspents=None</em>, <em>custom_pushdata=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a signed P2PKH transaction and attempts to broadcast it on
 the blockchain. This accepts the same arguments as
 <a class="reference internal" href="#bitsv.PrivateKey.create_transaction" title="bitsv.PrivateKey.create_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_transaction()</span></code></a>.</p>
@@ -320,11 +328,15 @@ the same address you sent from.</p></li>
 <li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
 make future transactions smaller and therefore reduce
 fees. By default Bitcash will consolidate UTXOs.</p></li>
-<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A message to include in the transaction. This will be
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb.</p></li>
 <li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
 communicate with the blockchain itself.</p></li>
+<li><p><strong>custom_pushdata</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Adds control over push_data elements inside of the op_return by adding the
+“custom_pushdata” = True / False parameter as a “switch” to the
+<a class="reference internal" href="#bitsv.PrivateKey.send" title="bitsv.PrivateKey.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code></a> function and the
+<a class="reference internal" href="#bitsv.PrivateKey.create_transaction" title="bitsv.PrivateKey.create_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_transaction()</span></code></a> functions.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -516,7 +528,7 @@ the same address you sent from.</p></li>
 <li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
 make future transactions smaller and therefore reduce
 fees. By default Bitcash will consolidate UTXOs.</p></li>
-<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A message to include in the transaction. This will be
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb bytes.</p></li>
 <li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
@@ -673,7 +685,7 @@ the same address you sent from.</p></li>
 <li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
 make future transactions smaller and therefore reduce
 fees. By default Bitcash will consolidate UTXOs.</p></li>
-<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A message to include in the transaction. This will be
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb bytes.</p></li>
 <li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
@@ -731,7 +743,7 @@ the same address you sent from.</p></li>
 <li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
 make future transactions smaller and therefore reduce
 fees. By default Bitcash will consolidate UTXOs.</p></li>
-<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A message to include in the transaction. This will be
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb bytes.</p></li>
 <li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
