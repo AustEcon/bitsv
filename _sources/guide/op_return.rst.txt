@@ -3,12 +3,11 @@
 OP_RETURN
 =========
 
-Basic
------
+Version 5.3 added feature
+-------------------------
 
 In version 0.5.3 the ability to have more fine control over pushdata elements inside
 of the op_return was added.
-
 
 This was done by adding the "custom_pushdata" = True / False parameter as a "switch" to the
 :func:`~bitsv.PrivateKey.send` function and the
@@ -17,8 +16,12 @@ This was done by adding the "custom_pushdata" = True / False parameter as a "swi
 Prior to this change, the only functionality was to simply send one string
 of utf-8 encoded text as a "*message*".
 
-If custom_pushdata = False (default setting for backwards compatibility), the *message* parameter is treated as per the original version and
-is expected to be a **string**. As follows:
+Custom_pushdata = False
+-----------------------
+
+If custom_pushdata = False (default for backwards compatibility), the *message*
+parameter is treated as per the original version and is expected to be a **string**.
+As follows:
 
 .. code-block:: python
 
@@ -27,6 +30,9 @@ is expected to be a **string**. As follows:
     >>> my_key = bitsv.Key('YourPrivateKeyGoesHere')
     >>> my_key.send(outputs = [],
                     message = "Hello")
+
+Custom_pushdata = True
+-----------------------
 
 If custom_pushdata = True, the *message* parameter is expected to be a **list of tuples**
 (explained below).
@@ -58,6 +64,9 @@ with the additional option of adding payments to the list of outputs.
 Note: Currently, multiple outputs containing op_returns for a **single** transaction are
 considered "non-standard" by miners and are not currently supported by this library
 (as of 16/04/19).
+
+Send_op_return()
+----------------
 
 I have however, added an additional *convenience* function, :func:`~bitsv.PrivateKey.send_op_return`
 which offers the most straight forward way to send op_return data onto the blockchain.
