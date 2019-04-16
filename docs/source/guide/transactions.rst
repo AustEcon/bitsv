@@ -3,12 +3,14 @@
 Transactions
 ============
 
-Keys in Bitcash allow 2 ways of handling transactions: a
+Keys in BitSV allow 2 ways of handling transactions: a
 :func:`~bitsv.PrivateKey.create_transaction` method that creates a signed
 transaction and returns the aforementioned transaction in hex, and a
 :func:`~bitsv.PrivateKey.send` method that does the same thing but will
 attempt to broadcast the transaction, returning instead the transaction id
 for future lookup. Both methods take the exact same arguments.
+
+Note: See the :func:`~bitsv.PrivateKey.send_op_return` function for a
 
 .. _outputsparam:
 
@@ -68,7 +70,7 @@ You can change the satoshi per byte fee like so:
 
 .. code-block:: python
 
-    >>> key.create_transaction(..., fee=70)
+    >>> key.create_transaction(..., fee=1) # 1 satoshi / byte
 
 For more information about transaction fees `read this`_.
 
@@ -84,7 +86,7 @@ If you don't desire this behavior and only wish to use what is needed, do this:
 
     >>> key.create_transaction(..., combine=False)
 
-For example, if your had the following UTXOs available::
+For example, if you had the following UTXOs available::
 
     Unspent(amount=100, ...)
     Unspent(amount=200, ...)

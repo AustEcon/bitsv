@@ -139,6 +139,10 @@ and Windows and supports Python 3.5+ and PyPy3.5-v5.7.1+. ``pip`` >= 8.1.2 is re
 
     $ pip install bitsv  # pip3 if pip is Python 2 on your system.
 
+Documentation
+-------------
+Docs are hosted by Github Pages and are automatically built and published by Travis after every successful commit to BitSV's master branch.
+
 
 Credits
 -------

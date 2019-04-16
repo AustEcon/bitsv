@@ -234,10 +234,15 @@ class PrivateKey(BaseKey):
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
                         each message will be stored in chunks of 100kb.
-        :type message: ``str``
+        :type message: ``str`` if custom_pushdata = False; ``list`` of ``tuple`` if custom_pushdata = True
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
+        :param custom_pushdata: Adds control over push_data elements inside of the op_return by adding the
+                                "custom_pushdata" = True / False parameter as a "switch" to the
+                                :func:`~bitsv.PrivateKey.send` function and the
+                                :func:`~bitsv.PrivateKey.create_transaction` functions.
+        :type custom_pushdata: ``bool``
         :returns: The signed transaction as hex.
         :rtype: ``str``
         """
@@ -256,7 +261,7 @@ class PrivateKey(BaseKey):
         return create_p2pkh_transaction(self, unspents, outputs, custom_pushdata=custom_pushdata)
 
     def send(self, outputs, fee=None, leftover=None, combine=True,
-             message=None, unspents=None):  # pragma: no cover
+             message=None, unspents=None, custom_pushdata=False):  # pragma: no cover
         """Creates a signed P2PKH transaction and attempts to broadcast it on
         the blockchain. This accepts the same arguments as
         :func:`~bitsv.PrivateKey.create_transaction`.
@@ -283,16 +288,22 @@ class PrivateKey(BaseKey):
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
                         each message will be stored in chunks of 100kb.
-        :type message: ``str``
+        :type message: ``str`` if custom_pushdata = False; ``list`` of ``tuple`` if custom_pushdata = True
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
+        :param custom_pushdata: Adds control over push_data elements inside of the op_return by adding the
+                                "custom_pushdata" = True / False parameter as a "switch" to the
+                                :func:`~bitsv.PrivateKey.send` function and the
+                                :func:`~bitsv.PrivateKey.create_transaction` functions.
+        :type custom_pushdata: ``bool``
         :returns: The transaction ID.
         :rtype: ``str``
         """
         self.get_unspents()
         tx_hex = self.create_transaction(
-            outputs, fee=fee, leftover=leftover, combine=combine, message=message, unspents=unspents
+            outputs, fee=fee, leftover=leftover, combine=combine,
+            message=message, unspents=unspents, custom_pushdata=custom_pushdata
         )
 
         NetworkAPI.broadcast_tx(tx_hex)
@@ -301,7 +312,7 @@ class PrivateKey(BaseKey):
 
     @classmethod
     def prepare_transaction(cls, address, outputs, compressed=True, fee=None, leftover=None,
-                            combine=True, message=None, unspents=None):  # pragma: no cover
+                            combine=True, message=None, unspents=None, custom_pushdata=False):  # pragma: no cover
         """Prepares a P2PKH transaction for offline signing.
 
         :param address: The address the funds will be sent from.
@@ -331,10 +342,15 @@ class PrivateKey(BaseKey):
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
                         each message will be stored in chunks of 100kb bytes.
-        :type message: ``str``
+        :type message: ``str`` if custom_pushdata = False; ``list`` of ``tuple`` if custom_pushdata = True
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
+        :param custom_pushdata: Adds control over push_data elements inside of the op_return by adding the
+                                "custom_pushdata" = True / False parameter as a "switch" to the
+                                :func:`~bitsv.PrivateKey.send` function and the
+                                :func:`~bitsv.PrivateKey.create_transaction` functions.
+        :type custom_pushdata: ``bool``
         :returns: JSON storing data required to create an offline transaction.
         :rtype: ``str``
         """
@@ -345,7 +361,8 @@ class PrivateKey(BaseKey):
             leftover or address,
             combine=combine,
             message=message,
-            compressed=compressed
+            compressed=compressed,
+            custom_pushdata=custom_pushdata
         )
 
         data = {
@@ -572,7 +589,7 @@ class PrivateKeyTestnet(BaseKey):
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
                         each message will be stored in chunks of 100kb bytes.
-        :type message: ``str``
+        :type message: ``str`` if custom_pushdata = False; ``list`` of ``tuple`` if custom_pushdata = True
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the testnet blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
@@ -621,7 +638,7 @@ class PrivateKeyTestnet(BaseKey):
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
                         each message will be stored in chunks of 100kb bytes.
-        :type message: ``str``
+        :type message: ``str`` if custom_pushdata = False; ``list`` of ``tuple`` if custom_pushdata = True
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the testnet blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
@@ -669,7 +686,7 @@ class PrivateKeyTestnet(BaseKey):
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
                         each message will be stored in chunks of 100kb bytes.
-        :type message: ``str``
+        :type message: ``str`` if custom_pushdata = False; ``list`` of ``tuple`` if custom_pushdata = True
         :param unspents: The UTXOs to use as the inputs. By default Bitcash will
                          communicate with the blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
