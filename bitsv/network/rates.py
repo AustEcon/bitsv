@@ -99,11 +99,16 @@ def bsv_to_satoshi():
 
 
 class BitcoinSVRates:
+    # Would be better if this were HTTPS as rate information can be used
+    # maliciously.
     SINGLE_RATE = 'http://bitcoinsv-rates.com/api/rates/'
 
     @classmethod
     def currency_to_satoshi(cls, currency):
-        rate = requests.get(cls.SINGLE_RATE + currency).json()['value']
+        r = requests.get(cls.SINGLE_RATE + currency)
+        if r.status_code != 200:
+            raise requests.exceptions.ConnectionError
+        rate = r.json()['value']
 
         return int(ONE / Decimal(rate) * BSV)
 
