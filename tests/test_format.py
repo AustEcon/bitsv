@@ -4,8 +4,7 @@ from cashaddress.convert import InvalidAddress
 from bitsv.format import (
     address_to_public_key_hash, bytes_to_wif, coords_to_public_key,
     get_version, point_to_public_key, public_key_to_coords,
-    public_key_to_address, public_key_to_address, verify_sig,
-    wif_checksum_check, wif_to_bytes
+    public_key_to_address,  verify_sig, wif_checksum_check, wif_to_bytes
 )
 from .samples import (
     BITCOIN_ADDRESS, BITCOIN_ADDRESS_COMPRESSED, BITCOIN_CASHADDRESS_PAY2SH,
@@ -126,10 +125,10 @@ class TestPublicKeyToCoords:
 
 class TestPublicKeyToAddress:
     def test_public_key_to_address_compressed(self):
-        assert public_key_to_address(PUBLIC_KEY_COMPRESSED) == BITCOIN_CASHADDRESS_COMPRESSED
+        assert public_key_to_address(PUBLIC_KEY_COMPRESSED) == BITCOIN_ADDRESS_COMPRESSED
 
     def test_public_key_to_address_uncompressed(self):
-        assert public_key_to_address(PUBLIC_KEY_UNCOMPRESSED) == BITCOIN_CASHADDRESS
+        assert public_key_to_address(PUBLIC_KEY_UNCOMPRESSED) == BITCOIN_ADDRESS
 
     def test_public_key_to_address_incorrect_length(self):
         with pytest.raises(ValueError):
@@ -140,12 +139,6 @@ class TestPublicKeyToAddress:
 
     def test_public_key_to_address_test_uncompressed(self):
         assert public_key_to_address(PUBLIC_KEY_UNCOMPRESSED, version='test') == BITCOIN_ADDRESS_TEST
-
-    def test_public_key_to_address_test_compressed(self):
-        assert public_key_to_address(PUBLIC_KEY_COMPRESSED, version='test') == BITCOIN_CASHADDRESS_TEST_COMPRESSED
-
-    def test_public_key_to_address_test_uncompressed(self):
-        assert public_key_to_address(PUBLIC_KEY_UNCOMPRESSED, version='test') == BITCOIN_CASHADDRESS_TEST
 
 
 class TestCoordsToPublicKey:

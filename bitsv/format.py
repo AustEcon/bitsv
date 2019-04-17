@@ -36,8 +36,10 @@ def verify_sig(signature, data, public_key):
 
 
 def address_to_public_key_hash(address):
-    # LEGACYADDRESSDEPRECATION
-    # FIXME: This legacy address support will be removed.
+    # FUTURE:
+    # # Raise ValueError if we cannot identify the address.
+    # get_version(address)
+    # return b58decode_check(address)[1:]
     address = cashaddress.to_cash_address(address)
     get_version(address)
     Address = cashaddress.Address._cash_string(address)
@@ -111,19 +113,18 @@ def wif_checksum_check(wif):
 
 def public_key_to_address(public_key, version='main'):
     if version == 'test':
-        version = 'P2PKH-TESTNET'
+        version = TEST_PUBKEY_HASH
     elif version == 'main':
-        version = 'P2PKH'
+        version = MAIN_PUBKEY_HASH
     else:
         raise ValueError('Invalid version.')
+
     # 33 bytes compressed, 65 uncompressed.
     length = len(public_key)
     if length not in (33, 65):
         raise ValueError('{} is an invalid length for a public key.'.format(length))
 
-    payload = list(ripemd160_sha256(public_key))
-    address = cashaddress.Address(payload=payload, version=version)
-    return address.cash_address()
+    return b58encode_check(version + ripemd160_sha256(public_key))
 
 
 def public_key_to_coords(public_key):
