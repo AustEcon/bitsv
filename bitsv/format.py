@@ -36,26 +36,22 @@ def verify_sig(signature, data, public_key):
 
 
 def address_to_public_key_hash(address):
-    # FUTURE:
-    # # Raise ValueError if we cannot identify the address.
-    # get_version(address)
-    # return b58decode_check(address)[1:]
-    address = cashaddress.to_cash_address(address)
+    # Support cashaddr and "legacy" for now.
+    address = cashaddress.to_legacy_address(address)
     get_version(address)
-    Address = cashaddress.Address._cash_string(address)
-    return bytes(Address.payload)
+    return b58decode_check(address)[1:]
 
 
 def get_version(address):
-    address = cashaddress.Address._cash_string(address)
+    version = b58decode_check(address)[:1]
 
-    if address.version == 'P2PKH':
+    if version == MAIN_PUBKEY_HASH:
         return 'main'
-    elif address.version == 'P2PKH-TESTNET':
+    elif version == TEST_PUBKEY_HASH:
         return 'test'
     else:
         raise ValueError('{} does not correspond to a mainnet nor '
-                         'testnet P2PKH address.'.format(address.version))
+                         'testnet address.'.format(version))
 
 
 def bytes_to_wif(private_key, version='main', compressed=False):

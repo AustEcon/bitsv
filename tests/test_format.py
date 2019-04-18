@@ -1,5 +1,4 @@
 import pytest
-from cashaddress.convert import InvalidAddress
 
 from bitsv.format import (
     address_to_public_key_hash, bytes_to_wif, coords_to_public_key,
@@ -7,11 +6,12 @@ from bitsv.format import (
     public_key_to_address,  verify_sig, wif_checksum_check, wif_to_bytes
 )
 from .samples import (
-    BITCOIN_ADDRESS, BITCOIN_ADDRESS_COMPRESSED, BITCOIN_CASHADDRESS_PAY2SH,
+    BITCOIN_ADDRESS, BITCOIN_ADDRESS_COMPRESSED, BITCOIN_ADDRESS_PAY2SH,
     BITCOIN_ADDRESS_TEST_COMPRESSED, BITCOIN_ADDRESS_TEST,
-    BITCOIN_CASHADDRESS_TEST_PAY2SH, PRIVATE_KEY_BYTES, PUBKEY_HASH,
+    BITCOIN_ADDRESS_TEST_PAY2SH, PRIVATE_KEY_BYTES, PUBKEY_HASH,
     BITCOIN_CASHADDRESS, BITCOIN_CASHADDRESS_COMPRESSED,
     BITCOIN_CASHADDRESS_TEST, BITCOIN_CASHADDRESS_TEST_COMPRESSED,
+    BITCOIN_CASHADDRESS_PAY2SH, BITCOIN_CASHADDRESS_TEST_PAY2SH,
     PUBKEY_HASH_COMPRESSED, PUBLIC_KEY_COMPRESSED, PUBLIC_KEY_UNCOMPRESSED,
     PUBLIC_KEY_X, PUBLIC_KEY_Y,
     WALLET_FORMAT_COMPRESSED_MAIN, WALLET_FORMAT_COMPRESSED_TEST,
@@ -35,24 +35,24 @@ DATA = b'data'
 
 class TestGetVersion:
     def test_mainnet(self):
-        assert get_version(BITCOIN_CASHADDRESS) == 'main'
-        assert get_version(BITCOIN_CASHADDRESS_COMPRESSED) == 'main'
+        assert get_version(BITCOIN_ADDRESS) == 'main'
+        assert get_version(BITCOIN_ADDRESS_COMPRESSED) == 'main'
 
     def test_testnet(self):
-        assert get_version(BITCOIN_CASHADDRESS_TEST) == 'test'
-        assert get_version(BITCOIN_CASHADDRESS_TEST_COMPRESSED) == 'test'
+        assert get_version(BITCOIN_ADDRESS_TEST) == 'test'
+        assert get_version(BITCOIN_ADDRESS_TEST_COMPRESSED) == 'test'
 
     def test_invalid(self):
-        with pytest.raises(InvalidAddress):
+        with pytest.raises(ValueError):
             get_version('dg2dNAjuezub6iJVPNML5pW5ZQvtA9ocL')
 
     def test_mainnet_pay2sh(self):
         with pytest.raises(ValueError):
-            get_version(BITCOIN_CASHADDRESS_PAY2SH)
+            get_version(BITCOIN_ADDRESS_PAY2SH)
 
     def test_testnet_pay2sh(self):
         with pytest.raises(ValueError):
-            get_version(BITCOIN_CASHADDRESS_TEST_PAY2SH)
+            get_version(BITCOIN_ADDRESS_TEST_PAY2SH)
 
 
 class TestVerifySig:
@@ -163,3 +163,9 @@ def test_address_to_public_key_hash():
         address_to_public_key_hash(BITCOIN_CASHADDRESS_PAY2SH)
     with pytest.raises(ValueError):
         address_to_public_key_hash(BITCOIN_CASHADDRESS_TEST_PAY2SH)
+    assert address_to_public_key_hash(BITCOIN_ADDRESS) == PUBKEY_HASH
+    assert address_to_public_key_hash(BITCOIN_ADDRESS_COMPRESSED) == PUBKEY_HASH_COMPRESSED
+    with pytest.raises(ValueError):
+        address_to_public_key_hash(BITCOIN_ADDRESS_PAY2SH)
+    with pytest.raises(ValueError):
+        address_to_public_key_hash(BITCOIN_ADDRESS_TEST_PAY2SH)
