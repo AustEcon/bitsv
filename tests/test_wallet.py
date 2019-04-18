@@ -178,4 +178,4 @@ class TestPrivateKey:
         assert key.to_int() == PRIVATE_KEY_NUM
 
     def test_repr(self):
-        assert repr(PrivateKey(WALLET_FORMAT_MAIN)) == '<PrivateKey: bitcoincash:qzfyvx77v2pmgc0vulwlfkl3uzjgh5gnmqk5hhyaa6>'
+        assert repr(PrivateKey(WALLET_FORMAT_MAIN)) == '<PrivateKey: 1ELReFsTCUY2mfaDTy32qxYiT49z786eFg>'
