@@ -42,7 +42,7 @@
 <dl class="class">
 <dt id="bitsv.PrivateKey">
 <em class="property">class </em><code class="descclassname">bitsv.</code><code class="descname">PrivateKey</code><span class="sig-paren">(</span><em>wif=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class represents a BitcoinCash private key. <code class="docutils literal notranslate"><span class="pre">Key</span></code> is an alias.</p>
+<dd><p>This class represents a Bitcoin SV private key. <code class="docutils literal notranslate"><span class="pre">Key</span></code> is an alias.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>wif</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – A private key serialized to the Wallet Import Format. If the
@@ -96,19 +96,17 @@ be either an int, float, or string as long as it is
 a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
 must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
 <li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi per byte to pay to miners. By default
-Bitcash will poll <a class="reference external" href="https://bitcoincashfees.earn.com">https://bitcoincashfees.earn.com</a> and use a fee
-that will allow your transaction to be confirmed as soon as
-possible.</p></li>
+BitSV will use a fee of 1 sat/byte.</p></li>
 <li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
-transaction. By default Bitcash will send any change to
+transaction. By default BitSV will send any change to
 the same address you sent from.</p></li>
-<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
+<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not BitSV should use all available UTXOs to
 make future transactions smaller and therefore reduce
-fees. By default Bitcash will consolidate UTXOs.</p></li>
+fees. By default BitSV will consolidate UTXOs.</p></li>
 <li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb.</p></li>
-<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
+<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default BitSV will
 communicate with the blockchain itself.</p></li>
 <li><p><strong>custom_pushdata</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Adds control over push_data elements inside of the op_return by adding the
 “custom_pushdata” = True / False parameter as a “switch” to the
@@ -255,21 +253,18 @@ a valid input to <code class="docutils literal notranslate"><span class="pre">de
 must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
 <li><p><strong>compressed</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not the <code class="docutils literal notranslate"><span class="pre">address</span></code> corresponds to a
 compressed public key. This influences the fee.</p></li>
-<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – <p>The number of satoshi per byte to pay to miners. By default
-Bitcash will poll <a class="reference external" href="https://bitcoincashfees.earn.com">https://bitcoincashfees.earn.com</a> and use a fee
-that will allow your transaction to be confirmed as soon as
-possible.</p>
-</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi per byte to pay to miners. By default
+BitSV will use a fee of 1 sat/byte</p></li>
 <li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
-transaction. By default Bitcash will send any change to
+transaction. By default BitSV will send any change to
 the same address you sent from.</p></li>
-<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
+<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not BitSV should use all available UTXOs to
 make future transactions smaller and therefore reduce
-fees. By default Bitcash will consolidate UTXOs.</p></li>
+fees. By default BitSV will consolidate UTXOs.</p></li>
 <li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb bytes.</p></li>
-<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
+<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default BitSV will
 communicate with the blockchain itself.</p></li>
 <li><p><strong>custom_pushdata</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Adds control over push_data elements inside of the op_return by adding the
 “custom_pushdata” = True / False parameter as a “switch” to the
@@ -317,21 +312,18 @@ the blockchain. This accepts the same arguments as
 be either an int, float, or string as long as it is
 a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
 must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
-<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – <p>The number of satoshi per byte to pay to miners. By default
-Bitcash will poll <a class="reference external" href="https://bitcoincashfees.earn.com">https://bitcoincashfees.earn.com</a> and use a fee
-that will allow your transaction to be confirmed as soon as
-possible.</p>
-</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi per byte to pay to miners. By default
+BitSV will use a fee of 1 sat/byte.</p></li>
 <li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
-transaction. By default Bitcash will send any change to
+transaction. By default BitSV will send any change to
 the same address you sent from.</p></li>
-<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
+<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not BitSV should use all available UTXOs to
 make future transactions smaller and therefore reduce
-fees. By default Bitcash will consolidate UTXOs.</p></li>
+fees. By default BitSV will consolidate UTXOs.</p></li>
 <li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb.</p></li>
-<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
+<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default BitSV will
 communicate with the blockchain itself.</p></li>
 <li><p><strong>custom_pushdata</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Adds control over push_data elements inside of the op_return by adding the
 “custom_pushdata” = True / False parameter as a “switch” to the
@@ -355,7 +347,7 @@ communicate with the blockchain itself.</p></li>
 <p>lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either “hex” or “utf-8”
 fee : sat/byte (defaults to 1 satoshi per byte)</p>
 <p>broadcasts rawtx</p>
-<p>lst_of_pushdata = [(‘6d01’,’hex’), (‘my_new_memocash_name’, ‘utf-8’)]
+<p>lst_of_pushdata = [(‘6d01’,’hex’), (‘my_new_memo_name’, ‘utf-8’)]
 send_op_return(my_key, lst_of_pushdata)</p>
 </dd></dl>
 
@@ -472,7 +464,7 @@ transaction data.</p>
 <dl class="class">
 <dt id="bitsv.PrivateKeyTestnet">
 <em class="property">class </em><code class="descclassname">bitsv.</code><code class="descname">PrivateKeyTestnet</code><span class="sig-paren">(</span><em>wif=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKeyTestnet" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class represents a testnet BitcoinCash private key. <strong>Note:</strong> coins
+<dd><p>This class represents a testnet Bitcoin SV private key. <strong>Note:</strong> coins
 on the test network have no monetary value!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -517,21 +509,19 @@ byte is disregarded. Compression will be used by all new keys.</p>
 be either an int, float, or string as long as it is
 a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
 must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
-<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – <p>The number of satoshi per byte to pay to miners. By default
-Bitcash will poll <a class="reference external" href="https://bitcoincashfees.earn.com">https://bitcoincashfees.earn.com</a> and use a fee
-that will allow your transaction to be confirmed as soon as
-possible.</p>
-</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi per byte to pay to miners. By default
+BitSV use a fee that will allow your transaction to be confirmed as soon as
+possible.</p></li>
 <li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
-transaction. By default Bitcash will send any change to
+transaction. By default BitSV will send any change to
 the same address you sent from.</p></li>
-<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
+<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not BitSV should use all available UTXOs to
 make future transactions smaller and therefore reduce
-fees. By default Bitcash will consolidate UTXOs.</p></li>
+fees. By default BitSV will consolidate UTXOs.</p></li>
 <li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb bytes.</p></li>
-<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
+<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default BitSV will
 communicate with the testnet blockchain itself.</p></li>
 </ul>
 </dd>
@@ -674,21 +664,18 @@ a valid input to <code class="docutils literal notranslate"><span class="pre">de
 must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
 <li><p><strong>compressed</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not the <code class="docutils literal notranslate"><span class="pre">address</span></code> corresponds to a
 compressed public key. This influences the fee.</p></li>
-<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – <p>The number of satoshi per byte to pay to miners. By default
-Bitcash will poll <a class="reference external" href="https://bitcoincashfees.earn.com">https://bitcoincashfees.earn.com</a> and use a fee
-that will allow your transaction to be confirmed as soon as
-possible.</p>
-</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi per byte to pay to miners. By default
+BitSV will use a fee of 1 sat/byte.</p></li>
 <li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
-transaction. By default Bitcash will send any change to
+transaction. By default BitSV will send any change to
 the same address you sent from.</p></li>
-<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
+<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not BitSV should use all available UTXOs to
 make future transactions smaller and therefore reduce
-fees. By default Bitcash will consolidate UTXOs.</p></li>
+fees. By default BitSV will consolidate UTXOs.</p></li>
 <li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb bytes.</p></li>
-<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
+<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default BitSV will
 communicate with the blockchain itself.</p></li>
 </ul>
 </dd>
@@ -732,21 +719,18 @@ the testnet blockchain. This accepts the same arguments as
 be either an int, float, or string as long as it is
 a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
 must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
-<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – <p>The number of satoshi per byte to pay to miners. By default
-Bitcash will poll <a class="reference external" href="https://bitcoincashfees.earn.com">https://bitcoincashfees.earn.com</a> and use a fee
-that will allow your transaction to be confirmed as soon as
-possible.</p>
-</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi per byte to pay to miners. By default
+BitSV will use a fee of 1 sat/byte.</p></li>
 <li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
-transaction. By default Bitcash will send any change to
+transaction. By default BitSV will send any change to
 the same address you sent from.</p></li>
-<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not Bitcash should use all available UTXOs to
+<li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not BitSV should use all available UTXOs to
 make future transactions smaller and therefore reduce
-fees. By default Bitcash will consolidate UTXOs.</p></li>
+fees. By default BitSV will consolidate UTXOs.</p></li>
 <li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb bytes.</p></li>
-<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default Bitcash will
+<li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default BitSV will
 communicate with the testnet blockchain itself.</p></li>
 </ul>
 </dd>
