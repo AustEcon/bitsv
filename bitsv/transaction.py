@@ -6,7 +6,7 @@ from bitsv.exceptions import InsufficientFunds
 from bitsv.format import address_to_public_key_hash
 from bitsv.network.rates import currency_to_satoshi_cached
 from bitsv.utils import (
-    bytes_to_hex, chunk_data, hex_to_bytes, int_to_unknown_bytes, int_to_varint
+    bytes_to_hex, chunk_data, hex_to_bytes, int_to_varint
 )
 
 VERSION_1 = 0x01.to_bytes(4, byteorder='little')
@@ -16,7 +16,7 @@ LOCK_TIME = 0x00.to_bytes(4, byteorder='little')
 ##
 # Python 3 doesn't allow bitwise operators on byte objects...
 HASH_TYPE = 0x01.to_bytes(4, byteorder='little')
-# BitcoinCash fork ID.
+# BitcoinSV fork ID.
 SIGHASH_FORKID = 0x40.to_bytes(4, byteorder='little')
 # So we just do this for now. FIXME
 HASH_TYPE = 0x41.to_bytes(4, byteorder='little')
@@ -138,9 +138,6 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
 
     for i, output in enumerate(outputs):
         dest, amount, currency = output
-        # LEGACYADDRESSDEPRECATION
-        # FIXME: Will be removed in an upcoming release, breaking compatibility with legacy addresses.
-        #dest = cashaddress.to_cash_address(dest)
         outputs[i] = (dest, currency_to_satoshi_cached(amount, currency))
 
     if not unspents:
@@ -163,7 +160,7 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
             total_op_return_size += get_op_return_size(message, custom_pushdata=False)
 
     elif message and (custom_pushdata is True):
-        if (len(message) >= MESSAGE_LIMIT):
+        if len(message) >= MESSAGE_LIMIT:
             # FIXME add capability for MESSAGE_LIMIT bytes for custom pushdata elements
             raise ValueError("Currently cannot exceed 100000 bytes with custom_pushdata.")
         else:
@@ -243,7 +240,6 @@ def construct_output_block(outputs, custom_pushdata=False):
                 output_block += b'\x00\x00\x00\x00\x00\x00\x00\x00'
 
         # Script length in wiki is "Var_int" but there's a note of "modern BitcoinQT" using a more compact "CVarInt"
-        # CVarInt is what I believe we have here - No changes made. If incorrect - only breaks if 220 byte limit is increased.
         output_block += int_to_varint(len(script))
         output_block += script
 
@@ -285,7 +281,6 @@ def create_p2pkh_transaction(private_key, unspents, outputs, custom_pushdata=Fal
     output_block = construct_output_block(outputs, custom_pushdata=custom_pushdata)
 
     # Optimize for speed, not memory, by pre-computing values.
-    # Version 5.4 utxos will no longer have the "confirmations" attribute - in-keeping with BitIndex utxo format
     inputs = []
     for unspent in unspents:
         script = hex_to_bytes(unspent.script)
