@@ -127,7 +127,7 @@ class BaseKey:
 
 
 class PrivateKey(BaseKey):
-    """This class represents a BitcoinCash private key. ``Key`` is an alias.
+    """This class represents a Bitcoin SV private key. ``Key`` is an alias.
 
     :param wif: A private key serialized to the Wallet Import Format. If the
                 argument is not supplied, a new private key will be created.
@@ -219,23 +219,21 @@ class PrivateKey(BaseKey):
                         must be :ref:`supported <supported currencies>`.
         :type outputs: ``list`` of ``tuple``
         :param fee: The number of satoshi per byte to pay to miners. By default
-                    Bitcash will poll `<https://bitcoincashfees.earn.com>`_ and use a fee
-                    that will allow your transaction to be confirmed as soon as
-                    possible.
+                    BitSV will use a fee of 1 sat/byte.
         :type fee: ``int``
         :param leftover: The destination that will receive any change from the
-                         transaction. By default Bitcash will send any change to
+                         transaction. By default BitSV will send any change to
                          the same address you sent from.
         :type leftover: ``str``
-        :param combine: Whether or not Bitcash should use all available UTXOs to
+        :param combine: Whether or not BitSV should use all available UTXOs to
                         make future transactions smaller and therefore reduce
-                        fees. By default Bitcash will consolidate UTXOs.
+                        fees. By default BitSV will consolidate UTXOs.
         :type combine: ``bool``
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
                         each message will be stored in chunks of 100kb.
         :type message: ``str`` if custom_pushdata = False; ``list`` of ``tuple`` if custom_pushdata = True
-        :param unspents: The UTXOs to use as the inputs. By default Bitcash will
+        :param unspents: The UTXOs to use as the inputs. By default BitSV will
                          communicate with the blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
         :param custom_pushdata: Adds control over push_data elements inside of the op_return by adding the
@@ -273,23 +271,21 @@ class PrivateKey(BaseKey):
                         must be :ref:`supported <supported currencies>`.
         :type outputs: ``list`` of ``tuple``
         :param fee: The number of satoshi per byte to pay to miners. By default
-                    Bitcash will poll `<https://bitcoincashfees.earn.com>`_ and use a fee
-                    that will allow your transaction to be confirmed as soon as
-                    possible.
+                    BitSV will use a fee of 1 sat/byte.
         :type fee: ``int``
         :param leftover: The destination that will receive any change from the
-                         transaction. By default Bitcash will send any change to
+                         transaction. By default BitSV will send any change to
                          the same address you sent from.
         :type leftover: ``str``
-        :param combine: Whether or not Bitcash should use all available UTXOs to
+        :param combine: Whether or not BitSV should use all available UTXOs to
                         make future transactions smaller and therefore reduce
-                        fees. By default Bitcash will consolidate UTXOs.
+                        fees. By default BitSV will consolidate UTXOs.
         :type combine: ``bool``
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
                         each message will be stored in chunks of 100kb.
         :type message: ``str`` if custom_pushdata = False; ``list`` of ``tuple`` if custom_pushdata = True
-        :param unspents: The UTXOs to use as the inputs. By default Bitcash will
+        :param unspents: The UTXOs to use as the inputs. By default BitSV will
                          communicate with the blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
         :param custom_pushdata: Adds control over push_data elements inside of the op_return by adding the
@@ -327,23 +323,21 @@ class PrivateKey(BaseKey):
                            compressed public key. This influences the fee.
         :type compressed: ``bool``
         :param fee: The number of satoshi per byte to pay to miners. By default
-                    Bitcash will poll `<https://bitcoincashfees.earn.com>`_ and use a fee
-                    that will allow your transaction to be confirmed as soon as
-                    possible.
+                    BitSV will use a fee of 1 sat/byte
         :type fee: ``int``
         :param leftover: The destination that will receive any change from the
-                         transaction. By default Bitcash will send any change to
+                         transaction. By default BitSV will send any change to
                          the same address you sent from.
         :type leftover: ``str``
-        :param combine: Whether or not Bitcash should use all available UTXOs to
+        :param combine: Whether or not BitSV should use all available UTXOs to
                         make future transactions smaller and therefore reduce
-                        fees. By default Bitcash will consolidate UTXOs.
+                        fees. By default BitSV will consolidate UTXOs.
         :type combine: ``bool``
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
                         each message will be stored in chunks of 100kb bytes.
         :type message: ``str`` if custom_pushdata = False; ``list`` of ``tuple`` if custom_pushdata = True
-        :param unspents: The UTXOs to use as the inputs. By default Bitcash will
+        :param unspents: The UTXOs to use as the inputs. By default BitSV will
                          communicate with the blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
         :param custom_pushdata: Adds control over push_data elements inside of the op_return by adding the
@@ -470,7 +464,7 @@ class PrivateKey(BaseKey):
 
         Examples
         --------
-        lst_of_pushdata = [('6d01','hex'), ('my_new_memocash_name', 'utf-8')]
+        lst_of_pushdata = [('6d01','hex'), ('my_new_memo_name', 'utf-8')]
         send_op_return(my_key, lst_of_pushdata)
         """
 
@@ -482,7 +476,7 @@ class PrivateKey(BaseKey):
 
 
 class PrivateKeyTestnet(BaseKey):
-    """This class represents a testnet BitcoinCash private key. **Note:** coins
+    """This class represents a testnet Bitcoin SV private key. **Note:** coins
     on the test network have no monetary value!
 
     :param wif: A private key serialized to the Wallet Import Format. If the
@@ -574,23 +568,22 @@ class PrivateKeyTestnet(BaseKey):
                         must be :ref:`supported <supported currencies>`.
         :type outputs: ``list`` of ``tuple``
         :param fee: The number of satoshi per byte to pay to miners. By default
-                    Bitcash will poll `<https://bitcoincashfees.earn.com>`_ and use a fee
-                    that will allow your transaction to be confirmed as soon as
+                    BitSV use a fee that will allow your transaction to be confirmed as soon as
                     possible.
         :type fee: ``int``
         :param leftover: The destination that will receive any change from the
-                         transaction. By default Bitcash will send any change to
+                         transaction. By default BitSV will send any change to
                          the same address you sent from.
         :type leftover: ``str``
-        :param combine: Whether or not Bitcash should use all available UTXOs to
+        :param combine: Whether or not BitSV should use all available UTXOs to
                         make future transactions smaller and therefore reduce
-                        fees. By default Bitcash will consolidate UTXOs.
+                        fees. By default BitSV will consolidate UTXOs.
         :type combine: ``bool``
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
                         each message will be stored in chunks of 100kb bytes.
         :type message: ``str`` if custom_pushdata = False; ``list`` of ``tuple`` if custom_pushdata = True
-        :param unspents: The UTXOs to use as the inputs. By default Bitcash will
+        :param unspents: The UTXOs to use as the inputs. By default BitSV will
                          communicate with the testnet blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
         :returns: The signed transaction as hex.
@@ -623,23 +616,21 @@ class PrivateKeyTestnet(BaseKey):
                         must be :ref:`supported <supported currencies>`.
         :type outputs: ``list`` of ``tuple``
         :param fee: The number of satoshi per byte to pay to miners. By default
-                    Bitcash will poll `<https://bitcoincashfees.earn.com>`_ and use a fee
-                    that will allow your transaction to be confirmed as soon as
-                    possible.
+                    BitSV will use a fee of 1 sat/byte.
         :type fee: ``int``
         :param leftover: The destination that will receive any change from the
-                         transaction. By default Bitcash will send any change to
+                         transaction. By default BitSV will send any change to
                          the same address you sent from.
         :type leftover: ``str``
-        :param combine: Whether or not Bitcash should use all available UTXOs to
+        :param combine: Whether or not BitSV should use all available UTXOs to
                         make future transactions smaller and therefore reduce
-                        fees. By default Bitcash will consolidate UTXOs.
+                        fees. By default BitSV will consolidate UTXOs.
         :type combine: ``bool``
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
                         each message will be stored in chunks of 100kb bytes.
         :type message: ``str`` if custom_pushdata = False; ``list`` of ``tuple`` if custom_pushdata = True
-        :param unspents: The UTXOs to use as the inputs. By default Bitcash will
+        :param unspents: The UTXOs to use as the inputs. By default BitSV will
                          communicate with the testnet blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
         :returns: The transaction ID.
@@ -671,23 +662,21 @@ class PrivateKeyTestnet(BaseKey):
                            compressed public key. This influences the fee.
         :type compressed: ``bool``
         :param fee: The number of satoshi per byte to pay to miners. By default
-                    Bitcash will poll `<https://bitcoincashfees.earn.com>`_ and use a fee
-                    that will allow your transaction to be confirmed as soon as
-                    possible.
+                    BitSV will use a fee of 1 sat/byte.
         :type fee: ``int``
         :param leftover: The destination that will receive any change from the
-                         transaction. By default Bitcash will send any change to
+                         transaction. By default BitSV will send any change to
                          the same address you sent from.
         :type leftover: ``str``
-        :param combine: Whether or not Bitcash should use all available UTXOs to
+        :param combine: Whether or not BitSV should use all available UTXOs to
                         make future transactions smaller and therefore reduce
-                        fees. By default Bitcash will consolidate UTXOs.
+                        fees. By default BitSV will consolidate UTXOs.
         :type combine: ``bool``
         :param message: A message to include in the transaction. This will be
                         stored in the blockchain forever. Due to size limits,
                         each message will be stored in chunks of 100kb bytes.
         :type message: ``str`` if custom_pushdata = False; ``list`` of ``tuple`` if custom_pushdata = True
-        :param unspents: The UTXOs to use as the inputs. By default Bitcash will
+        :param unspents: The UTXOs to use as the inputs. By default BitSV will
                          communicate with the blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
         :returns: JSON storing data required to create an offline transaction.
