@@ -38,11 +38,12 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'
     ],
 
-    install_requires=['coincurve>=4.3.0', 'requests', 'cashaddress==1.0.4', 'pycoin'],
+    install_requires=['coincurve>=4.3.0', 'requests', 'cashaddress==1.0.4', 'pycoin==0.80'],
     extras_require={
         'cli': ('appdirs', 'click', 'privy', 'tinydb'),
         'cache': ('lmdb', ),
