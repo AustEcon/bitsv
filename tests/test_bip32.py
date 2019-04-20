@@ -33,8 +33,8 @@ class TestBip32:
     def test_get_xpub(self):
         b32_xprv = bitsv.Bip32(MASTERPRIVATE)
         b32_xpub = bitsv.Bip32(MASTERPUBLIC)
-        assert b32_xprv.get_xpub() == MASTERPUBLIC
-        assert b32_xpub.get_xpub() == MASTERPUBLIC
+        assert b32_xprv.get_xpub().as_text() == MASTERPUBLIC
+        assert b32_xpub.get_xpub().as_text() == MASTERPUBLIC
 
     def test_get_xprv(self):
         b32_xprv = bitsv.Bip32(MASTERPRIVATE)

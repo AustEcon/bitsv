@@ -17,6 +17,7 @@ install:
   - pip install tox
   - pip install codecov
   - pip install sphinx
+  - pip install bitcoinx
 
 script: "tox -- -rs"
 
