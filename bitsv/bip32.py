@@ -15,28 +15,31 @@ class Bip32:
         self.node = key.Key.from_text(extended_key)
         self.bitcoinx_key = None
 
+    def __repr__(self):
+        if self.node.is_private():
+            return "<bitsv.Bip32 obj from private_key for {}>".format(self.get_xpub())
+        else:
+            return "<bitsv.Bip32 obj from pubkey: {}>".format(self.get_xpub())
+
     def get_xpub(self):
-        return self.node.as_text()
+        return self.node.public_copy()
 
     def get_xprv(self):
         if self.node.is_private():
             return self.node.as_text(as_private=True)
         else:
-            print("Your Bip32_Node is not derived from an xprv")
+            raise ValueError("Your Bip32_Node is not derived from an xprv")
 
-    def wif(self):
-        return self.node.wif()
-
-    def address(self, use_uncompressed=False):
-        """Return the public address representation of this key, if available."""
-        return self.node.address(use_uncompressed)
-
-    def private_key(self, use_uncompressed=False):
+    def wif(self, use_uncompressed=False):
         """Returns the private key for this extended private key"""
         if self.node.is_private():
             return self.node.wif(use_uncompressed)
         else:
-            print("Your Bip32_Node is not derived from an xprv")
+            raise ValueError("Your Bip32_Node is not derived from an xprv")
+
+    def address(self, use_uncompressed=False):
+        """Return the public address representation of this key, if available."""
+        return self.node.address(use_uncompressed)
 
     def get_children(self, derivation_path=DERIVATION_PATH_ELECTRUM_SV, index_start=0, index_end=20):
         """Specify the start and end indexes for generating xpubs / xprv keys at the desired derivation_path.
@@ -53,7 +56,12 @@ class Bip32:
         :rtype children: a `list` of `xprv` or `xpub` bip32 nodes at the derivation path specified """
         children = []
         for i in range(index_start, index_end):
-            children.append(self.node.subkey_for_path(derivation_path + '/{}'.format(i)))
+            if self.node.is_private():
+                pycoin_obj = self.node.subkey_for_path(derivation_path + '/{}'.format(i))
+                children.append(Bip32(pycoin_obj.wallet_key(as_private=True)))
+            elif self.node.is_private() is False:
+                pycoin_obj = self.node.subkey_for_path(derivation_path + '/{}.pub'.format(i))
+                children.append(Bip32(pycoin_obj.as_text(as_private=False)))
         return children
 
     def get_child_addresses(self, derivation_path=DERIVATION_PATH_ELECTRUM_SV, index_start=0, index_end=20):

@@ -43,7 +43,7 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy'
     ],
 
-    install_requires=['coincurve>=4.3.0', 'requests', 'cashaddress==1.0.4', 'pycoin==0.80', 'bitcoinx==0.1.3'],
+    install_requires=['coincurve>=4.3.0', 'requests', 'cashaddress==1.0.4', 'pycoin==0.80', 'bitcoinx'],
     extras_require={
         'cli': ('appdirs', 'click', 'privy', 'tinydb'),
         'cache': ('lmdb', ),
