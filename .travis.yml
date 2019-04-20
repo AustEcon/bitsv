@@ -3,21 +3,16 @@ language: python
 
 matrix:
     include:
-        - python: 3.5
-          env: TOXENV=py35
         - python: 3.6
           env: TOXENV=py36
         - python: 3.7
           env: TOXENV=py37
-        - python: pypy3.5-6.0
-          env: TOXENV=pypy3
 
 install:
   - pip install -U setuptools pip
   - pip install tox
   - pip install codecov
   - pip install sphinx
-  - pip install bitcoinx
 
 script: "tox -- -rs"
 
