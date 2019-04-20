@@ -1,3 +1,4 @@
+import bitcoinx
 from pycoin import key
 
 # Popular derivation paths
@@ -12,6 +13,7 @@ class Bip32:
     def __init__(self, extended_key):
         # pycoin.key.BIP32Node object
         self.node = key.Key.from_text(extended_key)
+        self.bitcoinx_key = None
 
     def get_xpub(self):
         return self.node.as_text()
@@ -21,6 +23,9 @@ class Bip32:
             return self.node.as_text(as_private=True)
         else:
             print("Your Bip32_Node is not derived from an xprv")
+
+    def wif(self):
+        return self.node.wif()
 
     def address(self, use_uncompressed=False):
         """Return the public address representation of this key, if available."""
@@ -77,14 +82,31 @@ class Bip32:
         else:
             print("Your Bip32_Node is not derived from an xprv. xpub keys cannot be used to generate private keys")
 
-    def sign(self, data):
-        """Return a der-encoded signature for a hash h.
-        Will throw a RuntimeError if this key is not a private key"""
-        return self.node.sign(data)
+    def sign_message(self, data, hasher=bitcoinx.double_sha256):
+        """Returns a signature as bytes (65 bytes). Compatible with Bitcoind and Electrum SV
+        for signature / verification"""
+        if self.bitcoinx_key is None:  # computationally expensive - avoid repeating this for multiple signatures
+            self.bitcoinx_key = bitcoinx.PrivateKey.from_WIF(self.wif())
+        return self.bitcoinx_key.sign_message(data, hasher)
 
-    def verify(self, data, sig):
-        """Return whether a signature is valid for hash h using this key."""
-        return self.node.verify(data, sig)
+    def sign_message_to_base64(self, data, hasher=bitcoinx.double_sha256):
+        """Returns signature as a base64 ASCII string. Compatible with Bitcoind and Electrum SV
+        for signature / verification"""
+        if self.bitcoinx_key is None:  # computationally expensive - avoid repeating this for multiple signatures
+            self.bitcoinx_key = bitcoinx.PrivateKey.from_WIF(self.wif())
+        return self.bitcoinx_key.sign_message_to_base64(data, hasher)
+
+    def verify_data(self, data, sig, hasher=bitcoinx.double_sha256):
+        """Return whether a signature is valid for data using this key."""
+        if self.bitcoinx_key is None:  # computationally expensive - avoid repeating this for multiple signatures
+            self.bitcoinx_key = bitcoinx.PrivateKey.from_WIF(self.wif())
+        return self.bitcoinx_key.public_key.verify_message(sig, data, hasher)
+
+    def verify_data_and_address(self, data, sig, address, hasher=bitcoinx.double_sha256):
+        if self.bitcoinx_key is None:  # computationally expensive - avoid repeating this for multiple signatures
+            self.bitcoinx_key = bitcoinx.PrivateKey.from_WIF(self.wif())
+        return self.bitcoinx_key.public_key.verify_message_and_address(message_sig=sig, message=data, address=address,
+                                                                       hasher=hasher)
 
     def chain_code(self):
         """32 byte chain code for xpub or xprv"""
@@ -92,50 +114,3 @@ class Bip32:
 
     def fingerprint(self):
         return self.node.fingerprint()
-
-
-# Old Aliases planned for deprecation
-class Bip32utils:
-    """
-    DEPRECATION WARNING: THIS CLASS WILL BE REMOVED FROM THIS LIBRARY IN THE VERY NEAR FUTURE.
-    All functions (except for 'get_xprv_bip32_node()' and 'get_xpub_bip32_node()' constructors)
-    use bip32 node objects as the input value rather than a string of the xprv or xpub keys"""
-    # Functions for generating pycoin.key.BIP32Node objects
-    get_xprv_bip32_node = key.Key.from_text
-    get_xpub_bip32_node = key.Key.from_text
-
-    @staticmethod
-    def xpub_from_xprv(xprv):
-        """DEPRECATION WARNING: THIS CLASS WILL BE REMOVED FROM THIS LIBRARY IN THE VERY NEAR FUTURE."""
-        return xprv.public_copy()
-
-    @staticmethod
-    def get_addresses_from_xpub(xpub, derivation_path=DERIVATION_PATH_ELECTRUM_SV, index_start=0, index_end=20):
-        """
-        DEPRECATION WARNING: THIS CLASS WILL BE REMOVED FROM THIS LIBRARY IN THE VERY NEAR FUTURE.
-        Specify the start and end indexes for generating addresses at derivation_path
-        derivation_path = a string of indices e.g. "0" or "45/0/0"
-        for handcash and electrum sv the default derivation path is m/0' therefore "0 is the default here" """
-        addr_list = []
-        for i in range(index_start, index_end):
-            addr_list.append(xpub.subkey_for_path(derivation_path + '/{}.pub'.format(i)).address())
-        return addr_list
-
-    # Or can use xprv to get addresses (xprv or xpub --> pub address if path ends in ".pub")
-    get_addresses_from_xprv = get_addresses_from_xpub
-
-    @staticmethod
-    def get_private_keys(xprv, derivation_path='0', index_start=0, index_end=20, wif_format=False):
-        """
-        DEPRECATION WARNING: THIS CLASS WILL BE REMOVED FROM THIS LIBRARY IN THE VERY NEAR FUTURE.
-        wif format = True will output WIF format strings instead of private_key objects
-        alternatively the private key objects have a wif() method to generate this later
-        for use with bitsv transaction functions"""
-        keys_list = []
-        for i in range(index_start, index_end):
-            keys_list.append(xprv.subkey_for_path(derivation_path + '/{}'.format(i)))
-        if wif_format:
-            keys_list = [x.wif() for x in keys_list]
-        return keys_list
-
-    get_addresses_from_xprv = get_addresses_from_xpub

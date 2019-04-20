@@ -12,5 +12,6 @@ def main():
     subprocess.call(['coverage', 'report', '-m'])
     input('\n\nPress enter to quit ')
 
+
 if __name__ == '__main__':
     main()
