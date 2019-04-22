@@ -59,8 +59,8 @@ class TestNetworkAPI:
     def test_get_transactions_main_equal(self):
         """ FIXME this is only setup to list the transactions from BitIndex at this time. This will probably break
         when adding in another api to NetworkAPI due to different return formats. Will fix it at that time."""
-        results[:100] = [call(MAIN_ADDRESS_USED1) for call in NetworkAPI.GET_TRANSACTIONS_MAIN]
-        assert all_items_common(results)
+        results = [call(MAIN_ADDRESS_USED1) for call in NetworkAPI.GET_TRANSACTIONS_MAIN]
+        assert all_items_common(results[:100])
 
     def test_get_transactions_main_failure(self):
         with pytest.raises(ConnectionError):
