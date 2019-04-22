@@ -309,6 +309,11 @@ class WhatsonchainAPI:
 
 
 class NetworkAPI:
+    """
+    A Class for handling network API redundancy.
+
+    FIXME network API redundancy and RegTesting / Testnet - see Issue section on github"""
+
     IGNORED_ERRORS = (ConnectionError,
                       requests.exceptions.ConnectionError,
                       requests.exceptions.Timeout,

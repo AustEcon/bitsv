@@ -1,8 +1,7 @@
 import pytest
 
 import bitsv
-from bitsv.network.services import (NetworkAPI, set_service_timeout
-)
+from bitsv.network.services import (NetworkAPI, set_service_timeout)
 from tests.utils import (
     catch_errors_raise_warnings, decorate_methods, raise_connection_error
 )
@@ -58,7 +57,9 @@ class TestNetworkAPI:
             MockBackend.get_balance(MAIN_ADDRESS_USED2)
 
     def test_get_transactions_main_equal(self):
-        results = [call(MAIN_ADDRESS_USED1)[:100] for call in NetworkAPI.GET_TRANSACTIONS_MAIN]
+        """ FIXME this is only setup to list the transactions from BitIndex at this time. This will probably break
+        when adding in another api to NetworkAPI due to different return formats. Will fix it at that time."""
+        results = [call(MAIN_ADDRESS_USED1)['data'][:100] for call in NetworkAPI.GET_TRANSACTIONS_MAIN]
         assert all_items_common(results)
 
     def test_get_transactions_main_failure(self):
