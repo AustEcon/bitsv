@@ -1,17 +1,14 @@
 import json
 
 import requests
-import time
 from cashaddress import convert as cashaddress
 from decimal import Decimal
-from functools import wraps
 
 from bitsv.network import currency_to_satoshi
 from bitsv.network.meta import Unspent
 from bitsv.network.transaction import Transaction, TxPart
 
 DEFAULT_TIMEOUT = 30
-DEFAULT_RETRY = 3
 
 BSV_TO_SAT_MULTIPLIER = 100000000
 
@@ -21,61 +18,9 @@ def set_service_timeout(seconds):
     DEFAULT_TIMEOUT = seconds
 
 
-def set_service_retry(retry):
-    global DEFAULT_RETRY
-    DEFAULT_RETRY = retry
-
-
-def retry(ExceptionToCheck, tries=3, delay=1, backoff=2, logger=None):
-    """Retry calling the decorated function using an exponential backoff,
-    the default dealy sequence is 1s, 2s, 4s, 8s...
-
-    http://www.saltycrane.com/blog/2009/11/trying-out-retry-decorator-python/
-    original from: http://wiki.python.org/moin/PythonDecoratorLibrary#Retry
-
-    :param ExceptionToCheck: the exception object to check. may be a tuple of exceptions to check
-    :type ExceptionToCheck: Exception or tuple
-
-    :param tries: number of times to try (not retry) before giving up
-    :type tries: int
-
-    :param delay: initial delay between retries in seconds
-    :type delay: int
-
-    :param backoff: backoff multiplier e.g. value of 2 will double the delay each retry
-    :type backoff: int
-
-    :param logger: logger to use. If None, print
-    :type logger: logging.Logger instance
-    """
-    def deco_retry(f):
-
-        @wraps(f)
-        def f_retry(*args, **kwargs):
-            mtries, mdelay = tries, delay
-            while mtries > 1:
-                try:
-                    return f(*args, **kwargs)
-                except ExceptionToCheck as e:
-                    msg = "{}, Retrying in {} seconds...".format(str(e), mdelay)
-                    if logger:
-                        logger.warning(msg)
-                    else:
-                        print(msg)
-                    time.sleep(mdelay)
-                    mtries -= 1
-                    mdelay *= backoff
-            return f(*args, **kwargs)
-
-        return f_retry  # true decorator
-
-    return deco_retry
-
-
 class BitIndex:
 
     @staticmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def get_balance(address):
         """Gets utxos for given legacy address"""
         address = cashaddress.to_legacy_address(address)
@@ -86,12 +31,9 @@ class BitIndex:
 
         r = requests.get('https://api.bitindex.network/api/v2/addrs/balance?address={}'.format(address),
                          headers=headers)
-        if r.status_code != 200:  # pragma: no cover
-            raise ConnectionError
         return r.json()
 
     @staticmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def get_utxo(address):
         """gets utxos for given address BitIndex api"""
         address = cashaddress.to_legacy_address(address)
@@ -102,15 +44,12 @@ class BitIndex:
             'Accept': 'application/json'
         }
         r = requests.post('https://api.bitindex.network/api/addrs/utxo', data=json_payload, headers=headers)
-        if r.status_code != 200:  # pragma: no cover
-            raise ConnectionError
         return [Unspent(amount = currency_to_satoshi(tx['amount'], 'bsv'),
              script = tx['scriptPubKey'],
              txid = tx['txid'],
              txindex = tx['vout']) for tx in r.json()]
 
     @staticmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def broadcast_rawtx(rawtx):
         """broadcasts a create_rawtx as hex to network via BitIndex api"""
         json_payload = json.dumps({"hex": rawtx})
@@ -120,8 +59,6 @@ class BitIndex:
             'Accept': 'application/json'
         }
         r = requests.post('https://api.bitindex.network/api/v2/tx/send', data=json_payload, headers=headers)
-        if r.status_code != 200:  # pragma: no cover
-            raise ConnectionError
         return r.json()
 
 
@@ -139,7 +76,6 @@ class InsightAPI:
     TX_PUSH_PARAM = ''
 
     @classmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def get_balance(cls, address):
         r = requests.get(cls.MAIN_BALANCE_API.format(address), timeout=DEFAULT_TIMEOUT)
         if r.status_code != 200:  # pragma: no cover
@@ -147,7 +83,6 @@ class InsightAPI:
         return r.json()
 
     @classmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def get_transactions(cls, address):
         r = requests.get(cls.MAIN_ADDRESS_API.format(address), timeout=DEFAULT_TIMEOUT)
         if r.status_code != 200:  # pragma: no cover
@@ -155,7 +90,6 @@ class InsightAPI:
         return r.json()['transactions']
 
     @classmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def get_transaction(cls, txid):
         r = requests.get(cls.MAIN_TX_API.format(txid), timeout=DEFAULT_TIMEOUT)
         if r.status_code != 200:  # pragma: no cover
@@ -185,7 +119,6 @@ class InsightAPI:
         return tx
 
     @classmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def get_tx_amount(cls, txid, txindex):
         r = requests.get(cls.MAIN_TX_AMOUNT_API.format(txid), timeout=DEFAULT_TIMEOUT)
         if r.status_code != 200:  # pragma: no cover
@@ -194,7 +127,6 @@ class InsightAPI:
         return (Decimal(response['vout'][txindex]['value']) * BSV_TO_SAT_MULTIPLIER).normalize()
 
     @classmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def get_unspent(cls, address):
         r = requests.get(cls.MAIN_UNSPENT_API.format(address), timeout=DEFAULT_TIMEOUT)
         if r.status_code != 200:  # pragma: no cover
@@ -209,13 +141,12 @@ class InsightAPI:
         ]
 
     @classmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def broadcast_tx(cls, tx_hex):  # pragma: no cover
         r = requests.post(cls.MAIN_TX_PUSH_API, json={cls.TX_PUSH_PARAM: tx_hex}, timeout=DEFAULT_TIMEOUT)
         return True if r.status_code == 200 else False
 
 
-class BchSVExplorerDotComAPI(InsightAPI):
+class BsvExplorerDotComAPI(InsightAPI):
     """
     Simple bitcoin SV REST API --> uses Legacy address format
     - get_balance
@@ -233,7 +164,6 @@ class BchSVExplorerDotComAPI(InsightAPI):
     TX_PUSH_PARAM = 'create_rawtx'
 
     @classmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def get_address_info(cls, address):
         address = cashaddress.to_legacy_address(address)
         r = requests.get(cls.MAIN_ADDRESS_API.format(address), timeout=DEFAULT_TIMEOUT)
@@ -242,7 +172,6 @@ class BchSVExplorerDotComAPI(InsightAPI):
         return r.json()
 
     @classmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def get_balance(cls, address):
         address = cashaddress.to_legacy_address(address)
         r = requests.get(cls.MAIN_BALANCE_API.format(address), timeout=DEFAULT_TIMEOUT)
@@ -251,7 +180,6 @@ class BchSVExplorerDotComAPI(InsightAPI):
         return r.json()
 
     @classmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def get_transactions(cls, address):
         address = cashaddress.to_legacy_address(address)
         r = requests.get(cls.MAIN_ADDRESS_API.format(address), timeout=DEFAULT_TIMEOUT)
@@ -260,7 +188,6 @@ class BchSVExplorerDotComAPI(InsightAPI):
         return r.json()['transactions']
 
     @classmethod
-    @retry(Exception, tries=DEFAULT_RETRY)
     def get_unspent(cls, address):
         address = cashaddress.to_legacy_address(address)
         r = requests.get(cls.MAIN_UNSPENT_API.format(address), timeout=DEFAULT_TIMEOUT)
@@ -284,11 +211,11 @@ class NetworkAPI:
 
     # Version 5.4 - BitIndex for balance, broadcast and utxos (keeps these critical functions in sync with one another)
     GET_BALANCE_MAIN = [BitIndex.get_balance]
-    GET_TRANSACTIONS_MAIN = [BchSVExplorerDotComAPI.get_transactions]
+    GET_TRANSACTIONS_MAIN = [BsvExplorerDotComAPI.get_transactions]
     GET_UNSPENT_MAIN = [BitIndex.get_utxo]
     BROADCAST_TX_MAIN = [BitIndex.broadcast_rawtx]
-    GET_TX_MAIN = [BchSVExplorerDotComAPI.get_transaction]
-    GET_TX_AMOUNT_MAIN = [BchSVExplorerDotComAPI.get_tx_amount]
+    GET_TX_MAIN = [BsvExplorerDotComAPI.get_transaction]
+    GET_TX_AMOUNT_MAIN = [BsvExplorerDotComAPI.get_tx_amount]
 
     # Version 5.3
     '''
