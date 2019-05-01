@@ -30,7 +30,10 @@ def hex_to_bytes(hexed):
 
 
 def int_to_hex(num, upper=False):
+    """Ensures that there is an even number of characters in the hex string"""
     hexed = hex(num)[2:]
+    if len(hexed) % 2 != 0:
+        hexed = '0' + hexed
     return hexed.upper() if upper else hexed
 
 

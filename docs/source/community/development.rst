@@ -4,7 +4,7 @@ Development
 Oversight
 ---------
 
-`Ofek Lev <https://github.com/ofek>`_, who is also the only current maintainer,
+`AustEcon <https://github.com/AustEcon>`_, who is also the only current maintainer,
 has the final say regarding any new features or API changes.
 
 Philosophy
@@ -26,12 +26,12 @@ Documentation
 -------------
 
 Docs are hosted by `GitHub Pages`_ and are automatically built and published
-by Travis after every successful commit to Bitcash's ``master`` branch.
+by Travis after every successful commit to BitSV's ``master`` branch.
 
 Version Scheme
 --------------
 
-Bitcash tries to adhere to `semantic versioning`_ as much as possible.
+BitSV tries to adhere to `semantic versioning`_ as much as possible.
 
 .. _Travis CI: https://travis-ci.org
 .. _Codecov: https://codecov.io

@@ -1,8 +1,8 @@
 Release History
 ===============
 
-Unreleased (see `master <https://github.com/ofek/bitcash>`_)
---------------------------------------------------------
+Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
+--------------------------------------------------------------
 
 - Add a get_transaction() function to network services that
   returns an instance of a new Transaction class which
@@ -61,20 +61,20 @@ Unreleased (see `master <https://github.com/ofek/bitcash>`_)
   in an order of magnitude faster key creation and signing/verifying.
 - Improved performance of base58 encoding/decoding.
 - **Breaking:** Dropped support for Python 3.3 & 3.4.
-- **Breaking:** :func:`~bitcash.verify_sig` now returns ``False`` for invalid
+- **Breaking:** :func: `~bitsv.verify_sig` now returns ``False`` for invalid
   signatures instead of raising an exception. Also, ``strict`` is no longer
   a parameter as BIP-62 compliance is now required.
 
 0.3.1 (2017-03-21)
 ------------------
 
-- **Fixed** :ref:`cold storage <coldstorage>` workflow.
+- **Fixed** :ref: `cold storage <coldstorage>` workflow.
 - Improved performance of private key instantiation.
 
 0.3.0 (2017-03-20)
 ------------------
 
-- Implemented a way to use private keys in :ref:`cold storage <coldstorage>`.
+- Implemented a way to use private keys in :ref: `cold storage <coldstorage>`.
 - Changed the default timeout of services from 5 to 10 seconds.
 - Fixed network service redundancy by failing if response code is not 200.
 
@@ -82,7 +82,7 @@ Unreleased (see `master <https://github.com/ofek/bitcash>`_)
 ------------------
 
 - Improved stability of network tests.
-- Added :func:`~bitcash.verify_sig`.
+- Added :func: `~bitsv.verify_sig`.
 - Refactored crypto to yield over an order of magnitude faster hashing.
 
 0.1.0 (2017-03-15)

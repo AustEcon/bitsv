@@ -14,7 +14,7 @@ from .samples import (
     PUBLIC_KEY_COMPRESSED, PUBLIC_KEY_UNCOMPRESSED, PUBLIC_KEY_X,
     PUBLIC_KEY_Y, WALLET_FORMAT_COMPRESSED_MAIN, WALLET_FORMAT_COMPRESSED_TEST,
     WALLET_FORMAT_MAIN, WALLET_FORMAT_TEST,
-    BITCOIN_CASHADDRESS, BITCOIN_CASHADDRESS_TEST
+    BITCOIN_ADDRESS, BITCOIN_ADDRESS_TEST
 )
 
 TRAVIS = 'TRAVIS' in os.environ
@@ -131,7 +131,9 @@ class TestPrivateKey:
 
     def test_address(self):
         private_key = PrivateKey(WALLET_FORMAT_MAIN)
-        assert private_key.address == BITCOIN_CASHADDRESS
+        assert private_key.address == BITCOIN_ADDRESS
+        private_key = PrivateKeyTestnet(WALLET_FORMAT_TEST)
+        assert private_key.address == BITCOIN_ADDRESS_TEST
 
     def test_to_wif(self):
         private_key = PrivateKey(WALLET_FORMAT_MAIN)
@@ -176,4 +178,4 @@ class TestPrivateKey:
         assert key.to_int() == PRIVATE_KEY_NUM
 
     def test_repr(self):
-        assert repr(PrivateKey(WALLET_FORMAT_MAIN)) == '<PrivateKey: bitcoincash:qzfyvx77v2pmgc0vulwlfkl3uzjgh5gnmqk5hhyaa6>'
+        assert repr(PrivateKey(WALLET_FORMAT_MAIN)) == '<PrivateKey: 1ELReFsTCUY2mfaDTy32qxYiT49z786eFg>'

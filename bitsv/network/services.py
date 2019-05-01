@@ -34,6 +34,29 @@ class BitIndex:
         return r.json()
 
     @staticmethod
+    def get_txs(address):
+        """Gets utxos for given legacy address"""
+        address = cashaddress.to_legacy_address(address)
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+
+        r = requests.get('https://api.bitindex.network/api/v2/addrs/txs?address={}'.format(address), headers=headers)
+        return r.json()
+
+    @staticmethod
+    def get_tx(tx):
+        """Gets utxos for given legacy address"""
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+
+        r = requests.get('https://api.bitindex.network/api/v2/tx/{}'.format(tx), headers=headers)
+        return r.json()
+
+    @staticmethod
     def get_utxo(address):
         """gets utxos for given address BitIndex api"""
         address = cashaddress.to_legacy_address(address)
@@ -44,10 +67,11 @@ class BitIndex:
             'Accept': 'application/json'
         }
         r = requests.post('https://api.bitindex.network/api/addrs/utxo', data=json_payload, headers=headers)
-        return [Unspent(amount = currency_to_satoshi(tx['amount'], 'bsv'),
-             script = tx['scriptPubKey'],
-             txid = tx['txid'],
-             txindex = tx['vout']) for tx in r.json()]
+        return [Unspent(amount=currency_to_satoshi(tx['amount'], 'bsv'),
+                        script=tx['scriptPubKey'],
+                        txid=tx['txid'],
+                        txindex=tx['vout'],
+                        confirmations=tx['confirmations']) for tx in r.json()]
 
     @staticmethod
     def broadcast_rawtx(rawtx):
@@ -59,6 +83,61 @@ class BitIndex:
             'Accept': 'application/json'
         }
         r = requests.post('https://api.bitindex.network/api/v2/tx/send', data=json_payload, headers=headers)
+        return r.json()
+
+    @staticmethod
+    def xpub_register(xpub, api_key):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'api_key': api_key
+        }
+        r = requests.post('https://api.bitindex.network/api/v2/xpub/register?xpub={}'.format(xpub),
+                          headers=headers)
+        return r
+
+    @staticmethod
+    def get_xpub_status(xpub, api_key):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'api_key': api_key
+        }
+        r = requests.get('https://api.bitindex.network/api/v2/xpub/status?xpub={}'.format(xpub),
+                         headers=headers)
+        return r.json()
+
+    @staticmethod
+    def get_xpub_balance(xpub, api_key):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'api_key': api_key
+        }
+        r = requests.get('https://api.bitindex.network/api/v2/xpub/balance?xpub={}'.format(xpub),
+                         headers=headers)
+        return r.json()
+
+    @staticmethod
+    def get_xpub_utxos(xpub, api_key):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'api_key': api_key
+        }
+        r = requests.get('https://api.bitindex.network/api/v2/xpub/utxos?xpub={}'.format(xpub),
+                         headers=headers)
+        return r.json()
+
+    @staticmethod
+    def get_xpub_tx(xpub, api_key):
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'api_key': api_key
+        }
+        r = requests.get('https://api.bitindex.network/api/v2/xpub/txs?xpub={}'.format(xpub),
+                         headers=headers)
         return r.json()
 
 
@@ -146,95 +225,106 @@ class InsightAPI:
         return True if r.status_code == 200 else False
 
 
-class BsvExplorerDotComAPI(InsightAPI):
-    """
-    Simple bitcoin SV REST API --> uses Legacy address format
-    - get_balance
-    - get_transactions
-    - get_unspent
-    Testnet untested
-    """
-    MAIN_ENDPOINT = 'https://bchsvexplorer.com/'
-    MAIN_ADDRESS_API = MAIN_ENDPOINT + 'api/addr/{}'
-    MAIN_BALANCE_API = MAIN_ADDRESS_API + '/balance'
-    MAIN_UNSPENT_API = MAIN_ADDRESS_API + '/utxo'
-    MAIN_TX_PUSH_API = MAIN_ENDPOINT + '/tx/send'
-    MAIN_TX_API = MAIN_ENDPOINT + '/tx/{}'
-    MAIN_TX_AMOUNT_API = MAIN_TX_API
-    TX_PUSH_PARAM = 'create_rawtx'
+class WhatsonchainAPI:
+    """Only Testnet supported currently. STN may be added soon. Mainnet too."""
+
+    # Whatsonchain for all testnet functions
+    TESTNET = 'https://api.whatsonchain.com/v1/bsv/{}'.format('test')
+    TESTNET_WOC_STATUS = TESTNET + '/woc'
+    TESTNET_GET_BLOCK_BY_HASH = TESTNET + 'block/hash/{}'
+    TESTNET_GET_BLOCK_BY_HEIGHT = TESTNET + '/block/height/{}'
+    TESTNET_GET_BLOCK_BY_HASH_BY_PAGE = TESTNET + '/block/hash/{}/page/{}'  # Needs .format(hash,page_number)
+    TESTNET_GET_TRANSACTION_BY_HASH = TESTNET + '/tx/hash/{}'
+    TESTNET_POST_RAWTX = TESTNET+ '/tx/raw'  # json payload = {"txHex": "hex..."}
 
     @classmethod
-    def get_address_info(cls, address):
-        address = cashaddress.to_legacy_address(address)
-        r = requests.get(cls.MAIN_ADDRESS_API.format(address), timeout=DEFAULT_TIMEOUT)
+    def get_woc_status_testnet(cls):
+        """returns 'what's on chain' if online"""
+        r = requests.get(cls.TESTNET_WOC_STATUS, timeout=DEFAULT_TIMEOUT)
+        if r.status_code != 200:  # pragma: no cover
+            raise ConnectionError
+        return r.text
+
+    @classmethod
+    def get_block_by_hash_testnet(cls, _hash):
+        r = requests.get(cls.TESTNET_GET_BLOCK_BY_HASH.format(_hash), timeout=DEFAULT_TIMEOUT)
         if r.status_code != 200:  # pragma: no cover
             raise ConnectionError
         return r.json()
 
     @classmethod
-    def get_balance(cls, address):
-        address = cashaddress.to_legacy_address(address)
-        r = requests.get(cls.MAIN_BALANCE_API.format(address), timeout=DEFAULT_TIMEOUT)
+    def get_block_by_height_testnet(cls, _height):
+        r = requests.get(cls.TESTNET_GET_BLOCK_BY_HEIGHT.format(_height), timeout=DEFAULT_TIMEOUT)
         if r.status_code != 200:  # pragma: no cover
             raise ConnectionError
         return r.json()
 
     @classmethod
-    def get_transactions(cls, address):
-        address = cashaddress.to_legacy_address(address)
-        r = requests.get(cls.MAIN_ADDRESS_API.format(address), timeout=DEFAULT_TIMEOUT)
+    def get_block_by_hash_by_page_testnet(cls, _hash, page_number):
+        """Only to be used for large blocks > 1000 txs. Allows paging through lists of transactions.
+        Returns Null if there are not more than 1000 transactions in the block"""
+        r = requests.get(cls.TESTNET_GET_BLOCK_BY_HASH_BY_PAGE.format(_hash, page_number), timeout=DEFAULT_TIMEOUT)
         if r.status_code != 200:  # pragma: no cover
             raise ConnectionError
-        return r.json()['transactions']
+        return r.json()
 
     @classmethod
-    def get_unspent(cls, address):
-        address = cashaddress.to_legacy_address(address)
-        r = requests.get(cls.MAIN_UNSPENT_API.format(address), timeout=DEFAULT_TIMEOUT)
+    def get_transaction_by_hash_testnet(cls, _hash):
+        r = requests.get(cls.TESTNET_GET_TRANSACTION_BY_HASH.format(_hash), timeout=DEFAULT_TIMEOUT)
         if r.status_code != 200:  # pragma: no cover
             raise ConnectionError
-        return [
-            Unspent(currency_to_satoshi(tx['amount'], 'bsv'),
-                    tx['confirmations'],
-                    tx['scriptPubKey'],
-                    tx['txid'],
-                    tx['vout'])
-            for tx in r.json()
-        ]
+        return r.json()
+
+    @classmethod
+    def broadcast_rawtx_testnet(cls, rawtx):
+        # FIXME not actually tested yet
+        """Broadcasts a rawtx to testnet"""
+        json_payload = json.dumps({"txHex": rawtx})
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+        r = requests.post(cls.TESTNET_POST_RAWTX, data=json_payload, headers=headers, timeout=DEFAULT_TIMEOUT)
+        if r.status_code != 200:  # pragma: no cover
+            raise ConnectionError
+        return r.json()
+
+    # Whatsonchain STN endpoints
+    STN = 'https://api.whatsonchain.com/v1/bsv/{}'.format('stn')
+    STN_WOC_STATUS = STN + '/woc'
+    STN_GET_BLOCK_BY_HASH = STN + 'block/hash/{}'
+    STN_GET_BLOCK_BY_HEIGHT = STN + '/block/height/{}'
+    STN_GET_BLOCK_BY_HASH_BY_PAGE = STN + '/block/hash/{}/page/{}'  # Needs .format(hash,page_number)
+    STN_GET_TRANSACTION_BY_HASH = STN + '/tx/hash/{}'
+    STN_POST_RAWTX = STN + '/tx/raw'  # json payload = {"txHex": "hex..."}
+
+    # Whatsonchain mainnet endpoints (included here as may come in handy later)
+    MAINNET = 'https://api.whatsonchain.com/v1/bsv/{}'.format('main')
+    MAINNET_WOC_STATUS = MAINNET + '/woc'
+    MAINNET_GET_BLOCK_BY_HASH = MAINNET + 'block/hash/{}'
+    MAINNET_GET_BLOCK_BY_HEIGHT = MAINNET + '/block/height/{}'
+    MAINNET_GET_BLOCK_BY_HASH_BY_PAGE = MAINNET + '/block/hash/{}/page/{}'  # Needs .format(hash,page_number)
+    MAINNET_GET_TRANSACTION_BY_HASH = MAINNET + '/tx/hash/{}'
+    MAINNET_POST_RAWTX = STN + '/tx/raw'  # json payload = {"txHex": "hex..."}
 
 
 class NetworkAPI:
+    """
+    A Class for handling network API redundancy.
+
+    FIXME network API redundancy and RegTesting / Testnet - see Issue section on github"""
+
     IGNORED_ERRORS = (ConnectionError,
                       requests.exceptions.ConnectionError,
                       requests.exceptions.Timeout,
                       requests.exceptions.ReadTimeout)
 
-    # Version 5.4 - BitIndex for balance, broadcast and utxos (keeps these critical functions in sync with one another)
+    # BitIndex for all mainnet functions
     GET_BALANCE_MAIN = [BitIndex.get_balance]
-    GET_TRANSACTIONS_MAIN = [BsvExplorerDotComAPI.get_transactions]
+    GET_TRANSACTIONS_MAIN = [BitIndex.get_txs]
     GET_UNSPENT_MAIN = [BitIndex.get_utxo]
     BROADCAST_TX_MAIN = [BitIndex.broadcast_rawtx]
-    GET_TX_MAIN = [BsvExplorerDotComAPI.get_transaction]
-    GET_TX_AMOUNT_MAIN = [BsvExplorerDotComAPI.get_tx_amount]
-
-    # Version 5.3
-    '''
-    GET_BALANCE_MAIN = [BchSVExplorerDotComAPI.get_balance]
-    GET_TRANSACTIONS_MAIN = [BchSVExplorerDotComAPI.get_transactions]
-    GET_UNSPENT_MAIN = [BchSVExplorerDotComAPI.get_unspent]
-    BROADCAST_TX_MAIN = [BchSVExplorerDotComAPI.broadcast_tx]
-    GET_TX_MAIN = [BchSVExplorerDotComAPI.get_transaction]
-    GET_TX_AMOUNT_MAIN = [BchSVExplorerDotComAPI.get_tx_amount]
-    '''
-
-    '''
-    GET_BALANCE_TEST = [BchSVExplorerDotComAPI.get_balance_testnet]
-    GET_TRANSACTIONS_TEST = [BchSVExplorerDotComAPI.get_transactions_testnet]
-    GET_UNSPENT_TEST = [BchSVExplorerDotComAPI.get_unspent_testnet]
-    BROADCAST_TX_TEST = [BchSVExplorerDotComAPI.broadcast_tx_testnet]
-    GET_TX_TEST = [BchSVExplorerDotComAPI.get_transaction_testnet]
-    GET_TX_AMOUNT_TEST = [BchSVExplorerDotComAPI.get_tx_amount_testnet]
-    '''
+    GET_TX_MAIN = [BitIndex.get_tx]
 
     @classmethod
     def get_balance(cls, address):
