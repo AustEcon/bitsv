@@ -1,14 +1,8 @@
-# import requests
-# from requests.exceptions import ConnectionError, HTTPError, Timeout
-
-# Ideally, fast, medium, slow would correlate with actually blocks out.
-# Fast, really shoot for getting into the next block no matter what.
-# Medium should get in within the next couple blocks, 90% certainty.
-# Slow, in a few hours, 90% certainty.
-# The default should be medium so you can go up/down from there.
-DEFAULT_FEE_FAST = 8
-DEFAULT_FEE_MEDIUM = 4
-DEFAULT_FEE_SLOW = 2
+# Bitcoin SV has very low fees. 1 sat / byte is basically garaunteed
+# to be included in the next block. Default is therefore set to 1 sat / byte
+DEFAULT_FEE_FAST = 4
+DEFAULT_FEE_MEDIUM = 2
+DEFAULT_FEE_SLOW = 1
 
 # FIXME: Need to add in a fees API. Issue #1
 # URL = 'https://bitcoincashfees.earn.com/api/v1/fees/recommended'
@@ -20,7 +14,7 @@ FEE_SPEED_SLOW = 'slow'
 
 # FIXME: Not sure if this is better, bools are better, or creating its
 # own type is better.
-def get_fee(speed=FEE_SPEED_MEDIUM):
+def get_fee(speed=FEE_SPEED_SLOW):
     """Gets the recommended satoshi per byte fee.
 
     :param speed: One of: 'fast', 'medium', 'slow'.

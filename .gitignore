@@ -4,9 +4,10 @@
 __pycache__
 /.cache
 /.idea
+/bitsv/.idea
 /.coverage
 /.pytest_cache
-/bitcash.egg-info
+/bitsv.egg-info
 /build
 /dist
 /docs/build

@@ -14,7 +14,7 @@ setup(
     author='AustEcon',
     author_email='AustEcon0922@gmail.com',
     maintainer='AustEcon',
-    maintainer_email='sega01@go-beyond.org',
+    maintainer_email='AustEcon0922@gmail.com',
     url='https://github.com/AustEcon/bitsv',
     download_url='https://github.com/AustEcon/bitsv/tarball/{}'.format(version),
     license='MIT',
@@ -36,13 +36,12 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy'
     ],
 
-    install_requires=['coincurve>=4.3.0', 'requests', 'cashaddress==1.0.4'],
+    install_requires=['coincurve>=4.3.0', 'requests', 'cashaddress==1.0.4', 'pycoin==0.80', 'bitcoinx'],
     extras_require={
         'cli': ('appdirs', 'click', 'privy', 'tinydb'),
         'cache': ('lmdb', ),

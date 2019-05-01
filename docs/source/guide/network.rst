@@ -11,14 +11,14 @@ internal balance will always be in `satoshi`_.
 
 .. code-block:: python
 
-    >>> from bitcash import PrivateKeyTestnet
+    >>> from bitsv import PrivateKeyTestnet
     >>>
     >>> key = PrivateKeyTestnet('cU6s7jckL3bZUUkb3Q2CD9vNu8F1o58K5R5a3JFtidoccMbhEGKZ')
     >>> key.balance
     0
 
 You can query the `blockchain`_ for the current balance by calling
-:func:`~bitcash.PrivateKey.get_balance`. It takes an optional argument ``currency``
+:func:`~bitsv.PrivateKey.get_balance`. It takes an optional argument ``currency``
 (see :ref:`supported currencies`) and returns a formatted string rounded down
 to the proper number of decimal places. By default it will return the balance
 in satoshi.
@@ -31,7 +31,7 @@ in satoshi.
     82721202
 
 After you communicate with the network, you can view the internal balance in
-terms of other currencies using :func:`~bitcash.PrivateKey.balance_as`.
+terms of other currencies using :func:`~bitsv.PrivateKey.balance_as`.
 
 .. code-block:: python
 
@@ -50,7 +50,7 @@ Unspent
 -------
 
 You can see what `unspent transaction outputs`_ (commonly referred to as UTXO)
-you have available to spend by calling :func:`~bitcash.PrivateKey.get_unspents`.
+you have available to spend by calling :func:`~bitsv.PrivateKey.get_unspents`.
 
 .. code-block:: python
 
@@ -63,14 +63,14 @@ you have available to spend by calling :func:`~bitcash.PrivateKey.get_unspents`.
     [Unspent(amount=82721202, confirmations=688, script='76a914990ef60d63b5b5964a1c2282061af45123e93fcb88ac', txid='2ae6f3cc21cf11cfc7ad5d79436ecf08521df6a106691dcd1672b076138ea6ff', txindex=1)]
 
 As you can see, this address has 1 available UTXO to spend worth 82721202
-satoshi. :func:`~bitcash.PrivateKey.get_balance` uses this method by totalling the
+satoshi. :func:`~bitsv.PrivateKey.get_balance` uses this method by totalling the
 amount of all UTXO. You will never have to use this directly.
 
 Transaction History
 -------------------
 
 Get a list of all transactions from newest to oldest by calling
-:func:`~bitcash.PrivateKey.get_transactions`.
+:func:`~bitsv.PrivateKey.get_transactions`.
 
 .. code-block:: python
 
@@ -108,17 +108,15 @@ a future release they will become proper objects.
 Services
 --------
 
-Bitcash communicates with the blockchain using trusted third-party APIs.
+BitSV communicates with the blockchain using trusted third-party APIs.
 Specifically, it can access:
 
-- `<https://insight.bitcashpay.com>`_ via :class:`~bitcash.network.services.BitpayAPI`
-- `<https://blockchain.info>`_ via :class:`~bitcash.network.services.BlockchainAPI`
-- `<https://smartbitcash.com.au>`_ via :class:`~bitcash.network.services.SmartbitcashAPI`
+- `<https://https://www.bitindex.network/docs.html>`_ via :class:`~bitsv.network.services.BitIndex`
 
 NetworkAPI
 ^^^^^^^^^^
 
-Private key network operations use :class:`~bitcash.network.NetworkAPI`. For each method,
+Private key network operations use :class:`~bitsv.network.NetworkAPI`. For each method,
 it polls a service and if an error occurs it tries another.
 
 .. _satoshi: https://en.bitcoin.it/wiki/Satoshi_(unit)
