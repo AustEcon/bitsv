@@ -1,5 +1,4 @@
 import requests
-
 from .bitindex import BitIndex
 
 DEFAULT_TIMEOUT = 30
