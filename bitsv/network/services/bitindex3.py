@@ -1,5 +1,4 @@
 import json
-
 import requests
 from cashaddress import convert as cashaddress
 
@@ -107,7 +106,6 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/tx/{txid}',
             headers=self.headers,
         )
-
         return r.json()
 
     def get_raw_transaction(self, txid):
@@ -118,7 +116,6 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/rawtx/{txid}',
             headers=self.headers,
         )
-
         return r.json()['rawtx']
 
     def get_network_status(self, q='getInfo'):
