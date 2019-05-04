@@ -6,7 +6,6 @@ from bitsv.network.meta import Unspent
 from bitsv.network.transaction import Transaction, TxPart
 
 DEFAULT_TIMEOUT = 30
-
 BSV_TO_SAT_MULTIPLIER = 100000000
 
 
