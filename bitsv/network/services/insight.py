@@ -8,6 +8,8 @@ from bitsv.network.transaction import Transaction, TxPart
 DEFAULT_TIMEOUT = 30
 BSV_TO_SAT_MULTIPLIER = 100000000
 
+# This module is no longer actually used by anything but I don't mind keeping it here for the moment
+
 
 class InsightAPI:
     """
