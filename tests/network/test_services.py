@@ -1,7 +1,8 @@
 import pytest
 
 import bitsv
-from bitsv.network.services import (NetworkAPI, set_service_timeout)
+from bitsv.network.services import NetworkAPI
+from bitsv.network.services.network import set_service_timeout
 from tests.utils import (
     catch_errors_raise_warnings, decorate_methods, raise_connection_error
 )
@@ -27,9 +28,9 @@ def all_items_equal(seq):
 
 
 def test_set_service_timeout():
-    original = bitsv.network.services.DEFAULT_TIMEOUT
+    original = bitsv.network.services.network.DEFAULT_TIMEOUT
     set_service_timeout(3)
-    updated = bitsv.network.services.DEFAULT_TIMEOUT
+    updated = bitsv.network.services.network.DEFAULT_TIMEOUT
 
     assert original != updated
     assert updated == 3
