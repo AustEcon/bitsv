@@ -15,12 +15,18 @@ class BitIndex3:
         self.api_key = api_key
         self.network = network
         self.headers = self._get_headers()
+        self.authorized_headers = self._get_authorized_headers()
 
     def _get_headers(self):
         return {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
         }
+
+    def _get_authorized_headers(self):
+        headers = self._get_headers()
+        headers['api_key'] = self.api_key
+        return headers
 
     def get_uxto(self, address):
         """
