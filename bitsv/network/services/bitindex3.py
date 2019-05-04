@@ -1,6 +1,5 @@
 import json
 import requests
-from cashaddress import convert as cashaddress
 
 from bitsv.network.meta import Unspent
 
@@ -30,13 +29,17 @@ class BitIndex3:
         headers['api_key'] = self.api_key
         return headers
 
-    def get_uxto(self, address):
+    def get_utxos(self, address, sort):
         """
-        Gets utxo's for given legacy address
+        Retrieve utxos for address
+
+        :param address: Address to get utxos for
+        :param sort: Format is 'field:asc' such as 'value:desc' to sort by value descending
         """
-        address = cashaddress.to_legacy_address(address)
-        r = requests.get(
-            f'https://api.bitindex.network/api/v3/{self.network}/addr/{address}/utxo',
+        r = requests.post(
+            f'https://api.bitindex.network/api/v3/{self.network}/addrs/utxo',
+            params={'sort': sort},
+            data=json.dumps({'addrs': address}),
             headers=self.headers,
         )
         return [Unspent(
@@ -50,8 +53,9 @@ class BitIndex3:
     def get_balance(self, address):
         """
         Get address balances and transaction summary
+
+        :param address: Address to get balances for
         """
-        address = cashaddress.to_legacy_address(address)
         r = requests.get(
             f'https://api.bitindex.network/api/v3/{self.network}/addr/{address}',
             headers=self.headers,
@@ -61,71 +65,291 @@ class BitIndex3:
     def get_transactions(
         self,
         address,
-        fromIndex=0,
-        toIndex=0,
-        noAsm=True,
-        noScript=True,
-        noSpent=True,
+        from_index,
+        to_index,
+        no_asm=True,
+        no_script=True,
+        no_spent=True,
     ):
         """
         Retrieve transactions for an address
+
+        :param address: Address to get transactions for
+        :param from_index:
+        :param to_index:
+        :param no_asm: Default: True
+        :param no_script: Default: True
+        :param no_spent: Default: True
         """
-        address = cashaddress.to_legacy_address(address)
-        json_payload = json.dumps({
-            "addrs": address,
-            "fromIndex": fromIndex,
-            "toIndex": toIndex,
-            "noAsm": noAsm,
-            "noScript": noScript,
-            "noSpent": noSpent,
-        })
         r = requests.post(
             f'https://api.bitindex.network/api/v3/{self.network}/addrs/txs',
-            data=json_payload,
+            data=json.dumps({
+                "addrs": address,
+                "fromIndex": from_index,
+                "toIndex": to_index,
+                "noAsm": no_asm,
+                "noScript": no_script,
+                "noSpent": no_spent,
+            }),
             headers=self.headers,
         )
         return r.json()
 
-    def send_transaction(self, rawtx):
+    def send_transaction(self, raw_transaction):
         """
         Sends a transaction to the network
+
+        :param raw_transaction: The raw transaction
         """
-        json_payload = json.dumps({"rawtx": rawtx})
         r = requests.post(
             f'https://api.bitindex.network/api/v3/{self.network}/tx/send',
-            data=json_payload,
+            data=json.dumps({'rawtx': raw_transaction}),
             headers=self.headers,
         )
         return r.json()
 
-    def get_transaction(self, txid):
+    def get_transaction(self, transaction_id):
         """
         Gets a single transaction
+
+        :param transaction_id: The transaction ID
         """
         r = requests.get(
-            f'https://api.bitindex.network/api/v3/{self.network}/tx/{txid}',
+            f'https://api.bitindex.network/api/v3/{self.network}/tx/{transaction_id}',
             headers=self.headers,
         )
         return r.json()
 
-    def get_raw_transaction(self, txid):
+    def get_raw_transaction(self, transaction_id):
         """
         Gets a single transaction as a raw string
+
+        :param transaction_id: The transaction ID
         """
         r = requests.get(
-            f'https://api.bitindex.network/api/v3/{self.network}/rawtx/{txid}',
-            headers=self.headers,
+            f'https://api.bitindex.network/api/v3/{self.network}/rawtx/{transaction_id}',
+            headers=self.authorized_headers,
         )
-        return r.json()['rawtx']
+        return r.json()
 
-    def get_network_status(self, q='getInfo'):
+    def get_network_status(self, query):
         """
         Gets the network status
 
-        :param q: The type of status to query.
+        :param query: The type of status to query. Can be 'getInfo', 'getDifficulty', 'getBestBlockHash', or 'getLastBlockHash'.
         """
         r = requests.get(
-            f'https://api.bitindex.network/api/v3/{self.network}/status?q={q}',
+            f'https://api.bitindex.network/api/v3/{self.network}/status',
+            params={'q': query},
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def get_block_hash_by_height(self, height):
+        """
+        Get block hash by height
+
+        :param height: Block height
+        """
+        r = requests.get(
+            f'https://api.bitindex.network/api/v3/{self.network}/block-index/{height}',
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def get_block(self, block_hash):
+        """
+        Get block
+
+        :param block_hash: Block hash
+        """
+        r = requests.get(
+            f'https://api.bitindex.network/api/v3/{self.network}/block/{block_hash}',
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def get_raw_block(self, block_hash):
+        """
+        Get raw block
+
+        :param block_hash: Block hash
+        """
+        r = requests.get(
+            f'https://api.bitindex.network/api/v3/{self.network}/rawblock/{block_hash}',
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def get_next_address(self, xpub, reserve_time=None):
+        """
+        Get next unused address pair for xpub
+
+        :param xpub: Xpub to query utxos
+        :param reserve_time: Time in seconds to reserve xpub before it will be handed out again (optional)
+        """
+        r = requests.get(
+            f'https://api.bitindex.network/api/v3/{self.network}/xpub/{xpub}/addrs/next',
+            params={'reserveTime': reserve_time},
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def get_xpub_addresses(
+        self,
+        xpub,
+        offset=None,
+        limit=1000,
+        order='desc',
+        address=None,
+    ):
+        """
+        Get addresses for xpub
+
+        :param xpub: Xpub to query utxos
+        :param offset: Pagination offset
+        :param limit: Pagination size. Default: 1000.
+        :param order: Sort order: 'asc' or 'desc'. Default: 'desc'.
+        :param address: Filter by a specific address in the xpub
+        """
+        r = requests.get(
+            f'https://api.bitindex.network/api/v3/{self.network}/xpub/{xpub}/addrs',
+            params={
+                'offset': offset,
+                'limit': 1000,
+                'order': order,
+                'address': address,
+            },
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def get_xpub_status(self, xpub):
+        """
+        Get status and balance for xpub
+
+        :param xpub: Xpub to query utxos
+        """
+        r = requests.get(
+            f'https://api.bitindex.network/api/v3/{self.network}/xpub/{xpub}/status',
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def get_xpub_utxos(self, xpub, sort=None):
+        """
+        Get utxos for xpub
+
+        :param xpub: Xpub to query utxos
+        :param sort: Format is 'field:asc' such as 'value:desc' to sort by value descending
+        """
+        r = requests.get(
+            f'https://api.bitindex.network/api/v3/{self.network}/xpub/{xpub}/utxo',
+            params={'sort': sort},
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def get_xpub_transactions(self, xpub):
+        """
+        Get transaction history for xpub
+
+        :param xpub: Xpub to query utxos
+        """
+        r = requests.get(
+            f'https://api.bitindex.network/api/v3/{self.network}/xpub/{xpub}/txs',
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def get_webhook_config(self):
+        """
+        Get the configured webhook endpoint
+        """
+        r = requests.get(
+            f'https://api.bitindex.network/api/v3/{self.network}/webhook/endpoint',
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def update_webhook_config(self, url, enabled, secret):
+        """
+        Update webhook endpoint confirmation
+
+        :param url: Url to callback when monitored address or xpub has a payment
+        :param enabled: Whether webhooks are enabled or disabled
+        :param secret: Secret parameter passed back to your API for security purposes
+        """
+        r = requests.put(
+            f'https://api.bitindex.network/api/v3/{self.network}/webhook/endpoint',
+            data=json.dumps({
+                'url': url,
+                'enabled': enabled,
+                'secret': secret,
+            }),
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def get_webhook_monitored_addresses(self):
+        """
+        Get monitored addresses and xpubs
+        """
+        r = requests.get(
+            f'https://api.bitindex.network/api/v3/{self.network}/webhook/monitored_addrs',
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def update_webhook_monitored_addresses(self, address):
+        """
+        Update monitored addresses and xpubs
+
+        :param address: Address or xpub key to track and monitor
+        """
+        r = requests.put(
+            f'https://api.bitindex.network/api/v3/{self.network}/webhook/monitored_addrs',
+            data=json.dumps({'addr': address}),
+            headers=self.authorized_headers,
+        )
+        return r.json()
+
+    def webhook_sample_callback(
+        self,
+        transaction_id,
+        address,
+        satoshis,
+        confirmations,
+        vout,
+        secret,
+        xpub=None,
+        path=None,
+    ):
+        """
+        Sample callback for webhook
+
+        :param transaction_id: The transaction ID
+        :param address: The address
+        :param satoshis: Number must be more than, or equal to 1
+        :param confirmations:
+        :param secret:
+        :param vout:
+        :param xpub: Xpub will be present if address is associated with an xpub
+        :param path: Path is set if xpub is present
+        """
+        r = requests.post(
+            f'https://api.bitindex.network/api/v3/webhook/sample_callback',
+            data=json.dumps({
+                'txid': transaction_id,
+                'address': address,
+                'xpub': xpub,
+                'path': path,
+                'satoshis': satoshis,
+                'confirmations': confirmations,
+                'vout': vout,
+                'secret': secret,
+                'network': self.network,
+            }),
             headers=self.headers,
         )
         return r.json()
