@@ -7,6 +7,9 @@ from decimal import Decimal
 from bitsv.network import currency_to_satoshi
 from bitsv.network.meta import Unspent
 from bitsv.network.transaction import Transaction, TxPart
+from bitsv.network.services.bitindex3 import (
+    BitIndex3, BitIndex3MainNet, BitIndex3TestNet, BitIndex3STN
+)
 
 DEFAULT_TIMEOUT = 30
 
