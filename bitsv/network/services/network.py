@@ -2,6 +2,14 @@ import requests
 
 from .bitindex import BitIndex
 
+DEFAULT_TIMEOUT = 30
+BSV_TO_SAT_MULTIPLIER = 100000000
+
+
+def set_service_timeout(seconds):
+    global DEFAULT_TIMEOUT
+    DEFAULT_TIMEOUT = seconds
+
 
 class NetworkAPI:
     """

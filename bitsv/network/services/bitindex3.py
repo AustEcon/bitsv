@@ -9,6 +9,9 @@ from bitsv.network.meta import Unspent
 class BitIndex3:
     """
     Implements version 3 of the BitIndex API
+
+    :param network: select 'main', 'test', or 'stn'
+    :type network: ``str``
     """
 
     def __init__(self, api_key, network='main'):
@@ -104,7 +107,8 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/tx/{txid}',
             headers=self.headers,
         )
-        return r.json()['data']
+
+        return r.json()
 
     def get_raw_transaction(self, txid):
         """
@@ -114,6 +118,7 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/rawtx/{txid}',
             headers=self.headers,
         )
+
         return r.json()['rawtx']
 
     def get_network_status(self, q='getInfo'):
