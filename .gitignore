@@ -1,12 +1,9 @@
 *.log
 *.pyc
 *.orig
+*.idea
 __pycache__
 /.cache
-/.idea
-/bitsv/.idea
-/bitsv/network/.idea
-/bitsv/network/services/.idea
 /.coverage
 /.pytest_cache
 /bitsv.egg-info
