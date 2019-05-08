@@ -258,6 +258,124 @@ class PrivateKey(BaseKey):
 
         return create_p2pkh_transaction(self, unspents, outputs, custom_pushdata=custom_pushdata)
 
+    def create_op_return_tx(self, lst_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+        """Creates a rawtx with OP_RETURN metadata ready for broadcast.
+
+        Parameters
+        ----------
+        lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
+        fee : sat/byte (defaults to 1 satoshi per byte)
+
+        Returns
+        -------
+        rawtx
+
+        Examples
+        --------
+
+        lst_of_pushdata =  [('6d01', 'hex'),
+                            ('bitPUSHER', 'utf-8')]
+
+        as per memo.cash protocol @ https://memo.cash/protocol this results in a "Set name" action to "bitPUSHER"
+
+        :param outputs: A sequence of outputs you wish to send in the form
+                        ``(destination, amount, currency)``. The amount can
+                        be either an int, float, or string as long as it is
+                        a valid input to ``decimal.Decimal``. The currency
+                        must be :ref:`supported <supported currencies>`.
+        :type outputs: ``list`` of ``tuple``
+        :param fee: The number of satoshi per byte to pay to miners. By default
+                    BitSV will use a fee of 1 sat/byte
+        :type fee: ``int``
+        :param leftover: The destination that will receive any change from the
+                         transaction. By default BitSV will send any change to
+                         the same address you sent from.
+        :type leftover: ``str``
+        :param combine: Whether or not BitSV should use all available UTXOs to
+                        make future transactions smaller and therefore reduce
+                        fees. By default BitSV will consolidate UTXOs.
+        :type combine: ``bool``
+        :param unspents: The UTXOs to use as the inputs. By default BitSV will
+                         communicate with the blockchain itself.
+        :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
+        :param lst_of_pushdata: List indicating pushdata to be included in op_return as e.g.:
+                                [('6d01', 'hex'),
+                                 ('hello', 'utf-8')]
+        :type lst_of_pushdata:`list` of `tuples`
+        """
+        if not outputs:
+            outputs = []
+
+        self.get_unspents()
+        pushdata = op_return.create_pushdata(lst_of_pushdata)
+        rawtx = self.create_transaction(outputs,
+                                        fee=fee,
+                                        message=pushdata,
+                                        custom_pushdata=True,
+                                        combine=combine,
+                                        unspents=unspents,
+                                        leftover=leftover)
+
+        return rawtx
+
+    def send_op_return(self, lst_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+        """Sends a rawtx with OP_RETURN metadata ready for broadcast.
+
+        Parameters
+        ----------
+        lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
+        fee : sat/byte (defaults to 1 satoshi per byte)
+
+        Returns
+        -------
+        rawtx
+
+        Examples
+        --------
+
+        lst_of_pushdata =  [('6d01', 'hex'),
+                            ('bitPUSHER', 'utf-8')]
+
+        as per memo.cash protocol @ https://memo.cash/protocol this results in a "Set name" action to "bitPUSHER"
+
+        :param outputs: A sequence of outputs you wish to send in the form
+                        ``(destination, amount, currency)``. The amount can
+                        be either an int, float, or string as long as it is
+                        a valid input to ``decimal.Decimal``. The currency
+                        must be :ref:`supported <supported currencies>`.
+        :type outputs: ``list`` of ``tuple``
+        :param fee: The number of satoshi per byte to pay to miners. By default
+                    BitSV will use a fee of 1 sat/byte
+        :type fee: ``int``
+        :param leftover: The destination that will receive any change from the
+                         transaction. By default BitSV will send any change to
+                         the same address you sent from.
+        :type leftover: ``str``
+        :param combine: Whether or not BitSV should use all available UTXOs to
+                        make future transactions smaller and therefore reduce
+                        fees. By default BitSV will consolidate UTXOs.
+        :type combine: ``bool``
+        :param unspents: The UTXOs to use as the inputs. By default BitSV will
+                         communicate with the blockchain itself.
+        :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
+        :param lst_of_pushdata: List indicating pushdata to be included in op_return as e.g.:
+                                [('6d01', 'hex'),
+                                 ('hello', 'utf-8')]
+        :type lst_of_pushdata:`list` of `tuples`
+        """
+        if not outputs:
+            outputs = []
+
+        self.get_unspents()
+        pushdata = op_return.create_pushdata(lst_of_pushdata)
+        tx_hex = self.create_transaction(outputs=outputs, fee=fee, message=pushdata, custom_pushdata=True,
+                                         combine=combine, unspents=unspents, leftover=leftover
+                                         )
+
+        NetworkAPI.broadcast_tx(tx_hex)
+
+        return calc_txid(tx_hex)
+
     def send(self, outputs, fee=None, leftover=None, combine=True,
              message=None, unspents=None, custom_pushdata=False):  # pragma: no cover
         """Creates a signed P2PKH transaction and attempts to broadcast it on
@@ -430,50 +548,6 @@ class PrivateKey(BaseKey):
     def __repr__(self):
         return '<PrivateKey: {}>'.format(self.address)
 
-    def create_op_return_rawtx(self, lst_of_pushdata, fee=1):
-        """creates a rawtx with OP_RETURN metadata ready for broadcast.
-
-        Parameters
-        ----------
-        lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
-        fee : sat/byte (defaults to 1 satoshi per byte)
-
-        Returns
-        -------
-        rawtx ready to broadcast
-        """
-
-        self.get_unspents()
-        pushdata = op_return.create_pushdata(lst_of_pushdata)
-        rawtx = self.create_transaction([], fee=fee, message=pushdata, custom_pushdata=True)
-
-        return rawtx
-
-    def send_op_return(self, lst_of_pushdata, fee=1):
-        """
-        All-in-one function both generates and sends a rawtx with desired OP_RETURN metadata.
-
-        Parameters
-        ----------
-        lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
-        fee : sat/byte (defaults to 1 satoshi per byte)
-
-        Returns
-        -------
-        broadcasts rawtx
-
-        Examples
-        --------
-        lst_of_pushdata = [('6d01','hex'), ('my_new_memo_name', 'utf-8')]
-        send_op_return(my_key, lst_of_pushdata)
-        """
-
-        self.get_unspents()
-        pushdata = op_return.create_pushdata(lst_of_pushdata)
-        rawtx = self.create_transaction([], fee=fee, message=pushdata, custom_pushdata=True)
-
-        return BitIndex.broadcast_rawtx(rawtx)
-
 
 class PrivateKeyTestnet(BaseKey):
     """This class represents a testnet Bitcoin SV private key. **Note:** coins
@@ -603,8 +677,102 @@ class PrivateKeyTestnet(BaseKey):
 
         return create_p2pkh_transaction(self, unspents, outputs, custom_pushdata=custom_pushdata)
 
+    def create_op_return_tx(self, lst_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+        """Creates a rawtx with OP_RETURN metadata ready for broadcast.
+
+        Parameters
+        ----------
+        lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
+        fee : sat/byte (defaults to 1 satoshi per byte)
+
+        Returns
+        -------
+        rawtx
+
+        Examples
+        --------
+
+        lst_of_pushdata =  [('6d01', 'hex'),
+                            ('bitPUSHER', 'utf-8')]
+
+        as per memo.cash protocol @ https://memo.cash/protocol this results in a "Set name" action to "bitPUSHER"
+
+        :param outputs: A sequence of outputs you wish to send in the form
+                        ``(destination, amount, currency)``. The amount can
+                        be either an int, float, or string as long as it is
+                        a valid input to ``decimal.Decimal``. The currency
+                        must be :ref:`supported <supported currencies>`.
+        :type outputs: ``list`` of ``tuple``
+        :param fee: The number of satoshi per byte to pay to miners. By default
+                    BitSV will use a fee of 1 sat/byte
+        :type fee: ``int``
+        :param leftover: The destination that will receive any change from the
+                         transaction. By default BitSV will send any change to
+                         the same address you sent from.
+        :type leftover: ``str``
+        :param combine: Whether or not BitSV should use all available UTXOs to
+                        make future transactions smaller and therefore reduce
+                        fees. By default BitSV will consolidate UTXOs.
+        :type combine: ``bool``
+        :param unspents: The UTXOs to use as the inputs. By default BitSV will
+                         communicate with the blockchain itself.
+        :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
+        :param lst_of_pushdata: List indicating pushdata to be included in op_return as e.g.:
+                                [('6d01', 'hex'),
+                                 ('hello', 'utf-8')]
+        :type lst_of_pushdata:`list` of `tuples`
+        """
+        if not outputs:
+            outputs = []
+
+        self.get_unspents()
+        pushdata = op_return.create_pushdata(lst_of_pushdata)
+        rawtx = self.create_transaction(outputs,
+                                        fee=fee,
+                                        message=pushdata,
+                                        custom_pushdata=True,
+                                        combine=combine,
+                                        unspents=unspents,
+                                        leftover=leftover)
+
+        return rawtx
+
+    def send_op_return(self, lst_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+        """Sends a rawtx with OP_RETURN metadata ready for broadcast.
+
+        Parameters
+        ----------
+        lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
+        fee : sat/byte (defaults to 1 satoshi per byte)
+
+        Returns
+        -------
+        rawtx
+
+        Examples
+        --------
+
+        lst_of_pushdata =  [('6d01', 'hex'),
+                            ('bitPUSHER', 'utf-8')]
+
+        as per memo.cash protocol @ https://memo.cash/protocol this results in a "Set name" action to "bitPUSHER"
+        """
+
+        if not outputs:
+            outputs = []
+
+        self.get_unspents()
+        pushdata = op_return.create_pushdata(lst_of_pushdata)
+        tx_hex = self.create_transaction(outputs=outputs, fee=fee, message=pushdata, custom_pushdata=True,
+                                         combine=combine, unspents=unspents, leftover=leftover
+                                         )
+
+        NetworkAPI.broadcast_tx(tx_hex)
+
+        return calc_txid(tx_hex)
+
     def send(self, outputs, fee=None, leftover=None, combine=True,
-             message=None, unspents=None):
+             message=None, unspents=None, custom_pushdata=False):
         """Creates a signed P2PKH transaction and attempts to broadcast it on
         the testnet blockchain. This accepts the same arguments as
         :func:`~bitsv.PrivateKeyTestnet.create_transaction`.
@@ -637,8 +805,10 @@ class PrivateKeyTestnet(BaseKey):
         :rtype: ``str``
         """
 
+        self.get_unspents()
         tx_hex = self.create_transaction(
-            outputs, fee=fee, leftover=leftover, combine=combine, message=message, unspents=unspents
+            outputs, fee=fee, leftover=leftover, combine=combine,
+            message=message, unspents=unspents, custom_pushdata=custom_pushdata
         )
 
         NetworkAPI.broadcast_tx_testnet(tx_hex)
