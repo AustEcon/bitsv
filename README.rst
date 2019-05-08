@@ -149,10 +149,12 @@ Credits
 
 - `ofek`_ for the original bit codebase.
 - `teran-mckinney`_ for his work on the bitcash fork
+- `joshua smith`_ for adding BitIndex3
 - `richardkiss`_ for his work on pycoin (for Hierarchical Deterministic wallet functions)
 
 .. _ofek: https://github.com/ofek/bit
 .. _teran-mckinney: https://github.com/sporestack/bitcash
+.. _joshua Smith: https://github.com/joshua-s
 .. _richardkiss: https://github.com/richardkiss/pycoin
 
 Donate
