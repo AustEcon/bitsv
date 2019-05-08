@@ -29,7 +29,7 @@ class BitIndex3:
         headers['api_key'] = self.api_key
         return headers
 
-    def get_utxos(self, address, sort):
+    def get_utxos(self, address, sort=None):
         """
         Retrieve utxos for address
 
@@ -132,7 +132,7 @@ class BitIndex3:
         )
         return r.json()
 
-    def get_network_status(self, query):
+    def get_network_status(self, query=None):
         """
         Gets the network status
 
@@ -311,46 +311,6 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/webhook/monitored_addrs',
             data=json.dumps({'addr': address}),
             headers=self.authorized_headers,
-        )
-        return r.json()
-
-    def webhook_sample_callback(
-        self,
-        transaction_id,
-        address,
-        satoshis,
-        confirmations,
-        vout,
-        secret,
-        xpub=None,
-        path=None,
-    ):
-        """
-        Sample callback for webhook
-
-        :param transaction_id: The transaction ID
-        :param address: The address
-        :param satoshis: Number must be more than, or equal to 1
-        :param confirmations:
-        :param secret:
-        :param vout:
-        :param xpub: Xpub will be present if address is associated with an xpub
-        :param path: Path is set if xpub is present
-        """
-        r = requests.post(
-            f'https://api.bitindex.network/api/v3/webhook/sample_callback',
-            data=json.dumps({
-                'txid': transaction_id,
-                'address': address,
-                'xpub': xpub,
-                'path': path,
-                'satoshis': satoshis,
-                'confirmations': confirmations,
-                'vout': vout,
-                'secret': secret,
-                'network': self.network,
-            }),
-            headers=self.headers,
         )
         return r.json()
 
