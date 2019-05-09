@@ -30,11 +30,14 @@ class BitIndex3:
         return headers
 
     def get_utxos(self, address, sort=None):
-        """
-        Retrieve utxos for address
+        """Gets all unspent transaction outputs belonging to an address.
 
+        :param address: The address in question.
+        :type address: ``str``
+        :raises ConnectionError: If all API services fail.
         :param address: Address to get utxos for
-        :param sort: Format is 'field:asc' such as 'value:desc' to sort by value descending
+        :param sort: 'value:desc' or 'value:asc' to sort unspents by descending/ascending order respectively
+        :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
         r = requests.post(
             f'https://api.bitindex.network/api/v3/{self.network}/addrs/utxo',

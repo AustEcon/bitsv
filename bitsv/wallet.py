@@ -8,7 +8,6 @@ from bitsv.format import (
 )
 from bitsv.network import NetworkAPI, get_fee, satoshi_to_currency_cached
 from bitsv.network.meta import Unspent
-from bitsv.network.services import BitIndex
 from bitsv.transaction import (
     calc_txid, create_p2pkh_transaction, sanitize_tx_data,
     OP_CHECKSIG, OP_DUP, OP_EQUALVERIFY, OP_HASH160, OP_PUSH_20
@@ -59,6 +58,10 @@ class BaseKey:
 
         self._public_point = None
         self._public_key = self._pk.public_key.format(compressed=compressed)
+
+    @property
+    def api_default(self):
+        return self.api_default
 
     @property
     def public_key(self):
@@ -125,6 +128,10 @@ class BaseKey:
     def __eq__(self, other):
         return self.to_int() == other.to_int()
 
+    @api_default.setter
+    def api_default(self, value):
+        self._api_default = value
+
 
 class PrivateKey(BaseKey):
     """This class represents a Bitcoin SV private key. ``Key`` is an alias.
@@ -135,9 +142,13 @@ class PrivateKey(BaseKey):
                 byte is disregarded. Compression will be used by all new keys.
     :type wif: ``str``
     :raises TypeError: If ``wif`` is not a ``str``.
+    :param apis: A dictionary of {api_name : api_keys} in order of preference for redundancy. (Python 3.6 dicts ordered)
+    :type apis: ``dict`` of ``str`` : ``str``
+    :param network: 'testnet' or 'stn'
+    :type network: ``dict`` of ``str`` : ``str``
     """
 
-    def __init__(self, wif=None):
+    def __init__(self, wif=None, apis=None):
         super().__init__(wif=wif)
 
         self._address = None
@@ -146,6 +157,9 @@ class PrivateKey(BaseKey):
         self.balance = 0
         self.unspents = []
         self.transactions = []
+        self.apis = apis
+        self.network = 'main'  # added for consistency with PrivateKeyTestnet
+        self.network_api = NetworkAPI(self.apis, self.network)
 
     @property
     def address(self):
@@ -179,7 +193,7 @@ class PrivateKey(BaseKey):
         return satoshi_to_currency_cached(self.balance, currency)
 
     def get_balance(self, currency='satoshi'):
-        """Fetches the current balance by calling
+        """Fetches the current balance.
         :func:`~bitsv.PrivateKey.get_unspents` and returns it using
         :func:`~bitsv.PrivateKey.balance_as`.
 
@@ -191,22 +205,36 @@ class PrivateKey(BaseKey):
         self.balance = sum(unspent.amount for unspent in self.unspents)
         return self.balance_as(currency)
 
-    def get_unspents(self):
-        """Fetches all available unspent transaction outputs.
+    def get_unspents(self, sort=None):
+        """Gets all unspent transaction outputs belonging to an address.
 
+        :param address: The address in question.
+        :type address: ``str``
+        :raises ConnectionError: If all API services fail.
+        :param address: Address to get utxos for
+        :param sort: 'value:desc' or 'value:asc' to sort unspents by descending/ascending order respectively
         :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
-        self.unspents[:] = NetworkAPI.get_unspent(self.address)
+        self.unspents[:] = self.network_api.get_unspents(self.address, sort=sort)
         self.balance = sum(unspent.amount for unspent in self.unspents)
         return self.unspents
 
-    def get_transactions(self):
+    def get_transactions(self, from_index=0, to_index=0):
         """Fetches transaction history.
-
+        :param from_index: First index from transactions list to start collecting from
+        :param to_index: Final index to finish collecting transactions from
         :rtype: ``list`` of ``str`` transaction IDs
         """
-        self.transactions[:] = NetworkAPI.get_transactions(self.address)
+        self.transactions = self.network_api.get_transactions(self.address, from_index=from_index, to_index=to_index)
         return self.transactions
+
+    def get_transaction(self, txid):
+        """Gets a single transaction.
+        :param txid: txid for transaction you want information about
+        :type txid: ``str``
+        """
+        transaction = self.network_api.get_transaction(txid)
+        return transaction
 
     def create_transaction(self, outputs, fee=None, leftover=None, combine=True,
                            message=None, unspents=None, custom_pushdata=False):  # pragma: no cover
@@ -372,7 +400,7 @@ class PrivateKey(BaseKey):
                                          combine=combine, unspents=unspents, leftover=leftover
                                          )
 
-        NetworkAPI.broadcast_tx(tx_hex)
+        self.network_api.broadcast_tx(tx_hex)
 
         return calc_txid(tx_hex)
 
@@ -420,12 +448,11 @@ class PrivateKey(BaseKey):
             message=message, unspents=unspents, custom_pushdata=custom_pushdata
         )
 
-        NetworkAPI.broadcast_tx(tx_hex)
+        self.network_api.broadcast_tx(tx_hex)
 
         return calc_txid(tx_hex)
 
-    @classmethod
-    def prepare_transaction(cls, address, outputs, compressed=True, fee=None, leftover=None,
+    def prepare_transaction(self, address, outputs, compressed=True, fee=None, leftover=None,
                             combine=True, message=None, unspents=None, custom_pushdata=False):  # pragma: no cover
         """Prepares a P2PKH transaction for offline signing.
 
@@ -467,7 +494,7 @@ class PrivateKey(BaseKey):
         :rtype: ``str``
         """
         unspents, outputs = sanitize_tx_data(
-            unspents or NetworkAPI.get_unspent(address),
+            unspents or self.network_api.get_unspents(address),
             outputs,
             fee or get_fee(),
             leftover or address,
@@ -559,9 +586,13 @@ class PrivateKeyTestnet(BaseKey):
                 byte is disregarded. Compression will be used by all new keys.
     :type wif: ``str``
     :raises TypeError: If ``wif`` is not a ``str``.
+    :param apis: A dictionary of {api_name : api_keys} in order of preference for redundancy. (Python 3.6 dicts ordered)
+    :type apis: ``dict`` of ``str`` : ``str``
+    :param network: 'test' or 'stn' - default is 'test' for testnet. 'stn' is for scaling-testnet.
+    :type network: ``dict`` of ``str`` : ``str``
     """
 
-    def __init__(self, wif=None):
+    def __init__(self, wif=None, apis=None, network='test'):
         super().__init__(wif=wif)
 
         self._address = None
@@ -570,6 +601,9 @@ class PrivateKeyTestnet(BaseKey):
         self.balance = 0
         self.unspents = []
         self.transactions = []
+        self.apis = apis
+        self.network = network
+        self.network_api = NetworkAPI(self.apis, self.network)
 
     @property
     def address(self):
@@ -603,7 +637,7 @@ class PrivateKeyTestnet(BaseKey):
         return satoshi_to_currency_cached(self.balance, currency)
 
     def get_balance(self, currency='satoshi'):
-        """Fetches the current balance by calling
+        """Fetches the current balance.
         :func:`~bitsv.PrivateKeyTestnet.get_unspents` and returns it using
         :func:`~bitsv.PrivateKeyTestnet.balance_as`.
 
@@ -614,22 +648,36 @@ class PrivateKeyTestnet(BaseKey):
         self.get_unspents()
         return self.balance_as(currency)
 
-    def get_unspents(self):
-        """Fetches all available unspent transaction outputs.
+    def get_unspents(self, sort=None):
+        """Gets all unspent transaction outputs belonging to an address.
 
+        :param address: The address in question.
+        :type address: ``str``
+        :raises ConnectionError: If all API services fail.
+        :param address: Address to get utxos for
+        :param sort: 'value:desc' or 'value:asc' to sort unspents by descending/ascending order respectively
         :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
-        self.unspents[:] = NetworkAPI.get_unspent_testnet(self.address)
+        self.unspents[:] = self.network_api.get_unspents(self.address, sort=sort)
         self.balance = sum(unspent.amount for unspent in self.unspents)
         return self.unspents
 
-    def get_transactions(self):
+    def get_transactions(self, from_index=0, to_index=0):
         """Fetches transaction history.
-
+        :param from_index: First index from transactions list to start collecting from
+        :param to_index: Final index to finish collecting transactions from
         :rtype: ``list`` of ``str`` transaction IDs
         """
-        self.transactions[:] = NetworkAPI.get_transactions_testnet(self.address)
+        self.transactions = self.network_api.get_transactions(self.address, from_index=from_index, to_index=to_index)
         return self.transactions
+
+    def get_transaction(self, txid):
+        """Gets a single transaction.
+        :param txid: txid for transaction you want information about
+        :type txid: ``str``
+        """
+        transaction = self.network_api.get_transaction(txid)
+        return transaction
 
     def create_transaction(self, outputs, fee=None, leftover=None, combine=True,
                            message=None, unspents=None, custom_pushdata=False):
@@ -767,7 +815,7 @@ class PrivateKeyTestnet(BaseKey):
                                          combine=combine, unspents=unspents, leftover=leftover
                                          )
 
-        NetworkAPI.broadcast_tx(tx_hex)
+        self.network_api.broadcast_tx(tx_hex)
 
         return calc_txid(tx_hex)
 
@@ -811,12 +859,11 @@ class PrivateKeyTestnet(BaseKey):
             message=message, unspents=unspents, custom_pushdata=custom_pushdata
         )
 
-        NetworkAPI.broadcast_tx_testnet(tx_hex)
+        self.network_api.broadcast_tx(tx_hex)
 
         return calc_txid(tx_hex)
 
-    @classmethod
-    def prepare_transaction(cls, address, outputs, compressed=True, fee=None, leftover=None,
+    def prepare_transaction(self, address, outputs, compressed=True, fee=None, leftover=None,
                             combine=True, message=None, unspents=None):
         """Prepares a P2PKH transaction for offline signing.
 
@@ -853,7 +900,7 @@ class PrivateKeyTestnet(BaseKey):
         :rtype: ``str``
         """
         unspents, outputs = sanitize_tx_data(
-            unspents or NetworkAPI.get_unspent_testnet(address),
+            unspents or self.network_api.get_unspents(self.address),
             outputs,
             fee or get_fee(),
             leftover or address,
