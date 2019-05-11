@@ -1,11 +1,8 @@
-from bitsv import utils
-
-
 OP_PUSHDATA1 = b'\x4c'
 OP_PUSHDATA2 = b'\x4d'
 OP_PUSHDATA4 = b'\x4e'
 
-MESSAGE_LIMIT = 100000 - 6  # Not sure the exact limit but this ought to be close
+MESSAGE_LIMIT = 100000  # The real limiting factor seems to be total transaction size
 
 
 def get_op_pushdata_code(data):
@@ -20,63 +17,62 @@ def get_op_pushdata_code(data):
         return OP_PUSHDATA4 + length_data.to_bytes(4, byteorder='little')  # OP_PUSHDATA4 format
 
 
-def create_pushdata(lst_of_pushdata):
-    """
-    Creates encoded OP_RETURN pushdata as bytes Returns binary encoded OP_RETURN pushdata (automatically adds
-    intervening OP_CODES specifying number of bytes in each pushdata element) 0x6a (i.e. OP_RETURN) is added in
-    other, auxiliary functions; only pushdata is returned here. Max 220 bytes of pushdata
+def create_pushdata(list_of_pushdata):
+    '''
+    Adds the correct 'op_pushdata' op_codes for each pushdata element to include in op_return as one bytestream.
+    :param list_of_pushdata: Can be either a list of bytes (new syntax) or a list of tuples (old syntax for deprecation)
+    :param list_of_pushdata: ``list`` of ``bytes``
+    :return: bytes
 
-    Parameters
-    ----------
-    lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
+    if list of tuples is passed:
+    - is of the form:
+    [('Hello', 'utf-8'),
+    ('deadbeef', 'hex'),
+    (b'')]
+    '''
 
-    Returns
-    -------
-    pushdata : bytes
+    assert isinstance(list_of_pushdata, list), "list_of_pushdata must be of type: list"
+    assert isinstance(list_of_pushdata[0], bytes) or isinstance(list_of_pushdata[0], tuple), \
+        "must provide either a) a list of bytes or b) a list of tuples"
 
-    Examples
-    --------
+    # New syntax -  simple list of bytes
+    if isinstance(list_of_pushdata[0], bytes):
+        pushdata = b''
+        for data in list_of_pushdata:
+            pushdata += get_op_pushdata_code(data) + data
+        return pushdata
 
-    lst_of_pushdata =  [('6d01', 'hex'),
-                        ('bitPUSHER', 'utf-8')]
+    # Old syntax - list of tuples
+    elif isinstance(list_of_pushdata[0], tuple):
 
-    as per memo.cash protocol @ https://memo.cash/protocol this results in a "Set name" action to "bitPUSHER"
+        pushdata = b''
 
-    raw OP_RETURN will be:
+        for i in range(len(list_of_pushdata)):
 
-        0e 6a 02 6d01 09 626974505553484552
+            encoding = list_of_pushdata[i][1]
+            if encoding == 'utf-8':
+                assert isinstance(list_of_pushdata[i][0], str), "must be of type: string"
+                pushdata += get_op_pushdata_code(list_of_pushdata[i][0]) + list_of_pushdata[i][0].encode('utf-8')
 
-            0e                  - 14 bytes to follow (in hex)
-            6a                  - OP_RETURN
-            02                  - 2 bytes of pushdata to follow
-            6d01                - "communication channel" for memo.cash - "set name" action
-            09                  - 9 bytes to follow
-            626974505553484552  - "bitPUSHER" utf-8 encoded bytes --> hex representation
+            elif encoding == 'hex':
+                if len(list_of_pushdata[i][0]) % 2 != 0:
+                    raise ValueError(
+                        "hex encoded pushdata must have length = a multiple of two. May need to add a leading zero")
 
-    Currently (this module) only allows up to 220 bytes maximum - as multiple OP_RETURNS in one transaction is
-    considered non-standard."""
+                elif len(list_of_pushdata[i][0]) % 2 == 0:
+                    assert isinstance(list_of_pushdata[i][0], str), "must be of type: string"
+                    hex_as_bytes = bytes.fromhex(list_of_pushdata[i][0])
+                    pushdata += get_op_pushdata_code(hex_as_bytes) + hex_as_bytes
 
-    pushdata = b''
+            elif encoding == 'bytes':
+                assert isinstance(list_of_pushdata[i][0], bytes), "must be of type: bytes"
+                pushdata += get_op_pushdata_code(list_of_pushdata[i][0]) + list_of_pushdata[i][0]
 
-    for i in range(len(lst_of_pushdata)):
-
-        encoding = lst_of_pushdata[i][1]
-        if encoding == 'utf-8':
-            pushdata += get_op_pushdata_code(lst_of_pushdata[i][0]) + lst_of_pushdata[i][0].encode('utf-8')
-
-        elif encoding == 'hex' and len(lst_of_pushdata[i][0]) % 2 != 0:
+        # Size limit now 100kb on SV - aka "the unfuckening of OP_RETURN"
+        # Courtesy Steve Shadders and SV miners 24th Jan 2019
+        # https://www.yours.org/content/the-unfuckening-of-op_return-b10d2c4b52da
+        if len(pushdata) > MESSAGE_LIMIT:
             raise ValueError(
-                "hex encoded pushdata must have length = a multiple of two")
+                "Total bytes in OP_RETURN cannot exceed 100kb at present - apologies")
 
-        elif encoding == 'hex' and len(lst_of_pushdata[i][0]) % 2 == 0:
-            hex_data_as_bytes = utils.hex_to_bytes(lst_of_pushdata[i][0])
-            pushdata += get_op_pushdata_code(hex_data_as_bytes) + hex_data_as_bytes
-
-    # Size limit now 100kb on SV - aka "the unfuckening of OP_RETURN"
-    # Courtesy Steve Shadders and SV miners 24th Jan 2019
-    # https://www.yours.org/content/the-unfuckening-of-op_return-b10d2c4b52da
-    if len(pushdata) > MESSAGE_LIMIT:
-        raise ValueError(
-            "Total bytes in OP_RETURN cannot exceed 100kb at present - apologies")
-
-    return pushdata
+        return pushdata

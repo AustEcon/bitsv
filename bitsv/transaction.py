@@ -34,7 +34,7 @@ OP_PUSHDATA1 = b'\x4c'
 OP_PUSHDATA2 = b'\x4d'
 OP_PUSHDATA4 = b'\x4e'
 
-MESSAGE_LIMIT = 100000 - 6  # Not sure the exact limit but this ought to be close
+MESSAGE_LIMIT = 100000  # The real limiting factor seems to be total transaction size
 
 
 class TxIn:
