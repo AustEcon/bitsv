@@ -29,19 +29,25 @@ class BitIndex3:
         headers['api_key'] = self.api_key
         return headers
 
-    def get_utxos(self, address, sort=None):
+    def get_utxos(self, address, sort=True, sort_direction='desc'):
         """Gets all unspent transaction outputs belonging to an address.
 
-        :param address: The address in question.
-        :type address: ``str``
-        :raises ConnectionError: If all API services fail.
         :param address: Address to get utxos for
-        :param sort: 'value:desc' or 'value:asc' to sort unspents by descending/ascending order respectively
+        :type address: ``str``
+        :param sort_direction: 'desc' or 'asc' to sort unspents by descending/ascending order respectively
+        :param sort: True or False indicates if unspents should be sorted unsorted (ignores sort_direction parameter)
         :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
+        if sort and sort_direction is 'desc':
+            params = {'sort': 'value:desc'}
+        elif sort and sort_direction is 'asc':
+            params = {'sort': 'value:asc'}
+        else:
+            params = {'sort': None}
+
         r = requests.post(
             f'https://api.bitindex.network/api/v3/{self.network}/addrs/utxo',
-            params={'sort': sort},
+            params=params,
             data=json.dumps({'addrs': address}),
             headers=self.headers,
         )
