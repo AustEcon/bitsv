@@ -1,4 +1,5 @@
 import requests
+import collections
 from .bitindex3 import BitIndex3
 
 DEFAULT_TIMEOUT = 30
@@ -8,6 +9,34 @@ BSV_TO_SAT_MULTIPLIER = 100000000
 def set_service_timeout(seconds):
     global DEFAULT_TIMEOUT
     DEFAULT_TIMEOUT = seconds
+
+
+class BitIndex3Normalized(BitIndex3):
+
+    def __init__(self, api_key=None, network="main"):
+        self.api_key = api_key
+        self.network = network
+        self.headers = self._get_headers()
+        self.authorized_headers = self._get_authorized_headers()
+
+    def _get_headers(self):
+        return {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+
+    def _get_authorized_headers(self):
+        headers = self._get_headers()
+        headers['api_key'] = self.api_key
+        return headers
+
+    def get_transactions(self, address):
+        # override "get_transactions" namespace to return a list of txids only to keep all apis the same
+        return self.get_balance(address)['transactions']
+
+    def get_unspents(self, address, sort=None):
+        # rename to "get_unspents" to keep all apis the same name
+        return self.get_utxos(address, sort=sort)
 
 
 class NetworkAPI:
@@ -22,40 +51,31 @@ class NetworkAPI:
 
         self.network = network
 
-        # Instantiate apis
-        self.bitindex3 = BitIndex3(api_key=None, network=self.network)
-        #self.whatsonchain = Whatsonchain(network=network) - https://developers.whatsonchain.com/
-        #self.blockchair = Blockchair(network=network) - https://github.com/Blockchair/Blockchair.Support
+        # Instantiate Normalized apis
+        self.bitindex3 = BitIndex3Normalized(api_key=None, network=self.network)
+        #Example: self.whatsonchain = WhatsonchainNormalized(network=network) - https://developers.whatsonchain.com/
+        #Example: self.blockchair = BlockchairNormalized(network=network) - https://github.com/Blockchair/Blockchair.Support
 
-        # Prevent an alphabet soup of requests type exceptions
+        # Allows extra apis for 'main' that may not support testnet (e.g. blockchair)
+        if network == 'main':
+            self.list_of_apis = collections.deque([self.bitindex3])
+        elif network == 'test':
+            self.list_of_apis = collections.deque([self.bitindex3])
+        elif network == 'stn':
+            self.list_of_apis = collections.deque([self.bitindex3])
+        else:
+            raise ValueError("network must be either 'main', 'test' or 'stn'")
+
+        self.GET_BALANCE = [api.get_balance for api in self.list_of_apis]
+        self.GET_TRANSACTIONS = [api.get_transactions for api in self.list_of_apis]
+        self.GET_TRANSACTION = [api.get_transaction for api in self.list_of_apis]
+        self.GET_UNSPENTS = [api.get_unspents for api in self.list_of_apis]
+        self.BROADCAST_TX = [api.send_transaction for api in self.list_of_apis]
+
         self.IGNORED_ERRORS = (ConnectionError,
                                requests.exceptions.ConnectionError,
                                requests.exceptions.Timeout,
                                requests.exceptions.ReadTimeout)
-
-        # Many apis will have 'main' support but not 'test' or 'stn' support.
-        # This way still avoids most of the duplication of code but allows piling on more redundancy for 'main'.
-        # Will likely need some 'normalization' functions in future to account for variations between apis.
-        if network == 'main':
-            self.GET_BALANCE = [self.bitindex3.get_balance]
-            self.GET_TRANSACTIONS = [self.bitindex3.get_transactions]
-            self.GET_TRANSACTION = [self.bitindex3.get_transaction]
-            self.GET_UNSPENTS = [self.bitindex3.get_utxos]
-            self.BROADCAST_TX = [self.bitindex3.send_transaction]
-
-        elif network == 'test':
-            self.GET_BALANCE = [self.bitindex3.get_balance]
-            self.GET_TRANSACTIONS = [self.bitindex3.get_transactions]
-            self.GET_TRANSACTION = [self.bitindex3.get_transaction]
-            self.GET_UNSPENTS = [self.bitindex3.get_utxos]
-            self.BROADCAST_TX = [self.bitindex3.send_transaction]
-
-        elif network == 'stn':
-            self.GET_BALANCE = [self.bitindex3.get_balance]
-            self.GET_TRANSACTIONS = [self.bitindex3.get_transactions]
-            self.GET_TRANSACTION = [self.bitindex3.get_transaction]
-            self.GET_UNSPENTS = [self.bitindex3.get_utxos]
-            self.BROADCAST_TX = [self.bitindex3.send_transaction]
 
     def get_balance(self, address):
         """Gets the balance of an address in satoshis.
@@ -70,7 +90,7 @@ class NetworkAPI:
             try:
                 return api_call(address)
             except self.IGNORED_ERRORS:
-                pass
+                self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
 
         raise ConnectionError('All APIs are unreachable.')
 
@@ -89,7 +109,7 @@ class NetworkAPI:
             try:
                 return api_call(address)
             except self.IGNORED_ERRORS:
-                pass
+                self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
 
         raise ConnectionError('All APIs are unreachable.')
 
@@ -106,7 +126,7 @@ class NetworkAPI:
             try:
                 return api_call(txid)
             except self.IGNORED_ERRORS:
-                pass
+                self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
 
         raise ConnectionError('All APIs are unreachable.')
 
@@ -125,7 +145,7 @@ class NetworkAPI:
             try:
                 return api_call(address)
             except self.IGNORED_ERRORS:
-                pass
+                self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
 
         raise ConnectionError('All APIs are unreachable.')
 
@@ -145,7 +165,7 @@ class NetworkAPI:
                     continue
                 return
             except self.IGNORED_ERRORS:
-                pass
+                self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
 
         if success is False:
             raise ConnectionError('Transaction broadcast failed, or '
