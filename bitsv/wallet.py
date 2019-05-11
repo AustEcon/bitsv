@@ -8,7 +8,6 @@ from bitsv.format import (
 )
 from bitsv.network import NetworkAPI, get_fee, satoshi_to_currency_cached
 from bitsv.network.meta import Unspent
-from bitsv.network.services import BitIndex
 from bitsv.transaction import (
     calc_txid, create_p2pkh_transaction, sanitize_tx_data,
     OP_CHECKSIG, OP_DUP, OP_EQUALVERIFY, OP_HASH160, OP_PUSH_20
@@ -135,6 +134,8 @@ class PrivateKey(BaseKey):
                 byte is disregarded. Compression will be used by all new keys.
     :type wif: ``str``
     :raises TypeError: If ``wif`` is not a ``str``.
+    :param network: 'test' or 'stn'
+    :type network: ``dict`` of ``str`` : ``str``
     """
 
     def __init__(self, wif=None):
@@ -146,6 +147,8 @@ class PrivateKey(BaseKey):
         self.balance = 0
         self.unspents = []
         self.transactions = []
+        self.network = 'main'
+        self.network_api = NetworkAPI(self.network)
 
     @property
     def address(self):
@@ -179,7 +182,7 @@ class PrivateKey(BaseKey):
         return satoshi_to_currency_cached(self.balance, currency)
 
     def get_balance(self, currency='satoshi'):
-        """Fetches the current balance by calling
+        """Fetches the current balance.
         :func:`~bitsv.PrivateKey.get_unspents` and returns it using
         :func:`~bitsv.PrivateKey.balance_as`.
 
@@ -192,21 +195,35 @@ class PrivateKey(BaseKey):
         return self.balance_as(currency)
 
     def get_unspents(self):
-        """Fetches all available unspent transaction outputs.
+        """Gets all unspent transaction outputs belonging to an address.
 
+        :param address: The address in question.
+        :type address: ``str``
+        :raises ConnectionError: If all API services fail.
+        :param address: Address to get utxos for
+        :param sort: 'value:desc' or 'value:asc' to sort unspents by descending/ascending order respectively
         :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
-        self.unspents[:] = NetworkAPI.get_unspent(self.address)
+        self.unspents[:] = self.network_api.get_unspents(self.address)
         self.balance = sum(unspent.amount for unspent in self.unspents)
         return self.unspents
 
     def get_transactions(self):
         """Fetches transaction history.
-
+        :param from_index: First index from transactions list to start collecting from
+        :param to_index: Final index to finish collecting transactions from
         :rtype: ``list`` of ``str`` transaction IDs
         """
-        self.transactions[:] = NetworkAPI.get_transactions(self.address)
+        self.transactions = self.network_api.get_transactions(self.address)
         return self.transactions
+
+    def get_transaction(self, txid):
+        """Gets a single transaction.
+        :param txid: txid for transaction you want information about
+        :type txid: ``str``
+        """
+        transaction = self.network_api.get_transaction(txid)
+        return transaction
 
     def create_transaction(self, outputs, fee=None, leftover=None, combine=True,
                            message=None, unspents=None, custom_pushdata=False):  # pragma: no cover
@@ -258,12 +275,12 @@ class PrivateKey(BaseKey):
 
         return create_p2pkh_transaction(self, unspents, outputs, custom_pushdata=custom_pushdata)
 
-    def create_op_return_tx(self, lst_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+    def create_op_return_tx(self, list_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
         """Creates a rawtx with OP_RETURN metadata ready for broadcast.
 
         Parameters
         ----------
-        lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
+        list_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
         fee : sat/byte (defaults to 1 satoshi per byte)
 
         Returns
@@ -273,7 +290,7 @@ class PrivateKey(BaseKey):
         Examples
         --------
 
-        lst_of_pushdata =  [('6d01', 'hex'),
+        list_of_pushdata =  [('6d01', 'hex'),
                             ('bitPUSHER', 'utf-8')]
 
         as per memo.cash protocol @ https://memo.cash/protocol this results in a "Set name" action to "bitPUSHER"
@@ -298,16 +315,16 @@ class PrivateKey(BaseKey):
         :param unspents: The UTXOs to use as the inputs. By default BitSV will
                          communicate with the blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
-        :param lst_of_pushdata: List indicating pushdata to be included in op_return as e.g.:
+        :param list_of_pushdata: List indicating pushdata to be included in op_return as e.g.:
                                 [('6d01', 'hex'),
                                  ('hello', 'utf-8')]
-        :type lst_of_pushdata:`list` of `tuples`
+        :type list_of_pushdata:`list` of `tuples`
         """
         if not outputs:
             outputs = []
 
         self.get_unspents()
-        pushdata = op_return.create_pushdata(lst_of_pushdata)
+        pushdata = op_return.create_pushdata(list_of_pushdata)
         rawtx = self.create_transaction(outputs,
                                         fee=fee,
                                         message=pushdata,
@@ -318,12 +335,12 @@ class PrivateKey(BaseKey):
 
         return rawtx
 
-    def send_op_return(self, lst_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+    def send_op_return(self, list_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
         """Sends a rawtx with OP_RETURN metadata ready for broadcast.
 
         Parameters
         ----------
-        lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
+        list_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
         fee : sat/byte (defaults to 1 satoshi per byte)
 
         Returns
@@ -333,7 +350,7 @@ class PrivateKey(BaseKey):
         Examples
         --------
 
-        lst_of_pushdata =  [('6d01', 'hex'),
+        list_of_pushdata =  [('6d01', 'hex'),
                             ('bitPUSHER', 'utf-8')]
 
         as per memo.cash protocol @ https://memo.cash/protocol this results in a "Set name" action to "bitPUSHER"
@@ -358,21 +375,21 @@ class PrivateKey(BaseKey):
         :param unspents: The UTXOs to use as the inputs. By default BitSV will
                          communicate with the blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
-        :param lst_of_pushdata: List indicating pushdata to be included in op_return as e.g.:
+        :param list_of_pushdata: List indicating pushdata to be included in op_return as e.g.:
                                 [('6d01', 'hex'),
                                  ('hello', 'utf-8')]
-        :type lst_of_pushdata:`list` of `tuples`
+        :type list_of_pushdata:`list` of `tuples`
         """
         if not outputs:
             outputs = []
 
         self.get_unspents()
-        pushdata = op_return.create_pushdata(lst_of_pushdata)
+        pushdata = op_return.create_pushdata(list_of_pushdata)
         tx_hex = self.create_transaction(outputs=outputs, fee=fee, message=pushdata, custom_pushdata=True,
                                          combine=combine, unspents=unspents, leftover=leftover
                                          )
 
-        NetworkAPI.broadcast_tx(tx_hex)
+        self.network_api.broadcast_tx(tx_hex)
 
         return calc_txid(tx_hex)
 
@@ -420,12 +437,11 @@ class PrivateKey(BaseKey):
             message=message, unspents=unspents, custom_pushdata=custom_pushdata
         )
 
-        NetworkAPI.broadcast_tx(tx_hex)
+        self.network_api.broadcast_tx(tx_hex)
 
         return calc_txid(tx_hex)
 
-    @classmethod
-    def prepare_transaction(cls, address, outputs, compressed=True, fee=None, leftover=None,
+    def prepare_transaction(self, address, outputs, compressed=True, fee=None, leftover=None,
                             combine=True, message=None, unspents=None, custom_pushdata=False):  # pragma: no cover
         """Prepares a P2PKH transaction for offline signing.
 
@@ -467,7 +483,7 @@ class PrivateKey(BaseKey):
         :rtype: ``str``
         """
         unspents, outputs = sanitize_tx_data(
-            unspents or NetworkAPI.get_unspent(address),
+            unspents or self.network_api.get_unspents(address),
             outputs,
             fee or get_fee(),
             leftover or address,
@@ -559,9 +575,11 @@ class PrivateKeyTestnet(BaseKey):
                 byte is disregarded. Compression will be used by all new keys.
     :type wif: ``str``
     :raises TypeError: If ``wif`` is not a ``str``.
+    :param network: 'test' or 'stn' - default is 'test' for testnet. 'stn' is for scaling-testnet.
+    :type network: ``dict`` of ``str`` : ``str``
     """
 
-    def __init__(self, wif=None):
+    def __init__(self, wif=None, network='test'):
         super().__init__(wif=wif)
 
         self._address = None
@@ -570,6 +588,8 @@ class PrivateKeyTestnet(BaseKey):
         self.balance = 0
         self.unspents = []
         self.transactions = []
+        self.network = network
+        self.network_api = NetworkAPI(self.network)
 
     @property
     def address(self):
@@ -603,7 +623,7 @@ class PrivateKeyTestnet(BaseKey):
         return satoshi_to_currency_cached(self.balance, currency)
 
     def get_balance(self, currency='satoshi'):
-        """Fetches the current balance by calling
+        """Fetches the current balance.
         :func:`~bitsv.PrivateKeyTestnet.get_unspents` and returns it using
         :func:`~bitsv.PrivateKeyTestnet.balance_as`.
 
@@ -615,21 +635,34 @@ class PrivateKeyTestnet(BaseKey):
         return self.balance_as(currency)
 
     def get_unspents(self):
-        """Fetches all available unspent transaction outputs.
+        """Gets all unspent transaction outputs belonging to an address.
 
+        :param address: The address in question.
+        :type address: ``str``
+        :raises ConnectionError: If all API services fail.
+        :param address: Address to get utxos for
         :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
-        self.unspents[:] = NetworkAPI.get_unspent_testnet(self.address)
+        self.unspents[:] = self.network_api.get_unspents(self.address)
         self.balance = sum(unspent.amount for unspent in self.unspents)
         return self.unspents
 
     def get_transactions(self):
         """Fetches transaction history.
-
+        :param from_index: First index from transactions list to start collecting from
+        :param to_index: Final index to finish collecting transactions from
         :rtype: ``list`` of ``str`` transaction IDs
         """
-        self.transactions[:] = NetworkAPI.get_transactions_testnet(self.address)
+        self.transactions = self.network_api.get_transactions(self.address)
         return self.transactions
+
+    def get_transaction(self, txid):
+        """Gets a single transaction.
+        :param txid: txid for transaction you want information about
+        :type txid: ``str``
+        """
+        transaction = self.network_api.get_transaction(txid)
+        return transaction
 
     def create_transaction(self, outputs, fee=None, leftover=None, combine=True,
                            message=None, unspents=None, custom_pushdata=False):
@@ -677,12 +710,12 @@ class PrivateKeyTestnet(BaseKey):
 
         return create_p2pkh_transaction(self, unspents, outputs, custom_pushdata=custom_pushdata)
 
-    def create_op_return_tx(self, lst_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+    def create_op_return_tx(self, list_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
         """Creates a rawtx with OP_RETURN metadata ready for broadcast.
 
         Parameters
         ----------
-        lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
+        list_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
         fee : sat/byte (defaults to 1 satoshi per byte)
 
         Returns
@@ -692,7 +725,7 @@ class PrivateKeyTestnet(BaseKey):
         Examples
         --------
 
-        lst_of_pushdata =  [('6d01', 'hex'),
+        list_of_pushdata =  [('6d01', 'hex'),
                             ('bitPUSHER', 'utf-8')]
 
         as per memo.cash protocol @ https://memo.cash/protocol this results in a "Set name" action to "bitPUSHER"
@@ -717,16 +750,16 @@ class PrivateKeyTestnet(BaseKey):
         :param unspents: The UTXOs to use as the inputs. By default BitSV will
                          communicate with the blockchain itself.
         :type unspents: ``list`` of :class:`~bitsv.network.meta.Unspent`
-        :param lst_of_pushdata: List indicating pushdata to be included in op_return as e.g.:
+        :param list_of_pushdata: List indicating pushdata to be included in op_return as e.g.:
                                 [('6d01', 'hex'),
                                  ('hello', 'utf-8')]
-        :type lst_of_pushdata:`list` of `tuples`
+        :type list_of_pushdata:`list` of `tuples`
         """
         if not outputs:
             outputs = []
 
         self.get_unspents()
-        pushdata = op_return.create_pushdata(lst_of_pushdata)
+        pushdata = op_return.create_pushdata(list_of_pushdata)
         rawtx = self.create_transaction(outputs,
                                         fee=fee,
                                         message=pushdata,
@@ -737,12 +770,12 @@ class PrivateKeyTestnet(BaseKey):
 
         return rawtx
 
-    def send_op_return(self, lst_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+    def send_op_return(self, list_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
         """Sends a rawtx with OP_RETURN metadata ready for broadcast.
 
         Parameters
         ----------
-        lst_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
+        list_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
         fee : sat/byte (defaults to 1 satoshi per byte)
 
         Returns
@@ -752,7 +785,7 @@ class PrivateKeyTestnet(BaseKey):
         Examples
         --------
 
-        lst_of_pushdata =  [('6d01', 'hex'),
+        list_of_pushdata =  [('6d01', 'hex'),
                             ('bitPUSHER', 'utf-8')]
 
         as per memo.cash protocol @ https://memo.cash/protocol this results in a "Set name" action to "bitPUSHER"
@@ -762,12 +795,12 @@ class PrivateKeyTestnet(BaseKey):
             outputs = []
 
         self.get_unspents()
-        pushdata = op_return.create_pushdata(lst_of_pushdata)
+        pushdata = op_return.create_pushdata(list_of_pushdata)
         tx_hex = self.create_transaction(outputs=outputs, fee=fee, message=pushdata, custom_pushdata=True,
                                          combine=combine, unspents=unspents, leftover=leftover
                                          )
 
-        NetworkAPI.broadcast_tx(tx_hex)
+        self.network_api.broadcast_tx(tx_hex)
 
         return calc_txid(tx_hex)
 
@@ -811,12 +844,11 @@ class PrivateKeyTestnet(BaseKey):
             message=message, unspents=unspents, custom_pushdata=custom_pushdata
         )
 
-        NetworkAPI.broadcast_tx_testnet(tx_hex)
+        self.network_api.broadcast_tx(tx_hex)
 
         return calc_txid(tx_hex)
 
-    @classmethod
-    def prepare_transaction(cls, address, outputs, compressed=True, fee=None, leftover=None,
+    def prepare_transaction(self, address, outputs, compressed=True, fee=None, leftover=None,
                             combine=True, message=None, unspents=None):
         """Prepares a P2PKH transaction for offline signing.
 
@@ -853,7 +885,7 @@ class PrivateKeyTestnet(BaseKey):
         :rtype: ``str``
         """
         unspents, outputs = sanitize_tx_data(
-            unspents or NetworkAPI.get_unspent_testnet(address),
+            unspents or self.network_api.get_unspents(self.address),
             outputs,
             fee or get_fee(),
             leftover or address,

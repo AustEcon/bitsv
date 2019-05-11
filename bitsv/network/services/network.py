@@ -1,5 +1,5 @@
 import requests
-from .bitindex import BitIndex
+from .bitindex3 import BitIndex3
 
 DEFAULT_TIMEOUT = 30
 BSV_TO_SAT_MULTIPLIER = 100000000
@@ -14,22 +14,50 @@ class NetworkAPI:
     """
     A Class for handling network API redundancy.
 
-    FIXME network API redundancy and RegTesting / Testnet - see Issue section on github"""
+    :param network: 'main', 'test' or 'stn' --> feeds into the bitsv.network.NetworkAPI class for redundancy
+    :type network: ``str``
+    """
 
-    IGNORED_ERRORS = (ConnectionError,
-                      requests.exceptions.ConnectionError,
-                      requests.exceptions.Timeout,
-                      requests.exceptions.ReadTimeout)
+    def __init__(self, network):
 
-    # BitIndex for all mainnet functions
-    GET_BALANCE_MAIN = [BitIndex.get_balance]
-    GET_TRANSACTIONS_MAIN = [BitIndex.get_txs]
-    GET_UNSPENT_MAIN = [BitIndex.get_utxo]
-    BROADCAST_TX_MAIN = [BitIndex.broadcast_rawtx]
-    GET_TX_MAIN = [BitIndex.get_tx]
+        self.network = network
 
-    @classmethod
-    def get_balance(cls, address):
+        # Instantiate apis
+        self.bitindex3 = BitIndex3(api_key=None, network=self.network)
+        #self.whatsonchain = Whatsonchain(network=network) - https://developers.whatsonchain.com/
+        #self.blockchair = Blockchair(network=network) - https://github.com/Blockchair/Blockchair.Support
+
+        # Prevent an alphabet soup of requests type exceptions
+        self.IGNORED_ERRORS = (ConnectionError,
+                               requests.exceptions.ConnectionError,
+                               requests.exceptions.Timeout,
+                               requests.exceptions.ReadTimeout)
+
+        # Many apis will have 'main' support but not 'test' or 'stn' support.
+        # This way still avoids most of the duplication of code but allows piling on more redundancy for 'main'.
+        # Will likely need some 'normalization' functions in future to account for variations between apis.
+        if network == 'main':
+            self.GET_BALANCE = [self.bitindex3.get_balance]
+            self.GET_TRANSACTIONS = [self.bitindex3.get_transactions]
+            self.GET_TRANSACTION = [self.bitindex3.get_transaction]
+            self.GET_UNSPENTS = [self.bitindex3.get_utxos]
+            self.BROADCAST_TX = [self.bitindex3.send_transaction]
+
+        elif network == 'test':
+            self.GET_BALANCE = [self.bitindex3.get_balance]
+            self.GET_TRANSACTIONS = [self.bitindex3.get_transactions]
+            self.GET_TRANSACTION = [self.bitindex3.get_transaction]
+            self.GET_UNSPENTS = [self.bitindex3.get_utxos]
+            self.BROADCAST_TX = [self.bitindex3.send_transaction]
+
+        elif network == 'stn':
+            self.GET_BALANCE = [self.bitindex3.get_balance]
+            self.GET_TRANSACTIONS = [self.bitindex3.get_transactions]
+            self.GET_TRANSACTION = [self.bitindex3.get_transaction]
+            self.GET_UNSPENTS = [self.bitindex3.get_utxos]
+            self.BROADCAST_TX = [self.bitindex3.send_transaction]
+
+    def get_balance(self, address):
         """Gets the balance of an address in satoshis.
 
         :param address: The address in question.
@@ -38,34 +66,34 @@ class NetworkAPI:
         :rtype: ``int``
         """
 
-        for api_call in cls.GET_BALANCE_MAIN:
+        for api_call in self.GET_BALANCE:
             try:
                 return api_call(address)
-            except cls.IGNORED_ERRORS:
+            except self.IGNORED_ERRORS:
                 pass
 
         raise ConnectionError('All APIs are unreachable.')
 
-    @classmethod
-    def get_transactions(cls, address):
+    def get_transactions(self, address):
         """Gets the ID of all transactions related to an address.
 
+        :param from_index: First index from transactions list to start collecting from
+        :param to_index: Final index to finish collecting transactions from
         :param address: The address in question.
         :type address: ``str``
         :raises ConnectionError: If all API services fail.
         :rtype: ``list`` of ``str``
         """
 
-        for api_call in cls.GET_TRANSACTIONS_MAIN:
+        for api_call in self.GET_TRANSACTIONS:
             try:
                 return api_call(address)
-            except cls.IGNORED_ERRORS:
+            except self.IGNORED_ERRORS:
                 pass
 
         raise ConnectionError('All APIs are unreachable.')
 
-    @classmethod
-    def get_transaction(cls, txid):
+    def get_transaction(self, txid):
         """Gets the full transaction details.
 
         :param txid: The transaction id in question.
@@ -74,54 +102,34 @@ class NetworkAPI:
         :rtype: ``Transaction``
         """
 
-        for api_call in cls.GET_TX_MAIN:
+        for api_call in self.GET_TRANSACTION:
             try:
                 return api_call(txid)
-            except cls.IGNORED_ERRORS:
+            except self.IGNORED_ERRORS:
                 pass
 
         raise ConnectionError('All APIs are unreachable.')
 
-    @classmethod
-    def get_tx_amount(cls, txid, txindex):
-        """Gets the amount of a given transaction output.
-
-        :param txid: The transaction id in question.
-        :type txid: ``str``
-        :param txindex: The transaction index in question.
-        :type txindex: ``int``
-        :raises ConnectionError: If all API services fail.
-        :rtype: ``Decimal``
-        """
-
-        for api_call in cls.GET_TX_AMOUNT_MAIN:
-            try:
-                return api_call(txid, txindex)
-            except cls.IGNORED_ERRORS:
-                pass
-
-        raise ConnectionError('All APIs are unreachable.')
-
-    @classmethod
-    def get_unspent(cls, address):
+    def get_unspents(self, address):
         """Gets all unspent transaction outputs belonging to an address.
 
         :param address: The address in question.
         :type address: ``str``
         :raises ConnectionError: If all API services fail.
-        :rtype: ``list`` of :class:`~bitcash.network.meta.Unspent`
+        :param address: Address to get utxos for
+        :param sort: 'value:desc' or 'value:asc' to sort unspents by descending/ascending order respectively
+        :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
 
-        for api_call in cls.GET_UNSPENT_MAIN:
+        for api_call in self.GET_UNSPENTS:
             try:
                 return api_call(address)
-            except cls.IGNORED_ERRORS:
+            except self.IGNORED_ERRORS:
                 pass
 
         raise ConnectionError('All APIs are unreachable.')
 
-    @classmethod
-    def broadcast_tx(cls, tx_hex):  # pragma: no cover
+    def broadcast_tx(self, tx_hex):  # pragma: no cover
         """Broadcasts a transaction to the blockchain.
 
         :param tx_hex: A signed transaction in hex form.
@@ -130,13 +138,13 @@ class NetworkAPI:
         """
         success = None
 
-        for api_call in cls.BROADCAST_TX_MAIN:
+        for api_call in self.BROADCAST_TX:
             try:
                 success = api_call(tx_hex)
                 if not success:
                     continue
                 return
-            except cls.IGNORED_ERRORS:
+            except self.IGNORED_ERRORS:
                 pass
 
         if success is False:
