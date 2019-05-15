@@ -51,6 +51,7 @@ class BitIndex3:
             data=json.dumps({'addrs': address}),
             headers=self.headers,
         )
+        r.raise_for_status()
         return [Unspent(
             amount=tx['satoshis'],
             confirmations=tx['confirmations'],
@@ -69,6 +70,7 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/addr/{address}',
             headers=self.headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_transactions(
@@ -102,6 +104,7 @@ class BitIndex3:
             }),
             headers=self.headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def send_transaction(self, raw_transaction):
@@ -115,6 +118,7 @@ class BitIndex3:
             data=json.dumps({'rawtx': raw_transaction}),
             headers=self.headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_transaction(self, transaction_id):
@@ -127,6 +131,7 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/tx/{transaction_id}',
             headers=self.headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_raw_transaction(self, transaction_id):
@@ -139,6 +144,7 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/rawtx/{transaction_id}',
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_network_status(self, query=None):
@@ -152,6 +158,7 @@ class BitIndex3:
             params={'q': query},
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_block_hash_by_height(self, height):
@@ -164,6 +171,7 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/block-index/{height}',
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_block(self, block_hash):
@@ -176,6 +184,7 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/block/{block_hash}',
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_raw_block(self, block_hash):
@@ -188,6 +197,7 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/rawblock/{block_hash}',
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_next_address(self, xpub, reserve_time=None):
@@ -202,6 +212,7 @@ class BitIndex3:
             params={'reserveTime': reserve_time},
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_xpub_addresses(
@@ -225,12 +236,13 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/xpub/{xpub}/addrs',
             params={
                 'offset': offset,
-                'limit': 1000,
+                'limit': limit,
                 'order': order,
                 'address': address,
             },
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_xpub_status(self, xpub):
@@ -243,6 +255,7 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/xpub/{xpub}/status',
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_xpub_utxos(self, xpub, sort=None):
@@ -257,6 +270,7 @@ class BitIndex3:
             params={'sort': sort},
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_xpub_transactions(self, xpub):
@@ -269,6 +283,7 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/xpub/{xpub}/txs',
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_webhook_config(self):
@@ -279,6 +294,7 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/webhook/endpoint',
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def update_webhook_config(self, url, enabled, secret):
@@ -298,6 +314,7 @@ class BitIndex3:
             }),
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def get_webhook_monitored_addresses(self):
@@ -308,6 +325,7 @@ class BitIndex3:
             f'https://api.bitindex.network/api/v3/{self.network}/webhook/monitored_addrs',
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
     def update_webhook_monitored_addresses(self, address):
@@ -321,6 +339,7 @@ class BitIndex3:
             data=json.dumps({'addr': address}),
             headers=self.authorized_headers,
         )
+        r.raise_for_status()
         return r.json()
 
 
