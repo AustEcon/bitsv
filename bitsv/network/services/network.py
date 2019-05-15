@@ -9,7 +9,8 @@ from .bitindex3 import BitIndex3
 DEFAULT_TIMEOUT = 30
 BSV_TO_SAT_MULTIPLIER = 100000000
 DEFAULT_RETRY = 3
-IGNORED_ERRORS = (requests.exceptions.ConnectionError,
+IGNORED_ERRORS = (ConnectionError,
+                  requests.exceptions.ConnectionError,
                   requests.exceptions.Timeout,
                   requests.exceptions.ReadTimeout,
                   requests.HTTPError)
