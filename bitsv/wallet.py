@@ -30,6 +30,12 @@ def wif_to_key(wif):
             return PrivateKeyTestnet(wif)
 
 
+# Instantiate Main, Test and STN NetworkAPI instances for use by all PrivateKey[Test]'s
+network_api_main = NetworkAPI('main')
+network_api_test = NetworkAPI('test')
+network_api_stn = NetworkAPI('stn')
+
+
 class BaseKey:
     """This class represents a point on the elliptic curve secp256k1 and
     provides all necessary cryptographic functionality. You shouldn't use
@@ -148,7 +154,7 @@ class PrivateKey(BaseKey):
         self.unspents = []
         self.transactions = []
         self.network = 'main'
-        self.network_api = NetworkAPI(self.network)
+        self.network_api = network_api_main  # instantiated above - avoids multiple unnecessary instances for many Keys
 
     @property
     def address(self):
@@ -589,7 +595,10 @@ class PrivateKeyTestnet(BaseKey):
         self.unspents = []
         self.transactions = []
         self.network = network
-        self.network_api = NetworkAPI(self.network)
+        if network == 'test':
+            self.network_api = network_api_test
+        elif network == 'stn':
+            self.network_api = network_api_stn
 
     @property
     def address(self):
