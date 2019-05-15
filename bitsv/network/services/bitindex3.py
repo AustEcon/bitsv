@@ -29,7 +29,7 @@ class BitIndex3:
         headers['api_key'] = self.api_key
         return headers
 
-    def get_utxos(self, address, sort=True, sort_direction='desc'):
+    def get_utxos(self, address, sort=False, sort_direction='asc'):
         """Gets all unspent transaction outputs belonging to an address.
 
         :param address: Address to get utxos for
@@ -38,10 +38,10 @@ class BitIndex3:
         :param sort: True or False indicates if unspents should be sorted unsorted (ignores sort_direction parameter)
         :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
-        if sort and sort_direction is 'desc':
-            params = {'sort': 'value:desc'}
-        elif sort and sort_direction is 'asc':
+        if sort and sort_direction is 'asc':
             params = {'sort': 'value:asc'}
+        elif sort and sort_direction is 'desc':
+            params = {'sort': 'value:desc'}
         else:
             params = {'sort': None}
 
