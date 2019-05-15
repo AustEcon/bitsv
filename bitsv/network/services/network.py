@@ -142,7 +142,7 @@ class NetworkAPI:
         for api_call in self.GET_BALANCE:
             try:
                 return self.retry_wrapper_call(api_call, address)
-            except self.IGNORED_ERRORS:
+            except IGNORED_ERRORS:
                 self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
 
         raise ConnectionError('All APIs are unreachable.')
@@ -217,7 +217,7 @@ class NetworkAPI:
                 if not success:
                     continue
                 return
-            except self.IGNORED_ERRORS:
+            except IGNORED_ERRORS:
                 self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
 
         if success is False:
