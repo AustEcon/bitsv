@@ -197,7 +197,10 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
 
     remaining = total_in - total_out
 
-    if remaining > 0:
+    # If the uxto less than dust (546) the miner will not relay that tx.
+    # Here we put all the remnant (<546) to the miner in this case.
+    # We could adjust here when new dust agreement reached in future.
+    if remaining > 546:
         outputs.append((leftover, remaining))
     elif remaining < 0:
         raise InsufficientFunds('Balance {} is less than {} (including '
