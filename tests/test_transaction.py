@@ -8,7 +8,7 @@ from bitsv.transaction import (
 )
 from bitsv.utils import hex_to_bytes
 from bitsv.wallet import PrivateKey
-from .samples import WALLET_FORMAT_MAIN, BITCOIN_CASHADDRESS_TEST_COMPRESSED
+from .samples import WALLET_FORMAT_MAIN, BITCOIN_ADDRESS_TEST_COMPRESSED
 
 
 RETURN_ADDRESS = 'n2eMqTT929pb1RDNuqEnxdaLau1rxy3efi'
@@ -100,7 +100,7 @@ class TestSanitizeTxData:
     def test_message(self):
         unspents_original = [Unspent(10000, 0, '', '', 0),
                              Unspent(10000, 0, '', '', 0)]
-        outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 1000, 'satoshi')]
+        outputs_original = [(BITCOIN_ADDRESS_TEST_COMPRESSED, 1000, 'satoshi')]
 
         unspents, outputs = sanitize_tx_data(
             unspents_original, outputs_original, fee=5, leftover=RETURN_ADDRESS,
@@ -114,7 +114,7 @@ class TestSanitizeTxData:
     def test_message_pushdata(self):
         unspents_original = [Unspent(10000, 0, '', '', 0),
                              Unspent(10000, 0, '', '', 0)]
-        outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 1000, 'satoshi')]
+        outputs_original = [(BITCOIN_ADDRESS_TEST_COMPRESSED, 1000, 'satoshi')]
 
         BYTES = len(b'hello').to_bytes(1, byteorder='little') + b'hello'
 
@@ -130,7 +130,7 @@ class TestSanitizeTxData:
     def test_fee_applied(self):
         unspents_original = [Unspent(1000, 0, '', '', 0),
                              Unspent(1000, 0, '', '', 0)]
-        outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2000, 'satoshi')]
+        outputs_original = [(BITCOIN_ADDRESS_TEST_COMPRESSED, 2000, 'satoshi')]
 
         with pytest.raises(InsufficientFunds):
             sanitize_tx_data(
@@ -141,7 +141,7 @@ class TestSanitizeTxData:
     def test_zero_remaining(self):
         unspents_original = [Unspent(1000, 0, '', '', 0),
                              Unspent(1000, 0, '', '', 0)]
-        outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2000, 'satoshi')]
+        outputs_original = [(BITCOIN_ADDRESS_TEST_COMPRESSED, 2000, 'satoshi')]
 
         unspents, outputs = sanitize_tx_data(
             unspents_original, outputs_original, fee=0, leftover=RETURN_ADDRESS,
@@ -149,12 +149,12 @@ class TestSanitizeTxData:
         )
 
         assert unspents == unspents_original
-        assert outputs == [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2000)]
+        assert outputs == [(BITCOIN_ADDRESS_TEST_COMPRESSED, 2000)]
 
     def test_combine_remaining(self):
         unspents_original = [Unspent(1000, 0, '', '', 0),
                              Unspent(1000, 0, '', '', 0)]
-        outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 500, 'satoshi')]
+        outputs_original = [(BITCOIN_ADDRESS_TEST_COMPRESSED, 500, 'satoshi')]
 
         unspents, outputs = sanitize_tx_data(
             unspents_original, outputs_original, fee=0, leftover=RETURN_ADDRESS,
@@ -166,10 +166,26 @@ class TestSanitizeTxData:
         assert outputs[1][0] == RETURN_ADDRESS
         assert outputs[1][1] == 1500
 
+    def test_combine_remaining_less_than_dust(self):
+        unspents_original = [Unspent(1000, 0, '', '', 0),
+                             Unspent(1000, 0, '', '', 0)]
+        outputs_original = [(BITCOIN_ADDRESS_TEST_COMPRESSED, 1500, 'satoshi')]
+
+        unspents, outputs = sanitize_tx_data(
+            unspents_original, outputs_original, fee=0, leftover=RETURN_ADDRESS,
+            combine=True, message=None
+        )
+
+        assert unspents == unspents_original
+        # There will be no remaining uxto because it is less than the current dust (546)
+        assert len(outputs) == 1
+        assert outputs[0][0] == BITCOIN_ADDRESS_TEST_COMPRESSED
+        assert outputs[0][1] == 1500
+
     def test_combine_insufficient_funds(self):
         unspents_original = [Unspent(1000, 0, '', '', 0),
                              Unspent(1000, 0, '', '', 0)]
-        outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2500, 'satoshi')]
+        outputs_original = [(BITCOIN_ADDRESS_TEST_COMPRESSED, 2500, 'satoshi')]
 
         with pytest.raises(InsufficientFunds):
             sanitize_tx_data(
@@ -180,7 +196,7 @@ class TestSanitizeTxData:
     def test_no_combine_remaining(self):
         unspents_original = [Unspent(7000, 0, '', '', 0),
                              Unspent(3000, 0, '', '', 0)]
-        outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2000, 'satoshi')]
+        outputs_original = [(BITCOIN_ADDRESS_TEST_COMPRESSED, 2000, 'satoshi')]
 
         unspents, outputs = sanitize_tx_data(
             unspents_original, outputs_original, fee=0, leftover=RETURN_ADDRESS,
@@ -196,7 +212,7 @@ class TestSanitizeTxData:
         unspents_original = [Unspent(1500, 0, '', '', 0),
                              Unspent(1600, 0, '', '', 0),
                              Unspent(1700, 0, '', '', 0)]
-        outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2000, 'satoshi')]
+        outputs_original = [(BITCOIN_ADDRESS_TEST_COMPRESSED, 2000, 'satoshi')]
 
         unspents, outputs = sanitize_tx_data(
             unspents_original, outputs_original, fee=0, leftover=RETURN_ADDRESS,
@@ -215,7 +231,7 @@ class TestSanitizeTxData:
         unspents_single = [Unspent(5000, 0, '', '', 0)]
         unspents_original = [Unspent(5000, 0, '', '', 0),
                              Unspent(5000, 0, '', '', 0)]
-        outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 1000, 'satoshi')]
+        outputs_original = [(BITCOIN_ADDRESS_TEST_COMPRESSED, 1000, 'satoshi')]
 
         unspents, outputs = sanitize_tx_data(
             unspents_original, outputs_original, fee=1, leftover=RETURN_ADDRESS,
@@ -238,7 +254,7 @@ class TestSanitizeTxData:
     def test_no_combine_insufficient_funds(self):
         unspents_original = [Unspent(1000, 0, '', '', 0),
                              Unspent(1000, 0, '', '', 0)]
-        outputs_original = [(BITCOIN_CASHADDRESS_TEST_COMPRESSED, 2500, 'satoshi')]
+        outputs_original = [(BITCOIN_ADDRESS_TEST_COMPRESSED, 2500, 'satoshi')]
 
         with pytest.raises(InsufficientFunds):
             sanitize_tx_data(

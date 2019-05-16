@@ -167,7 +167,6 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
             messages.append((message, 0))
             total_op_return_size += get_op_return_size(message, custom_pushdata=True)
 
-
     # Include return address in fee estimate.
     total_in = 0
     num_outputs = len(outputs) + 1
@@ -197,7 +196,7 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
 
     remaining = total_in - total_out
 
-    # If the uxto less than dust (546) the miner will not relay that tx.
+    # If the uxto less than dust (546) the miner will not relay that tx, even the service can successful return.
     # Here we put all the remnant (<546) to the miner in this case.
     # We could adjust here when new dust agreement reached in future.
     if remaining > 546:
