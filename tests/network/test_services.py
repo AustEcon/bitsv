@@ -3,9 +3,7 @@ import pytest
 import bitsv
 from bitsv.network.services import NetworkAPI
 from bitsv.network.services.network import set_service_timeout
-from tests.utils import (
-    catch_errors_raise_warnings, decorate_methods, raise_connection_error
-)
+from tests.utils import raise_connection_error
 
 MAIN_ADDRESS_USED1 = '1L2JsXHPMYuAa9ugvHGLwkdstCPUDemNCf'
 MAIN_ADDRESS_USED2 = '17SkEw2md5avVNyYgj6RiXuQKNwkXaxFyQ'
@@ -14,7 +12,9 @@ TEST_ADDRESS_USED1 = 'n2eMqTT929pb1RDNuqEnxdaLau1rxy3efi'
 TEST_ADDRESS_USED2 = 'mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5'
 TEST_ADDRESS_USED3 = 'mpnrLMH4m4e6dS8Go84P1r2hWwTiFTXmtW'
 TEST_ADDRESS_UNUSED = 'mp1xDKvvZ4yd8h9mLC4P76syUirmxpXhuk'
+TEST_TX = '9a987f7fec77c84e743e7bd4cbcb410e1f37dd600df78137b0d07629520161b3'
 
+INVOKE_COUNTER = 0
 
 def all_items_common(seq):
     initial_set = set(seq[0])
@@ -36,6 +36,22 @@ def test_set_service_timeout():
     assert updated == 3
 
     set_service_timeout(original)
+
+
+def mock_get_balance(value):
+    return ""
+
+
+def mock_retry_get_transaction(value):
+    """ It will success every 3 invokes.
+    The return status order is: Exception, Exception, Success, Exception, ...
+    """
+    global INVOKE_COUNTER
+    INVOKE_COUNTER = INVOKE_COUNTER + 1
+    if INVOKE_COUNTER % 3 == 0:
+        return ""
+    else:
+        raise_connection_error()
 
 
 network_api_main = NetworkAPI('main')
@@ -139,3 +155,17 @@ class TestNetworkAPI:
     def test_get_unspents_stn_failure(self):
         with pytest.raises(ConnectionError):
             mock_network_api_stn.get_unspents(TEST_ADDRESS_USED2)
+
+    # Retry
+    def test_switch_serivce(self):
+        """ The invoke finally success after switch service. """
+        network = NetworkAPI("main")
+        network.GET_BALANCE = [raise_connection_error, mock_get_balance]
+        assert "" == network.get_balance(TEST_ADDRESS_USED2)
+
+    def test_retry_service(self):
+        """ The invoke finally success after retry. """
+        network = NetworkAPI("main")
+        network.GET_TRANSACTION = [mock_retry_get_transaction]
+        assert "" == network.get_transaction(TEST_TX)
+
