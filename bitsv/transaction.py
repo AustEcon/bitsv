@@ -13,6 +13,9 @@ VERSION_1 = 0x01.to_bytes(4, byteorder='little')
 SEQUENCE = 0xffffffff.to_bytes(4, byteorder='little')
 LOCK_TIME = 0x00.to_bytes(4, byteorder='little')
 
+# The dust is described in bitcoin-sv/src/primitives/transaction.h
+DUST = 546
+
 ##
 # Python 3 doesn't allow bitwise operators on byte objects...
 HASH_TYPE = 0x01.to_bytes(4, byteorder='little')
@@ -199,7 +202,7 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
     # If the uxto less than dust (546) the miner will not relay that tx, even the service can successful return.
     # Here we put all the remnant (<546) to the miner in this case.
     # We could adjust here when new dust agreement reached in future.
-    if remaining > 546:
+    if remaining > DUST:
         outputs.append((leftover, remaining))
     elif remaining < 0:
         raise InsufficientFunds('Balance {} is less than {} (including '
