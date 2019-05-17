@@ -4,7 +4,7 @@ import requests
 
 
 def raise_connection_error(*args, **kwargs):
-    requests.get('https://jibber.ish', timeout=0.01, *args, **kwargs)
+    raise requests.ConnectionError
 
 
 def decorate_methods(decorator, *args, **kwargs):

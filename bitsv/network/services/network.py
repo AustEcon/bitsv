@@ -1,14 +1,68 @@
+from functools import wraps
+
 import requests
+import time
 import collections
 from .bitindex3 import BitIndex3
 
 DEFAULT_TIMEOUT = 30
 BSV_TO_SAT_MULTIPLIER = 100000000
+DEFAULT_RETRY = 3
+IGNORED_ERRORS = (ConnectionError,
+                  requests.exceptions.ConnectionError,
+                  requests.exceptions.Timeout,
+                  requests.exceptions.ReadTimeout,
+                  requests.HTTPError)
 
 
 def set_service_timeout(seconds):
     global DEFAULT_TIMEOUT
     DEFAULT_TIMEOUT = seconds
+
+
+def set_service_retry(retry):
+    global DEFAULT_RETRY
+    DEFAULT_RETRY = retry
+
+
+def retry(exception_to_check, tries=3, delay=1, backoff=2, logger=None):
+    """Retry calling the decorated function using an exponential backoff,
+    the default dealy sequence is 1s, 2s, 4s, 8s...
+    http://www.saltycrane.com/blog/2009/11/trying-out-retry-decorator-python/
+    original from: http://wiki.python.org/moin/PythonDecoratorLibrary#Retry
+    :param exception_to_check: the exception object to check. may be a tuple of exceptions to check
+    :type exception_to_check: Exception or tuple
+    :param tries: number of times to try (not retry) before giving up
+    :type tries: int
+    :param delay: initial delay between retries in seconds
+    :type delay: int
+    :param backoff: backoff multiplier e.g. value of 2 will double the delay each retry
+    :type backoff: int
+    :param logger: logger to use. If None, print
+    :type logger: logging.Logger instance
+    """
+    def deco_retry(f):
+
+        @wraps(f)
+        def f_retry(*args, **kwargs):
+            mtries, mdelay = tries, delay
+            while mtries > 1:
+                try:
+                    return f(*args, **kwargs)
+                except exception_to_check as e:
+                    msg = "{}, Retrying in {} seconds...".format(str(e), mdelay)
+                    if logger:
+                        logger.warning(msg)
+                    else:
+                        print(msg)
+                    time.sleep(mdelay)
+                    mtries -= 1
+                    mdelay *= backoff
+            return f(*args, **kwargs)
+
+        return f_retry  # true decorator
+
+    return deco_retry
 
 
 class BitIndex3Normalized(BitIndex3):
@@ -72,10 +126,9 @@ class NetworkAPI:
         self.GET_UNSPENTS = [api.get_unspents for api in self.list_of_apis]
         self.BROADCAST_TX = [api.send_transaction for api in self.list_of_apis]
 
-        self.IGNORED_ERRORS = (ConnectionError,
-                               requests.exceptions.ConnectionError,
-                               requests.exceptions.Timeout,
-                               requests.exceptions.ReadTimeout)
+    @retry(IGNORED_ERRORS, tries=DEFAULT_RETRY)
+    def retry_wrapper_call(self, api_call, param):
+        return api_call(param)
 
     def get_balance(self, address):
         """Gets the balance of an address in satoshis.
@@ -88,8 +141,8 @@ class NetworkAPI:
 
         for api_call in self.GET_BALANCE:
             try:
-                return api_call(address)
-            except self.IGNORED_ERRORS:
+                return self.retry_wrapper_call(api_call, address)
+            except IGNORED_ERRORS:
                 self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
 
         raise ConnectionError('All APIs are unreachable.')
@@ -107,8 +160,8 @@ class NetworkAPI:
 
         for api_call in self.GET_TRANSACTIONS:
             try:
-                return api_call(address)
-            except self.IGNORED_ERRORS:
+                return self.retry_wrapper_call(api_call, address)
+            except IGNORED_ERRORS:
                 self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
 
         raise ConnectionError('All APIs are unreachable.')
@@ -124,8 +177,8 @@ class NetworkAPI:
 
         for api_call in self.GET_TRANSACTION:
             try:
-                return api_call(txid)
-            except self.IGNORED_ERRORS:
+                return self.retry_wrapper_call(api_call, txid)
+            except IGNORED_ERRORS:
                 self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
 
         raise ConnectionError('All APIs are unreachable.')
@@ -143,8 +196,8 @@ class NetworkAPI:
 
         for api_call in self.GET_UNSPENTS:
             try:
-                return api_call(address)
-            except self.IGNORED_ERRORS:
+                return self.retry_wrapper_call(api_call, address)
+            except IGNORED_ERRORS:
                 self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
 
         raise ConnectionError('All APIs are unreachable.')
@@ -160,11 +213,11 @@ class NetworkAPI:
 
         for api_call in self.BROADCAST_TX:
             try:
-                success = api_call(tx_hex)
+                success = self.retry_wrapper_call(api_call, tx_hex)
                 if not success:
                     continue
                 return
-            except self.IGNORED_ERRORS:
+            except IGNORED_ERRORS:
                 self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
 
         if success is False:
