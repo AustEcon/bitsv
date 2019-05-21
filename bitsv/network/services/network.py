@@ -25,9 +25,9 @@ def set_service_retry(retry):
     DEFAULT_RETRY = retry
 
 
-def retry(exception_to_check, tries=3, delay=1, backoff=2, logger=None):
+def retry_annotation(exception_to_check, tries=3, delay=1, backoff=2, logger=None):
     """Retry calling the decorated function using an exponential backoff,
-    the default dealy sequence is 1s, 2s, 4s, 8s...
+    the default delay sequence is 1s, 2s, 4s, 8s...
     http://www.saltycrane.com/blog/2009/11/trying-out-retry-decorator-python/
     original from: http://wiki.python.org/moin/PythonDecoratorLibrary#Retry
     :param exception_to_check: the exception object to check. may be a tuple of exceptions to check
@@ -126,9 +126,18 @@ class NetworkAPI:
         self.GET_UNSPENTS = [api.get_unspents for api in self.list_of_apis]
         self.BROADCAST_TX = [api.send_transaction for api in self.list_of_apis]
 
-    @retry(IGNORED_ERRORS, tries=DEFAULT_RETRY)
+    @retry_annotation(IGNORED_ERRORS, tries=DEFAULT_RETRY)
     def retry_wrapper_call(self, api_call, param):
         return api_call(param)
+
+    def invoke_rpc_call(self, call_list, param):
+        """Tries to invoke all api, raise exception if all fail."""
+        for api_call in call_list:
+            try:
+                return self.retry_wrapper_call(api_call, param)
+            except IGNORED_ERRORS as e:
+                if call_list[-1] == api_call:   # All api iterated.
+                    raise ConnectionError('All APIs are unreachable, exception:' + str(e))
 
     def get_balance(self, address):
         """Gets the balance of an address in satoshis.
@@ -138,33 +147,17 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``int``
         """
-
-        for api_call in self.GET_BALANCE:
-            try:
-                return self.retry_wrapper_call(api_call, address)
-            except IGNORED_ERRORS:
-                self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
-
-        raise ConnectionError('All APIs are unreachable.')
+        return self.invoke_rpc_call(self.GET_BALANCE, address)
 
     def get_transactions(self, address):
         """Gets the ID of all transactions related to an address.
 
-        :param from_index: First index from transactions list to start collecting from
-        :param to_index: Final index to finish collecting transactions from
         :param address: The address in question.
         :type address: ``str``
         :raises ConnectionError: If all API services fail.
         :rtype: ``list`` of ``str``
         """
-
-        for api_call in self.GET_TRANSACTIONS:
-            try:
-                return self.retry_wrapper_call(api_call, address)
-            except IGNORED_ERRORS:
-                self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
-
-        raise ConnectionError('All APIs are unreachable.')
+        return self.invoke_rpc_call(self.GET_TRANSACTIONS, address)
 
     def get_transaction(self, txid):
         """Gets the full transaction details.
@@ -174,14 +167,7 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``Transaction``
         """
-
-        for api_call in self.GET_TRANSACTION:
-            try:
-                return self.retry_wrapper_call(api_call, txid)
-            except IGNORED_ERRORS:
-                self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
-
-        raise ConnectionError('All APIs are unreachable.')
+        return self.invoke_rpc_call(self.GET_TRANSACTION, txid)
 
     def get_unspents(self, address):
         """Gets all unspent transaction outputs belonging to an address.
@@ -189,18 +175,9 @@ class NetworkAPI:
         :param address: The address in question.
         :type address: ``str``
         :raises ConnectionError: If all API services fail.
-        :param address: Address to get utxos for
-        :param sort: 'value:desc' or 'value:asc' to sort unspents by descending/ascending order respectively
         :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
-
-        for api_call in self.GET_UNSPENTS:
-            try:
-                return self.retry_wrapper_call(api_call, address)
-            except IGNORED_ERRORS:
-                self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
-
-        raise ConnectionError('All APIs are unreachable.')
+        return self.invoke_rpc_call(self.GET_UNSPENTS, address)
 
     def broadcast_tx(self, tx_hex):  # pragma: no cover
         """Broadcasts a transaction to the blockchain.
@@ -209,19 +186,5 @@ class NetworkAPI:
         :type tx_hex: ``str``
         :raises ConnectionError: If all API services fail.
         """
-        success = None
-
-        for api_call in self.BROADCAST_TX:
-            try:
-                success = self.retry_wrapper_call(api_call, tx_hex)
-                if not success:
-                    continue
-                return
-            except IGNORED_ERRORS:
-                self.list_of_apis.rotate(-1)  # failed api --> back of the que for next time (across all api calls)
-
-        if success is False:
-            raise ConnectionError('Transaction broadcast failed, or '
-                                  'Unspents were already used.')
-
-        raise ConnectionError('All APIs are unreachable.')
+        self.invoke_rpc_call(self.BROADCAST_TX, tx_hex)
+        return
