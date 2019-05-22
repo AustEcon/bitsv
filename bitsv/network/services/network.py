@@ -130,7 +130,7 @@ class NetworkAPI:
     def retry_wrapper_call(self, api_call, param):
         return api_call(param)
 
-    def invoke_rpc_call(self, call_list, param):
+    def invoke_api_call(self, call_list, param):
         """Tries to invoke all api, raise exception if all fail."""
         for api_call in call_list:
             try:
@@ -147,7 +147,7 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``int``
         """
-        return self.invoke_rpc_call(self.GET_BALANCE, address)
+        return self.invoke_api_call(self.GET_BALANCE, address)
 
     def get_transactions(self, address):
         """Gets the ID of all transactions related to an address.
@@ -157,7 +157,7 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``list`` of ``str``
         """
-        return self.invoke_rpc_call(self.GET_TRANSACTIONS, address)
+        return self.invoke_api_call(self.GET_TRANSACTIONS, address)
 
     def get_transaction(self, txid):
         """Gets the full transaction details.
@@ -167,7 +167,7 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``Transaction``
         """
-        return self.invoke_rpc_call(self.GET_TRANSACTION, txid)
+        return self.invoke_api_call(self.GET_TRANSACTION, txid)
 
     def get_unspents(self, address):
         """Gets all unspent transaction outputs belonging to an address.
@@ -177,7 +177,7 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
-        return self.invoke_rpc_call(self.GET_UNSPENTS, address)
+        return self.invoke_api_call(self.GET_UNSPENTS, address)
 
     def broadcast_tx(self, tx_hex):  # pragma: no cover
         """Broadcasts a transaction to the blockchain.
@@ -186,5 +186,5 @@ class NetworkAPI:
         :type tx_hex: ``str``
         :raises ConnectionError: If all API services fail.
         """
-        self.invoke_rpc_call(self.BROADCAST_TX, tx_hex)
+        self.invoke_api_call(self.BROADCAST_TX, tx_hex)
         return
