@@ -175,7 +175,10 @@ class TestNetworkAPI:
         """ The invoke finally success after switch service. """
         network = NetworkAPI("main")
         network.list_of_apis = collections.deque([MockErrorApi, MockApi])
+        assert network.list_of_apis[0] == MockErrorApi
         assert "" == network.get_balance(TEST_ADDRESS_USED2)
+        # API rotated, confirm default api has changed.
+        assert network.list_of_apis[0] == MockApi
 
     def test_retry_service(self):
         """ The invoke finally success after retry. """
