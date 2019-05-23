@@ -1,6 +1,7 @@
 import pytest
 
 import bitsv
+import collections
 from bitsv.network.services import NetworkAPI
 from bitsv.network.services.network import set_service_timeout
 from tests.utils import raise_connection_error
@@ -15,6 +16,7 @@ TEST_ADDRESS_UNUSED = 'mp1xDKvvZ4yd8h9mLC4P76syUirmxpXhuk'
 TEST_TX = '9a987f7fec77c84e743e7bd4cbcb410e1f37dd600df78137b0d07629520161b3'
 
 INVOKE_COUNTER = 0
+
 
 def all_items_common(seq):
     initial_set = set(seq[0])
@@ -38,19 +40,43 @@ def test_set_service_timeout():
     set_service_timeout(original)
 
 
-def mock_get_balance(value):
-    return ""
-
-
-def mock_retry_get_transaction(value):
-    """ It will success every 3 invokes.
-    The return status order is: Exception, Exception, Success, Exception, ...
-    """
-    global INVOKE_COUNTER
-    INVOKE_COUNTER = INVOKE_COUNTER + 1
-    if INVOKE_COUNTER % 3 == 0:
+class MockApi:
+    @staticmethod
+    def get_balance(addr):
         return ""
-    else:
+
+    @staticmethod
+    def get_transaction(tx):
+        """ It will success every 3 invokes.
+        The return status order is: Exception, Exception, Success, Exception, ...
+        """
+        global INVOKE_COUNTER
+        INVOKE_COUNTER = INVOKE_COUNTER + 1
+        if INVOKE_COUNTER % 3 == 0:
+            return ""
+        else:
+            raise_connection_error()
+
+
+class MockErrorApi:
+    @staticmethod
+    def get_unspents(addr):
+        raise_connection_error()
+
+    @staticmethod
+    def get_transaction(txid):
+        raise_connection_error()
+
+    @staticmethod
+    def get_transactions(txid):
+        raise_connection_error()
+
+    @staticmethod
+    def get_balance(addr):
+        raise_connection_error()
+
+    @staticmethod
+    def send_transaction(rawtx):
         raise_connection_error()
 
 
@@ -59,31 +85,19 @@ network_api_test = NetworkAPI('test')
 network_api_stn = NetworkAPI('stn')
 
 mock_network_api_main = NetworkAPI('main')
-mock_network_api_main.GET_BALANCE = [raise_connection_error]
-mock_network_api_main.GET_TRANSACTIONS = [raise_connection_error]
-mock_network_api_main.GET_TRANSACTION = [raise_connection_error]
-mock_network_api_main.GET_UNSPENTS = [raise_connection_error]
-mock_network_api_main.BROADCAST_TX = [raise_connection_error]
+mock_network_api_main.list_of_apis = collections.deque([MockErrorApi])
 
 mock_network_api_test = NetworkAPI('test')
-mock_network_api_test.GET_BALANCE = [raise_connection_error]
-mock_network_api_test.GET_TRANSACTIONS = [raise_connection_error]
-mock_network_api_test.GET_TRANSACTION = [raise_connection_error]
-mock_network_api_test.GET_UNSPENTS = [raise_connection_error]
-mock_network_api_test.BROADCAST_TX = [raise_connection_error]
+mock_network_api_test.list_of_apis = collections.deque([MockErrorApi])
 
 mock_network_api_stn = NetworkAPI('stn')
-mock_network_api_stn.GET_BALANCE = [raise_connection_error]
-mock_network_api_stn.GET_TRANSACTIONS = [raise_connection_error]
-mock_network_api_stn.GET_TRANSACTION = [raise_connection_error]
-mock_network_api_stn.GET_UNSPENTS = [raise_connection_error]
-mock_network_api_stn.BROADCAST_TX = [raise_connection_error]
+mock_network_api_stn.list_of_apis = collections.deque([MockErrorApi])
 
 
 class TestNetworkAPI:
     # Main
     def test_get_balance_main_equal(self):
-        results = [call(MAIN_ADDRESS_USED2) for call in network_api_main.GET_BALANCE]
+        results = [api.get_balance(MAIN_ADDRESS_USED2) for api in network_api_main.list_of_apis]
         assert all(result == results[0] for result in results)
 
     def test_get_balance_main_failure(self):
@@ -91,7 +105,7 @@ class TestNetworkAPI:
             mock_network_api_main.get_balance(MAIN_ADDRESS_USED1)
 
     def test_get_transactions_main_equal(self):
-        results = [call(MAIN_ADDRESS_USED1) for call in network_api_main.GET_TRANSACTIONS]
+        results = [api.get_transactions(MAIN_ADDRESS_USED1) for api in network_api_main.list_of_apis]
         assert all_items_common(results[:100])
 
     def test_get_transactions_main_failure(self):
@@ -99,7 +113,7 @@ class TestNetworkAPI:
             mock_network_api_main.get_transactions(MAIN_ADDRESS_USED1)
 
     def test_get_unspents_main_equal(self):
-        results = [call(MAIN_ADDRESS_USED2) for call in network_api_main.GET_UNSPENTS]
+        results = [api.get_unspents(MAIN_ADDRESS_USED2) for api in network_api_main.list_of_apis]
         assert all_items_equal(results)
 
     def test_get_unspents_main_failure(self):
@@ -108,7 +122,7 @@ class TestNetworkAPI:
 
     # Test
     def test_get_balance_test_equal(self):
-        results = [call(TEST_ADDRESS_USED2) for call in network_api_test.GET_BALANCE]
+        results = [api.get_balance(TEST_ADDRESS_USED2) for api in network_api_test.list_of_apis]
         assert all(result == results[0] for result in results)
 
     def test_get_balance_test_failure(self):
@@ -116,7 +130,7 @@ class TestNetworkAPI:
             mock_network_api_test.get_balance(TEST_ADDRESS_USED2)
 
     def test_get_transactions_test_equal(self):
-        results = [call(TEST_ADDRESS_USED2)[:100] for call in network_api_test.GET_TRANSACTIONS]
+        results = [api.get_transactions(TEST_ADDRESS_USED2)[:100] for api in network_api_test.list_of_apis]
         assert all_items_common(results)
 
     def test_get_transactions_test_failure(self):
@@ -124,7 +138,7 @@ class TestNetworkAPI:
             mock_network_api_test.get_transactions(TEST_ADDRESS_USED2)
 
     def test_get_unspents_test_equal(self):
-        results = [call(TEST_ADDRESS_USED3) for call in network_api_test.GET_UNSPENTS]
+        results = [api.get_unspents(TEST_ADDRESS_USED3) for api in network_api_test.list_of_apis]
         assert all_items_equal(results)
 
     def test_get_unspents_test_failure(self):
@@ -133,7 +147,7 @@ class TestNetworkAPI:
 
     # STN
     def test_get_balance_stn_equal(self):
-        results = [call(TEST_ADDRESS_USED2) for call in network_api_stn.GET_BALANCE]
+        results = [api.get_balance(TEST_ADDRESS_USED2) for api in network_api_stn.list_of_apis]
         assert all(result == results[0] for result in results)
 
     def test_get_balance_stn_failure(self):
@@ -141,7 +155,7 @@ class TestNetworkAPI:
             mock_network_api_stn.get_balance(TEST_ADDRESS_USED2)
 
     def test_get_transactions_stn_equal(self):
-        results = [call(TEST_ADDRESS_USED2)[:100] for call in network_api_stn.GET_TRANSACTIONS]
+        results = [api.get_transactions(TEST_ADDRESS_USED2)[:100] for api in network_api_stn.list_of_apis]
         assert all_items_common(results)
 
     def test_get_transactions_stn_failure(self):
@@ -149,7 +163,7 @@ class TestNetworkAPI:
             mock_network_api_stn.get_transactions(TEST_ADDRESS_USED2)
 
     def test_get_unspents_stn_equal(self):
-        results = [call(TEST_ADDRESS_USED3) for call in network_api_stn.GET_UNSPENTS]
+        results = [api.get_unspents(TEST_ADDRESS_USED3) for api in network_api_stn.list_of_apis]
         assert all_items_equal(results)
 
     def test_get_unspents_stn_failure(self):
@@ -160,12 +174,11 @@ class TestNetworkAPI:
     def test_switch_serivce(self):
         """ The invoke finally success after switch service. """
         network = NetworkAPI("main")
-        network.GET_BALANCE = [raise_connection_error, mock_get_balance]
+        network.list_of_apis = collections.deque([MockErrorApi, MockApi])
         assert "" == network.get_balance(TEST_ADDRESS_USED2)
 
     def test_retry_service(self):
         """ The invoke finally success after retry. """
         network = NetworkAPI("main")
-        network.GET_TRANSACTION = [mock_retry_get_transaction]
+        network.list_of_apis = collections.deque([MockApi])
         assert "" == network.get_transaction(TEST_TX)
-

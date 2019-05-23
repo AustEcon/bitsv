@@ -120,12 +120,6 @@ class NetworkAPI:
         else:
             raise ValueError("network must be either 'main', 'test' or 'stn'")
 
-        self.GET_BALANCE = [api.get_balance for api in self.list_of_apis]
-        self.GET_TRANSACTIONS = [api.get_transactions for api in self.list_of_apis]
-        self.GET_TRANSACTION = [api.get_transaction for api in self.list_of_apis]
-        self.GET_UNSPENTS = [api.get_unspents for api in self.list_of_apis]
-        self.BROADCAST_TX = [api.send_transaction for api in self.list_of_apis]
-
     @retry_annotation(IGNORED_ERRORS, tries=DEFAULT_RETRY)
     def retry_wrapper_call(self, api_call, param):
         return api_call(param)
@@ -136,6 +130,8 @@ class NetworkAPI:
             try:
                 return self.retry_wrapper_call(api_call, param)
             except IGNORED_ERRORS as e:
+                # TODO: Write a log here to notify the system has changed the default service.
+                self.list_of_apis.rotate(-1)
                 if call_list[-1] == api_call:   # All api iterated.
                     raise ConnectionError('All APIs are unreachable, exception:' + str(e))
 
@@ -147,7 +143,8 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``int``
         """
-        return self.invoke_api_call(self.GET_BALANCE, address)
+        call_list = [api.get_balance for api in self.list_of_apis]
+        return self.invoke_api_call(call_list, address)
 
     def get_transactions(self, address):
         """Gets the ID of all transactions related to an address.
@@ -157,7 +154,8 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``list`` of ``str``
         """
-        return self.invoke_api_call(self.GET_TRANSACTIONS, address)
+        call_list = [api.get_transactions for api in self.list_of_apis]
+        return self.invoke_api_call(call_list, address)
 
     def get_transaction(self, txid):
         """Gets the full transaction details.
@@ -167,7 +165,8 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``Transaction``
         """
-        return self.invoke_api_call(self.GET_TRANSACTION, txid)
+        call_list = [api.get_transaction for api in self.list_of_apis]
+        return self.invoke_api_call(call_list, txid)
 
     def get_unspents(self, address):
         """Gets all unspent transaction outputs belonging to an address.
@@ -177,7 +176,8 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
-        return self.invoke_api_call(self.GET_UNSPENTS, address)
+        call_list = [api.get_unspents for api in self.list_of_apis]
+        return self.invoke_api_call(call_list, address)
 
     def broadcast_tx(self, tx_hex):  # pragma: no cover
         """Broadcasts a transaction to the blockchain.
@@ -186,5 +186,6 @@ class NetworkAPI:
         :type tx_hex: ``str``
         :raises ConnectionError: If all API services fail.
         """
-        self.invoke_api_call(self.BROADCAST_TX, tx_hex)
+        call_list = [api.send_transaction for api in self.list_of_apis]
+        self.invoke_api_call(call_list, tx_hex)
         return
