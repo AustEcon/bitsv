@@ -7,7 +7,7 @@ import pytest
 from bitsv.crypto import ECPrivateKey
 from bitsv.curve import Point
 from bitsv.format import verify_sig
-from bitsv.wallet import BaseKey, Key, PrivateKey, PrivateKeyTestnet, wif_to_key
+from bitsv.wallet import BaseKey, Key, PrivateKey, wif_to_key
 from .samples import (
     PRIVATE_KEY_BYTES, PRIVATE_KEY_DER,
     PRIVATE_KEY_HEX, PRIVATE_KEY_NUM, PRIVATE_KEY_PEM,
@@ -33,12 +33,26 @@ class TestWIFToKey:
 
     def test_compressed_test(self):
         key = wif_to_key(WALLET_FORMAT_COMPRESSED_TEST)
-        assert isinstance(key, PrivateKeyTestnet)
+        assert isinstance(key, PrivateKey)
+        assert key.network == 'test'
         assert key.is_compressed()
 
     def test_uncompressed_test(self):
         key = wif_to_key(WALLET_FORMAT_TEST)
-        assert isinstance(key, PrivateKeyTestnet)
+        assert isinstance(key, PrivateKey)
+        assert key.network == 'test'
+        assert not key.is_compressed()
+
+    def test_compressed_stn(self):
+        key = wif_to_key(WALLET_FORMAT_COMPRESSED_TEST, testnet='stn')
+        assert isinstance(key, PrivateKey)
+        assert key.network == 'stn'
+        assert key.is_compressed()
+
+    def test_uncompressed_stn(self):
+        key = wif_to_key(WALLET_FORMAT_TEST, testnet='stn')
+        assert isinstance(key, PrivateKey)
+        assert key.network == 'stn'
         assert not key.is_compressed()
 
 
@@ -132,7 +146,9 @@ class TestPrivateKey:
     def test_address(self):
         private_key = PrivateKey(WALLET_FORMAT_MAIN)
         assert private_key.address == BITCOIN_ADDRESS
-        private_key = PrivateKeyTestnet(WALLET_FORMAT_TEST)
+        private_key = PrivateKey(WALLET_FORMAT_TEST, network='test')
+        assert private_key.address == BITCOIN_ADDRESS_TEST
+        private_key = PrivateKey(WALLET_FORMAT_TEST, network='stn')
         assert private_key.address == BITCOIN_ADDRESS_TEST
 
     def test_to_wif(self):
@@ -175,6 +191,30 @@ class TestPrivateKey:
     def test_from_int(self):
         key = PrivateKey.from_int(PRIVATE_KEY_NUM)
         assert isinstance(key, PrivateKey)
+        assert key.to_int() == PRIVATE_KEY_NUM
+
+    def test_from_hex_testnet(self):
+        key = PrivateKey.from_hex(PRIVATE_KEY_HEX, network='test')
+        assert isinstance(key, PrivateKey)
+        assert key.network == 'test'
+        assert key.to_hex() == PRIVATE_KEY_HEX
+
+    def test_from_der_testnet(self):
+        key = PrivateKey.from_der(PRIVATE_KEY_DER, network='test')
+        assert isinstance(key, PrivateKey)
+        assert key.network == 'test'
+        assert key.to_der() == PRIVATE_KEY_DER
+
+    def test_from_pem_testnet(self):
+        key = PrivateKey.from_pem(PRIVATE_KEY_PEM, network='test')
+        assert isinstance(key, PrivateKey)
+        assert key.network == 'test'
+        assert key.to_pem() == PRIVATE_KEY_PEM
+
+    def test_from_int_testnet(self):
+        key = PrivateKey.from_int(PRIVATE_KEY_NUM, network='test')
+        assert isinstance(key, PrivateKey)
+        assert key.network == 'test'
         assert key.to_int() == PRIVATE_KEY_NUM
 
     def test_repr(self):
