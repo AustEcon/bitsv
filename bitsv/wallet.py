@@ -14,26 +14,41 @@ from bitsv.transaction import (
     )
 from bitsv import op_return
 
-
-def wif_to_key(wif):
-    private_key_bytes, compressed, version = wif_to_bytes(wif)
-
-    if version == 'main':
-        if compressed:
-            return PrivateKey.from_bytes(private_key_bytes)
-        else:
-            return PrivateKey(wif)
-    else:
-        if compressed:
-            return PrivateKeyTestnet.from_bytes(private_key_bytes)
-        else:
-            return PrivateKeyTestnet(wif)
-
-
 # Instantiate Main, Test and STN NetworkAPI instances for use by all PrivateKey[Test]'s
 network_api_main = NetworkAPI('main')
 network_api_test = NetworkAPI('test')
 network_api_stn = NetworkAPI('stn')
+
+
+def wif_to_key(wif, testnet='test'):
+    """This function can read the 'version' byte of a wif and instatiate the appropriate PrivateKey object.
+
+    Because the version byte is the same for testnet and scaling-testnet, the testnet='test' parameter has been added
+    to specify which test network to use. i.e. 'test' or 'stn'.
+
+    By default this function will work as it always used to and select either 'main' or 'test' networks.
+
+    :param wif: A private key serialized to the Wallet Import Format. If the
+                argument is not supplied, a new private key will be created.
+                The WIF compression flag will be adhered to, but the version
+                byte is disregarded. Compression will be used by all new keys.
+    :type wif: ``str``
+    :param testnet: 'test' or 'stn'
+    :type testnet: ``str``
+    """
+
+    private_key_bytes, compressed, version = wif_to_bytes(wif)
+
+    if version == 'main':
+        if compressed:
+            return PrivateKey.from_bytes(private_key_bytes, network='main')
+        else:
+            return PrivateKey(wif, network='main')
+    else:
+        if compressed:
+            return PrivateKey.from_bytes(private_key_bytes, network=testnet)
+        else:
+            return PrivateKey(wif, network=testnet)
 
 
 class BaseKey:
@@ -536,49 +551,59 @@ class PrivateKey(BaseKey):
         return create_p2pkh_transaction(self, unspents, outputs)
 
     @classmethod
-    def from_hex(cls, hexed):
+    def from_hex(cls, hexed, network='main'):
         """
         :param hexed: A private key previously encoded as hex.
         :type hexed: ``str``
+        :param network: 'main', 'test' or 'stn'
+        :type network: ``str``
         :rtype: :class:`~bitsv.PrivateKey`
         """
-        return PrivateKey(ECPrivateKey.from_hex(hexed))
+        return PrivateKey(ECPrivateKey.from_hex(hexed), network=network)
 
     @classmethod
-    def from_bytes(cls, bytestr):
+    def from_bytes(cls, bytestr, network='main'):
         """
         :param bytestr: A private key previously encoded as hex.
         :type bytestr: ``bytes``
+        :param network: 'main', 'test' or 'stn'
+        :type network: ``str``
         :rtype: :class:`~bitsv.PrivateKey`
         """
-        return PrivateKey(ECPrivateKey(bytestr))
+        return PrivateKey(ECPrivateKey(bytestr), network=network)
 
     @classmethod
-    def from_der(cls, der):
+    def from_der(cls, der, network='main'):
         """
         :param der: A private key previously encoded as DER.
         :type der: ``bytes``
+        :param network: 'main', 'test' or 'stn'
+        :type network: ``str``
         :rtype: :class:`~bitsv.PrivateKey`
         """
-        return PrivateKey(ECPrivateKey.from_der(der))
+        return PrivateKey(ECPrivateKey.from_der(der), network=network)
 
     @classmethod
-    def from_pem(cls, pem):
+    def from_pem(cls, pem, network='main'):
         """
         :param pem: A private key previously encoded as PEM.
         :type pem: ``bytes``
+        :param network: 'main', 'test' or 'stn'
+        :type network: ``str``
         :rtype: :class:`~bitsv.PrivateKey`
         """
-        return PrivateKey(ECPrivateKey.from_pem(pem))
+        return PrivateKey(ECPrivateKey.from_pem(pem), network=network)
 
     @classmethod
-    def from_int(cls, num):
+    def from_int(cls, num, network='main'):
         """
         :param num: A private key in raw integer form.
         :type num: ``int``
+        :param network: 'main', 'test' or 'stn'
+        :type network: ``str``
         :rtype: :class:`~bitsv.PrivateKey`
         """
-        return PrivateKey(ECPrivateKey.from_int(num))
+        return PrivateKey(ECPrivateKey.from_int(num), network=network)
 
     def __repr__(self):
         return '<PrivateKey: {}>'.format(self.address)
