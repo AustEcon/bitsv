@@ -34,12 +34,9 @@ def wif_to_key(wif, network=None):
     """
     private_key_bytes, compressed, prefix = wif_to_bytes(wif)
 
-    if network is None:
-        network = 'main'
-
     if prefix == 'main':
         # check
-        if network is not 'main':
+        if network not in [None, 'main']:
             raise ValueError("WIF prefix: '{}' does not match network: '{}'".format(prefix, network))
 
         if compressed:
@@ -49,10 +46,10 @@ def wif_to_key(wif, network=None):
 
     elif prefix == 'test':
         # check
-        if network not in ['test', 'stn']:
+        if network not in [None, 'test', 'stn']:
             raise ValueError("WIF prefix: '{}' does not match network: '{}'".format(prefix, network))
 
-        if network == 'test':
+        if network in [None, 'test']:
             if compressed:
                 return PrivateKey.from_bytes(private_key_bytes, network='test')
             else:

@@ -2,7 +2,7 @@ import pytest
 
 from bitsv.format import (
     address_to_public_key_hash, bytes_to_wif, coords_to_public_key,
-    get_version, point_to_public_key, public_key_to_coords,
+    get_prefix, point_to_public_key, public_key_to_coords,
     public_key_to_address,  verify_sig, wif_checksum_check, wif_to_bytes
 )
 from .samples import (
@@ -35,24 +35,24 @@ DATA = b'data'
 
 class TestGetVersion:
     def test_mainnet(self):
-        assert get_version(BITCOIN_ADDRESS) == 'main'
-        assert get_version(BITCOIN_ADDRESS_COMPRESSED) == 'main'
+        assert get_prefix(BITCOIN_ADDRESS) == 'main'
+        assert get_prefix(BITCOIN_ADDRESS_COMPRESSED) == 'main'
 
     def test_testnet(self):
-        assert get_version(BITCOIN_ADDRESS_TEST) == 'test'
-        assert get_version(BITCOIN_ADDRESS_TEST_COMPRESSED) == 'test'
+        assert get_prefix(BITCOIN_ADDRESS_TEST) == 'test'
+        assert get_prefix(BITCOIN_ADDRESS_TEST_COMPRESSED) == 'test'
 
     def test_invalid(self):
         with pytest.raises(ValueError):
-            get_version('dg2dNAjuezub6iJVPNML5pW5ZQvtA9ocL')
+            get_prefix('dg2dNAjuezub6iJVPNML5pW5ZQvtA9ocL')
 
     def test_mainnet_pay2sh(self):
         with pytest.raises(ValueError):
-            get_version(BITCOIN_ADDRESS_PAY2SH)
+            get_prefix(BITCOIN_ADDRESS_PAY2SH)
 
     def test_testnet_pay2sh(self):
         with pytest.raises(ValueError):
-            get_version(BITCOIN_ADDRESS_TEST_PAY2SH)
+            get_prefix(BITCOIN_ADDRESS_TEST_PAY2SH)
 
 
 class TestVerifySig:
@@ -68,15 +68,15 @@ class TestBytesToWIF:
         assert bytes_to_wif(PRIVATE_KEY_BYTES) == WALLET_FORMAT_MAIN
 
     def test_testnet(self):
-        assert bytes_to_wif(PRIVATE_KEY_BYTES, version='test') == WALLET_FORMAT_TEST
+        # stn is the exact same
+        assert bytes_to_wif(PRIVATE_KEY_BYTES, prefix='test') == WALLET_FORMAT_TEST
 
-    def test_compressed(self):
+    def test_compressed_main(self):
         assert bytes_to_wif(PRIVATE_KEY_BYTES, compressed=True) == WALLET_FORMAT_COMPRESSED_MAIN
 
     def test_compressed_testnet(self):
-        assert bytes_to_wif(
-            PRIVATE_KEY_BYTES, version='test', compressed=True
-        ) == WALLET_FORMAT_COMPRESSED_TEST
+        # stn is the exact same
+        assert bytes_to_wif(PRIVATE_KEY_BYTES, prefix='test', compressed=True) == WALLET_FORMAT_COMPRESSED_TEST
 
 
 class TestWIFToBytes:
@@ -135,10 +135,10 @@ class TestPublicKeyToAddress:
             public_key_to_address(PUBLIC_KEY_COMPRESSED[:-1])
 
     def test_public_key_to_address_test_compressed(self):
-        assert public_key_to_address(PUBLIC_KEY_COMPRESSED, version='test') == BITCOIN_ADDRESS_TEST_COMPRESSED
+        assert public_key_to_address(PUBLIC_KEY_COMPRESSED, prefix='test') == BITCOIN_ADDRESS_TEST_COMPRESSED
 
     def test_public_key_to_address_test_uncompressed(self):
-        assert public_key_to_address(PUBLIC_KEY_UNCOMPRESSED, version='test') == BITCOIN_ADDRESS_TEST
+        assert public_key_to_address(PUBLIC_KEY_UNCOMPRESSED, prefix='test') == BITCOIN_ADDRESS_TEST
 
 
 class TestCoordsToPublicKey:
