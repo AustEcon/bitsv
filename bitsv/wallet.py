@@ -20,35 +20,48 @@ network_api_test = NetworkAPI('test')
 network_api_stn = NetworkAPI('stn')
 
 
-def wif_to_key(wif, testnet='test'):
-    """This function can read the 'version' byte of a wif and instatiate the appropriate PrivateKey object.
+def wif_to_key(wif, network=None):
+    """This function can read the 'prefix' byte of a wif and instatiate the appropriate PrivateKey object.
+    see: https://en.bitcoin.it/wiki/List_of_address_prefixes
 
-    Because the version byte is the same for testnet and scaling-testnet, the testnet='test' parameter has been added
-    to specify which test network to use. i.e. 'test' or 'stn'.
+    The prefix byte is the same for testnet and scaling-testnet.
+    So to use scaling-testnet you must give as a parameter: network='stn'
 
-    By default this function will work as it always used to and select either 'main' or 'test' networks.
-
-    :param wif: A private key serialized to the Wallet Import Format. If the
-                argument is not supplied, a new private key will be created.
-                The WIF compression flag will be adhered to, but the version
-                byte is disregarded. Compression will be used by all new keys.
+    :param wif: A private key serialized to the Wallet Import Format.
     :type wif: ``str``
-    :param testnet: 'test' or 'stn'
-    :type testnet: ``str``
+    :param network: 'main', 'test' or 'stn'
+    :type network: ``str``
     """
+    private_key_bytes, compressed, prefix = wif_to_bytes(wif)
 
-    private_key_bytes, compressed, version = wif_to_bytes(wif)
+    if network is None:
+        network = 'main'
 
-    if version == 'main':
+    if prefix == 'main':
+        # check
+        if network is not 'main':
+            raise ValueError("WIF prefix: '{}' does not match network: '{}'".format(prefix, network))
+
         if compressed:
             return PrivateKey.from_bytes(private_key_bytes, network='main')
         else:
             return PrivateKey(wif, network='main')
-    else:
-        if compressed:
-            return PrivateKey.from_bytes(private_key_bytes, network=testnet)
-        else:
-            return PrivateKey(wif, network=testnet)
+
+    elif prefix == 'test':
+        # check
+        if network not in ['test', 'stn']:
+            raise ValueError("WIF prefix: '{}' does not match network: '{}'".format(prefix, network))
+
+        if network == 'test':
+            if compressed:
+                return PrivateKey.from_bytes(private_key_bytes, network='test')
+            else:
+                return PrivateKey(wif, network='test')
+        if network == 'stn':
+            if compressed:
+                return PrivateKey.from_bytes(private_key_bytes, network='stn')
+            else:
+                return PrivateKey(wif, network='stn')
 
 
 class BaseKey:
@@ -58,7 +71,7 @@ class BaseKey:
 
     :param wif: A private key serialized to the Wallet Import Format. If the
                 argument is not supplied, a new private key will be created.
-                The WIF compression flag will be adhered to, but the version
+                The WIF compression flag will be adhered to, but the prefix
                 byte is disregarded. Compression will be used by all new keys.
     :type wif: ``str``
     :raises TypeError: If ``wif`` is not a ``str``.
@@ -66,7 +79,7 @@ class BaseKey:
     def __init__(self, wif=None):
         if wif:
             if isinstance(wif, str):
-                private_key_bytes, compressed, version = wif_to_bytes(wif)
+                private_key_bytes, compressed, prefix = wif_to_bytes(wif)
                 self._pk = ECPrivateKey(private_key_bytes)
             elif isinstance(wif, ECPrivateKey):
                 self._pk = wif
@@ -153,7 +166,7 @@ class PrivateKey(BaseKey):
 
     :param wif: A private key serialized to the Wallet Import Format. If the
                 argument is not supplied, a new private key will be created.
-                The WIF compression flag will be adhered to, but the version
+                The WIF compression flag will be adhered to, but the prefix
                 byte is disregarded. Compression will be used by all new keys.
     :type wif: ``str``
     :raises TypeError: If ``wif`` is not a ``str``.
@@ -176,19 +189,20 @@ class PrivateKey(BaseKey):
         # Avoids multiple unnecessary instances of these in the case of many Keys
         if network == 'main':
             self.network_api = network_api_main
-            self.version = 'main'
+            self.prefix = 'main'
         elif network == 'test':
             self.network_api = network_api_test
-            self.version = 'test'
+            self.prefix = 'test'
         elif network == 'stn':
             self.network_api = network_api_stn
-            self.version = 'test'
+            # Scaling-testnet has the same "prefix" as testnet (https://bitcoinscaling.io/)
+            self.prefix = 'test'
 
     @property
     def address(self):
         """The public address you share with others to receive funds."""
         if self._address is None:
-            self._address = public_key_to_address(self._public_key, version=self.version)
+            self._address = public_key_to_address(self._public_key, prefix=self.prefix)
 
         return self._address
 
@@ -202,7 +216,7 @@ class PrivateKey(BaseKey):
     def to_wif(self):
         return bytes_to_wif(
             self._pk.secret,
-            version=self.version,
+            prefix=self.prefix,
             compressed=self.is_compressed()
         )
 
