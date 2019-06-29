@@ -12,8 +12,10 @@ from .samples import (
     PRIVATE_KEY_BYTES, PRIVATE_KEY_DER,
     PRIVATE_KEY_HEX, PRIVATE_KEY_NUM, PRIVATE_KEY_PEM,
     PUBLIC_KEY_COMPRESSED, PUBLIC_KEY_UNCOMPRESSED, PUBLIC_KEY_X,
-    PUBLIC_KEY_Y, WALLET_FORMAT_COMPRESSED_MAIN, WALLET_FORMAT_COMPRESSED_TEST,
-    WALLET_FORMAT_MAIN, WALLET_FORMAT_TEST,
+    PUBLIC_KEY_Y,
+    WALLET_FORMAT_COMPRESSED_MAIN, WALLET_FORMAT_MAIN,
+    WALLET_FORMAT_COMPRESSED_TEST, WALLET_FORMAT_TEST,
+    WALLET_FORMAT_COMPRESSED_STN, WALLET_FORMAT_STN,
     BITCOIN_ADDRESS, BITCOIN_ADDRESS_TEST
 )
 
@@ -44,13 +46,13 @@ class TestWIFToKey:
         assert not key.is_compressed()
 
     def test_compressed_stn(self):
-        key = wif_to_key(WALLET_FORMAT_COMPRESSED_TEST, testnet='stn')
+        key = wif_to_key(WALLET_FORMAT_COMPRESSED_STN, network='stn')
         assert isinstance(key, PrivateKey)
         assert key.network == 'stn'
         assert key.is_compressed()
 
     def test_uncompressed_stn(self):
-        key = wif_to_key(WALLET_FORMAT_TEST, testnet='stn')
+        key = wif_to_key(WALLET_FORMAT_STN, network='stn')
         assert isinstance(key, PrivateKey)
         assert key.network == 'stn'
         assert not key.is_compressed()
@@ -148,7 +150,7 @@ class TestPrivateKey:
         assert private_key.address == BITCOIN_ADDRESS
         private_key = PrivateKey(WALLET_FORMAT_TEST, network='test')
         assert private_key.address == BITCOIN_ADDRESS_TEST
-        private_key = PrivateKey(WALLET_FORMAT_TEST, network='stn')
+        private_key = PrivateKey(WALLET_FORMAT_STN, network='stn')
         assert private_key.address == BITCOIN_ADDRESS_TEST
 
     def test_to_wif(self):
@@ -216,6 +218,8 @@ class TestPrivateKey:
         assert isinstance(key, PrivateKey)
         assert key.network == 'test'
         assert key.to_int() == PRIVATE_KEY_NUM
+
+    # No need to test for 'stn' here because it's all the same as for 'test'
 
     def test_repr(self):
         assert repr(PrivateKey(WALLET_FORMAT_MAIN)) == '<PrivateKey: 1ELReFsTCUY2mfaDTy32qxYiT49z786eFg>'
