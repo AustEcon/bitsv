@@ -5,6 +5,8 @@ from bitsv.base58 import b58decode_check, b58encode_check
 from bitsv.crypto import ripemd160_sha256
 from bitsv.curve import x_to_y
 
+# See https://en.bitcoin.it/wiki/List_of_address_prefixes
+# Referred to henceforth as the "prefix"
 MAIN_PUBKEY_HASH = b'\x00'
 MAIN_SCRIPT_HASH = b'\x05'
 MAIN_PRIVATE_KEY = b'\x80'
@@ -38,25 +40,25 @@ def verify_sig(signature, data, public_key):
 def address_to_public_key_hash(address):
     # Support cashaddr and "legacy" for now.
     address = cashaddress.to_legacy_address(address)
-    get_version(address)
+    get_prefix(address)
     return b58decode_check(address)[1:]
 
 
-def get_version(address):
-    version = b58decode_check(address)[:1]
+def get_prefix(address):
+    prefix = b58decode_check(address)[:1]
 
-    if version == MAIN_PUBKEY_HASH:
+    if prefix == MAIN_PUBKEY_HASH:
         return 'main'
-    elif version == TEST_PUBKEY_HASH:
+    elif prefix == TEST_PUBKEY_HASH:
         return 'test'
     else:
         raise ValueError('{} does not correspond to a mainnet nor '
-                         'testnet address.'.format(version))
+                         'testnet address.'.format(prefix))
 
 
-def bytes_to_wif(private_key, version='main', compressed=False):
+def bytes_to_wif(private_key, prefix='main', compressed=False):
 
-    if version == 'test':
+    if prefix == 'test':
         prefix = TEST_PRIVATE_KEY
     else:
         prefix = MAIN_PRIVATE_KEY
@@ -75,23 +77,23 @@ def wif_to_bytes(wif):
 
     private_key = b58decode_check(wif)
 
-    version = private_key[:1]
+    prefix = private_key[:1]
 
-    if version == MAIN_PRIVATE_KEY:
-        version = 'main'
-    elif version == TEST_PRIVATE_KEY:
-        version = 'test'
+    if prefix == MAIN_PRIVATE_KEY:
+        prefix = 'main'
+    elif prefix == TEST_PRIVATE_KEY:
+        prefix = 'test'
     else:
         raise ValueError('{} does not correspond to a mainnet nor '
-                         'testnet address.'.format(version))
+                         'testnet address.'.format(prefix))
 
-    # Remove version byte and, if present, compression flag.
+    # Remove prefix byte and, if present, compression flag.
     if len(wif) == 52 and private_key[-1] == 1:
         private_key, compressed = private_key[1:-1], True
     else:
         private_key, compressed = private_key[1:], False
 
-    return private_key, compressed, version
+    return private_key, compressed, prefix
 
 
 def wif_checksum_check(wif):
@@ -107,20 +109,20 @@ def wif_checksum_check(wif):
     return False
 
 
-def public_key_to_address(public_key, version='main'):
-    if version == 'test':
-        version = TEST_PUBKEY_HASH
-    elif version == 'main':
-        version = MAIN_PUBKEY_HASH
+def public_key_to_address(public_key, prefix='main'):
+    if prefix == 'test':
+        prefix = TEST_PUBKEY_HASH
+    elif prefix == 'main':
+        prefix = MAIN_PUBKEY_HASH
     else:
-        raise ValueError('Invalid version.')
+        raise ValueError('Invalid prefix.')
 
     # 33 bytes compressed, 65 uncompressed.
     length = len(public_key)
     if length not in (33, 65):
         raise ValueError('{} is an invalid length for a public key.'.format(length))
 
-    return b58encode_check(version + ripemd160_sha256(public_key))
+    return b58encode_check(prefix + ripemd160_sha256(public_key))
 
 
 def public_key_to_coords(public_key):

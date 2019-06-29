@@ -107,7 +107,7 @@ class NetworkAPI:
 
         # Instantiate Normalized apis
         self.bitindex3 = BitIndex3Normalized(api_key=None, network=self.network)
-        #Example: self.whatsonchain = WhatsonchainNormalized(network=network) - https://developers.whatsonchain.com/
+        #Example: self.whatsonchain = WhatsonchainNormalized(network=self.network) - https://developers.whatsonchain.com/
         #Example: self.blockchair = BlockchairNormalized(network=network) - https://github.com/Blockchair/Blockchair.Support
 
         # Allows extra apis for 'main' that may not support testnet (e.g. blockchair)
