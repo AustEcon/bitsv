@@ -23,10 +23,8 @@ network_api_stn = NetworkAPI('stn')
 def wif_to_key(wif, network=None):
     """This function can read the 'prefix' byte of a wif and instatiate the appropriate PrivateKey object.
     see: https://en.bitcoin.it/wiki/List_of_address_prefixes
-
     The prefix byte is the same for testnet and scaling-testnet.
     So to use scaling-testnet you must give as a parameter: network='stn'
-
     :param wif: A private key serialized to the Wallet Import Format.
     :type wif: ``str``
     :param network: 'main', 'test' or 'stn'
@@ -34,31 +32,28 @@ def wif_to_key(wif, network=None):
     """
     private_key_bytes, compressed, prefix = wif_to_bytes(wif)
 
-    if prefix == 'main':
-        # check
-        if network not in [None, 'main']:
-            raise ValueError("WIF prefix: '{}' does not match network: '{}'".format(prefix, network))
+    wif_network_mismatch = "WIF prefix: '{}' does not match network: '{}'".format(prefix, network)
 
-        if compressed:
-            return PrivateKey.from_bytes(private_key_bytes, network='main')
+    if network == 'main':
+        if prefix != 'main':
+            raise ValueError(wif_network_mismatch)
+    elif network in ['test', 'stn']:
+        if prefix != 'test':
+            raise ValueError(wif_network_mismatch)
+    elif network is None:
+        if prefix == 'main':
+            network = 'main'
+        elif prefix == 'test':
+            network = 'test'
         else:
-            return PrivateKey(wif, network='main')
+            raise Exception('bitsv issue, please open a bug report!')
+    else:
+        raise ValueError('network must be one of: main, test, stn')
 
-    elif prefix == 'test':
-        # check
-        if network not in [None, 'test', 'stn']:
-            raise ValueError("WIF prefix: '{}' does not match network: '{}'".format(prefix, network))
-
-        if network in [None, 'test']:
-            if compressed:
-                return PrivateKey.from_bytes(private_key_bytes, network='test')
-            else:
-                return PrivateKey(wif, network='test')
-        if network == 'stn':
-            if compressed:
-                return PrivateKey.from_bytes(private_key_bytes, network='stn')
-            else:
-                return PrivateKey(wif, network='stn')
+    if compressed:
+        return PrivateKey.from_bytes(private_key_bytes, network=network)
+    else:
+        return PrivateKey(wif, network=network)
 
 
 class BaseKey:
