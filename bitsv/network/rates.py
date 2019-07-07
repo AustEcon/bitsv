@@ -76,6 +76,28 @@ CURRENCY_PRECISION = {
     'clp': 0
 }
 
+PAIRS = {
+    'eur': "USDEUR",
+    'gbp': "USDGBP",
+    'jpy': "USDJPY",
+    'cny': "USDCNY",
+    'cad': "USDCAD",
+    'aud': "USDAUD",
+    'nzd': "USDNZD",
+    'rub': "USDRUB",
+    'brl': "USDBRL",
+    'chf': "USDCHF",
+    'sek': "USDSEK",
+    'dkk': "USDDKK",
+    'isk': "USDISK",
+    'pln': "USDPLN",
+    'hkd': "USDHKD",
+    'krw': "USDKRW",
+    'sgd': "USDSGD",
+    'thb': "USDTHB",
+    'twd': "USDTWD",
+    'clp': "USDCLP"
+}
 
 def set_rate_cache_time(seconds):
     global DEFAULT_CACHE_TIME
@@ -98,23 +120,40 @@ def bsv_to_satoshi():
     return BSV
 
 
+def get_satoshi_to_fiat_rate(usd_per_bsv):
+    rate = Decimal(100000000) / Decimal(usd_per_bsv)
+    return rate
+
+
 class BitcoinSVRates:
-    # Would be better if this were HTTPS as rate information can be used
-    # maliciously.
-    SINGLE_RATE = 'http://bitcoinsv-rates.com/api/rates/'
+    # Will use the usd price from Bitfinex to then calculate the foreign exchange rates with another api:
+    BITFINEX_BSVUSD_ENDPOINT = "https://api.bitfinex.com/v1/pubticker/bsvusd"
+    FREEFOREXAPI_ENDPOINT = "https://www.freeforexapi.com/api/live?pairs="
 
     @classmethod
     def currency_to_satoshi(cls, currency):
-        r = requests.get(cls.SINGLE_RATE + currency)
-        if r.status_code != 200:
-            raise requests.exceptions.ConnectionError
-        rate = r.json()['value']
+        if currency == 'usd':
+            return cls.usd_to_satoshi()
+        else:
+            satoshis_per_usd_rate = cls.usd_to_satoshi()
 
-        return int(ONE / Decimal(rate) * BSV)
+            # Get usd / fx_rate --> satoshis_per_fx_rate
+            r = requests.get(cls.FREEFOREXAPI_ENDPOINT + PAIRS[currency])
+            if r.status_code != 200:
+                raise requests.exceptions.ConnectionError
+            fx_rate = r.json()['rates'][PAIRS[currency]]['rate']
+
+            satoshis_per_fx_rate = Decimal(satoshis_per_usd_rate) * Decimal(1) / Decimal(fx_rate)
+            return satoshis_per_fx_rate
 
     @classmethod
     def usd_to_satoshi(cls):  # pragma: no cover
-        return cls.currency_to_satoshi('usd')
+        # Special case - Uses Bitfinex to get the USD rate
+        r = requests.get("https://api.bitfinex.com/v1/pubticker/bsvusd")
+        if r.status_code != 200:
+            raise requests.exceptions.ConnectionError
+        usdbsv = r.json()['mid']
+        return get_satoshi_to_fiat_rate(usdbsv)
 
     @classmethod
     def eur_to_satoshi(cls):  # pragma: no cover
