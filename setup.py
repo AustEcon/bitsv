@@ -45,6 +45,7 @@ setup(
     extras_require={
         'cli': ('appdirs', 'click', 'privy', 'tinydb'),
         'cache': ('lmdb', ),
+        'fullnode': ('bitcoinrpc'),
     },
     tests_require=['pytest'],
 
