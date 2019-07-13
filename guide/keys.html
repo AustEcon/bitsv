@@ -48,29 +48,40 @@ on the curve from that value.</p>
 </div>
 <div class="section" id="types">
 <h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
-<p>BitSV defines 2 kinds of private keys: <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey" title="bitsv.PrivateKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKey</span></code></a>, aliased as
-simply <a class="reference internal" href="../dev/api.html#bitsv.Key" title="bitsv.Key"><code class="xref py py-class docutils literal notranslate"><span class="pre">Key</span></code></a>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKeyTestnet</span></code>. Both classes
-have the exact same functionality.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bitsv</span> <span class="kn">import</span> <span class="n">Key</span><span class="p">,</span> <span class="n">PrivateKey</span><span class="p">,</span> <span class="n">PrivateKeyTestnet</span>
+<p>In BitSV, there is one main method to access most of the functionality of this library.
+This is through the <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey" title="bitsv.PrivateKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKey</span></code></a> class, aliased as <a class="reference internal" href="../dev/api.html#bitsv.Key" title="bitsv.Key"><code class="xref py py-class docutils literal notranslate"><span class="pre">Key</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bitsv</span> <span class="kn">import</span> <span class="n">Key</span><span class="p">,</span> <span class="n">PrivateKey</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Key</span> <span class="o">==</span> <span class="n">PrivateKey</span>
 <span class="go">True</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">dir</span><span class="p">(</span><span class="n">Key</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dir</span><span class="p">(</span><span class="n">PrivateKeyTestnet</span><span class="p">)</span>
-<span class="go">True</span>
 </pre></div>
 </div>
-<p>The only difference is the network operations for <code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKeyTestnet</span></code>
-will use Bitcoin SV’s test network where coins have no value. As such, the derived
-address will also be different.</p>
 </div>
 <div class="section" id="creation">
 <h2>Creation<a class="headerlink" href="#creation" title="Permalink to this headline">¶</a></h2>
 <p>Creation of a new private key is as simple as:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bitsv</span> <span class="kn">import</span> <span class="n">Key</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">key</span> <span class="o">=</span> <span class="n">Key</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bitsv</span> <span class="kn">import</span> <span class="n">Key</span><span class="p">,</span> <span class="n">PrivateKey</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># PrivateKey</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_key</span> <span class="o">=</span> <span class="n">PrivateKey</span><span class="p">(</span><span class="s2">&quot;Your Private Key as WIF here&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Using Key alias (does the exact same thing)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_key</span> <span class="o">=</span> <span class="n">Key</span><span class="p">(</span><span class="s2">&quot;Your Private Key as WIF here&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="testnet">
+<h2>Testnet<a class="headerlink" href="#testnet" title="Permalink to this headline">¶</a></h2>
+<p>Bitcoin SV has two testing networks.
+The testnet (“test”) and the scaling-testnet (“stn”).
+To instantiate a PrivateKey to use either of the testing networks (where coins have no value
+and addresses have a different, one-byte prefix):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bitsv</span> <span class="kn">import</span> <span class="n">Key</span><span class="p">,</span> <span class="n">PrivateKey</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># testnet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_key_test</span> <span class="o">=</span> <span class="n">PrivateKey</span><span class="p">(</span><span class="s2">&quot;Your Private Key as WIF here&quot;</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># scaling-testnet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_key_stn</span> <span class="o">=</span> <span class="n">PrivateKey</span><span class="p">(</span><span class="s2">&quot;Your Private Key as WIF here&quot;</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="s1">&#39;stn&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="../dev/api.html#bitsv.PrivateKey" title="bitsv.PrivateKey"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrivateKey</span></code></a> class defaults to network=’main’.</p>
 </div>
 <div class="section" id="public-point">
 <h2>Public Point<a class="headerlink" href="#public-point" title="Permalink to this headline">¶</a></h2>
@@ -132,7 +143,12 @@ want to force the use of a particular class, you can do this:</p>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">key</span> <span class="o">=</span> <span class="n">wif_to_key</span><span class="p">(</span><span class="s1">&#39;cU6s7jckL3bZUUkb3Q2CD9vNu8F1o58K5R5a3JFtidoccMbhEGKZ&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-<span class="go">&lt;PrivateKeyTestnet: muUFbvTKDEokGTVUjScMhw1QF2rtv5hxCz&gt;</span>
+<span class="go">&lt;PrivateKey Testnet: muUFbvTKDEokGTVUjScMhw1QF2rtv5hxCz&gt;</span>
+</pre></div>
+</div>
+<p>or to use scaling-testnet this must be explicitly given as a parameter (because testnet and scaling-testnet keys are indistimguishable from one another.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wif_to_key</span><span class="p">(</span><span class="s2">&quot;cU6s7jckL3bZUUkb3Q2CD9vNu8F1o58K5R5a3JFtidoccMbhEGKZ&quot;</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="s1">&#39;stn&#39;</span><span class="p">)</span>
+<span class="go">&lt;PrivateKey Scaling-Testnet: muUFbvTKDEokGTVUjScMhw1QF2rtv5hxCz&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -265,6 +281,7 @@ want to force the use of a particular class, you can do this:</p>
 <li class="toctree-l2"><a class="reference internal" href="#what-is-a-private-key">What is a private key?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#types">Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creation">Creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testnet">Testnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#public-point">Public Point</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#public-key">Public Key</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#address">Address</a></li>

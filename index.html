@@ -41,12 +41,12 @@ Bitcoin SV library and was designed from the beginning to feel intuitive, be
 effortless to use, and have readable source code. It is heavily inspired by
 <a class="reference external" href="https://github.com/kennethreitz/requests">Requests</a> and
 <a class="reference external" href="https://github.com/fchollet/keras">Keras</a>.</p>
-<p><strong>BitSV is so easy to use, in fact, you can do this:</strong></p>
+<p><strong>BitSV is so easy to use:</strong></p>
 <ol class="arabic simple">
 <li><p>Simple payment:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">bitsv</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">my_key</span> <span class="o">=</span> <span class="n">bitsv</span><span class="o">.</span><span class="n">Key</span><span class="p">(</span><span class="s1">&#39;YourPrivateKeyGoesHere&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_key</span> <span class="o">=</span> <span class="n">bitsv</span><span class="o">.</span><span class="n">Key</span><span class="p">(</span><span class="s1">&#39;YourPrivateKeyGoesHere&#39;</span><span class="p">)</span>  <span class="c1"># Defaults to &quot;main&quot; network</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">my_key</span><span class="o">.</span><span class="n">get_balance</span><span class="p">()</span>
 <span class="go">10000000  # satoshis</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Can include a long list of tuples as outputs</span>
@@ -65,7 +65,6 @@ effortless to use, and have readable source code. It is heavily inspired by
 <ul class="simple">
 <li><p>Python’s fastest available implementation (100x faster than closest library)</p></li>
 <li><p>100kb OP_RETURN transactions made very simple</p></li>
-<li><p>Hierarchical deterministic key support (thanks to <a class="reference external" href="https://github.com/richardkiss/pycoin">pycoin</a>)</p></li>
 <li><p>Fully supports 21 different currencies via <a class="reference external" href="http://bitcoinsv-rates.com/api/rates/">BitcoinSVRates</a> API</p></li>
 <li><p>First class support for storing data in the blockchain</p></li>
 <li><p>Compressed public keys by default</p></li>
@@ -73,10 +72,11 @@ effortless to use, and have readable source code. It is heavily inspired by
 <li><p>Standard P2PKH transactions</p></li>
 </ul>
 </div>
-<div class="section" id="coming-soon">
-<h2>Coming Soon<a class="headerlink" href="#coming-soon" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="extension-libraries">
+<h2>Extension libraries<a class="headerlink" href="#extension-libraries" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/AustEcon/bitsv_paste">bitsv_paste</a> for posting html, audio, images, video directly to the blockchain</p></li>
+<li><p><a class="reference external" href="https://austecon.github.io/polyglot/">polyglot</a> for posting html, audio, images, video directly to the blockchain and much more to come…</p></li>
+<li><p><a class="reference external" href="https://github.com/AustEcon/bsvbip32">bsvbip32</a> for hierarchical deterministic key support (as per BIP32 spec)</p></li>
 </ul>
 </div>
 <div class="section" id="user-guide">
@@ -102,6 +102,7 @@ of best practices.</p>
 <li class="toctree-l2"><a class="reference internal" href="guide/keys.html#what-is-a-private-key">What is a private key?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/keys.html#types">Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/keys.html#creation">Creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/keys.html#testnet">Testnet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/keys.html#public-point">Public Point</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/keys.html#public-key">Public Key</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/keys.html#address">Address</a></li>

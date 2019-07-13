@@ -67,7 +67,7 @@ or :func:`~bitsv.PrivateKey.send`:
     >>> key.send(..., message='Simplicity level is over 9000!!!')
 
 Messages will be encoded as UTF-8 when stored. Also, do note that the length
-of each datum must not exceed 40 bytes. Therefore, your resulting byte string
+of each datum must not exceed 100kb. Therefore, your resulting byte string
 will be stored in chunks to adhere to this property if it is too long.
 
 Services Timeout

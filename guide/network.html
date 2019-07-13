@@ -36,9 +36,9 @@
 <h2>Balance<a class="headerlink" href="#balance" title="Permalink to this headline">¶</a></h2>
 <p>Every private key has a <code class="docutils literal notranslate"><span class="pre">balance</span></code> property which is initially set to 0. This
 internal balance will always be in <a class="reference external" href="https://en.bitcoin.it/wiki/Satoshi_(unit)">satoshi</a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bitsv</span> <span class="kn">import</span> <span class="n">PrivateKeyTestnet</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bitsv</span> <span class="kn">import</span> <span class="n">PrivateKey</span>
 <span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">key</span> <span class="o">=</span> <span class="n">PrivateKeyTestnet</span><span class="p">(</span><span class="s1">&#39;cU6s7jckL3bZUUkb3Q2CD9vNu8F1o58K5R5a3JFtidoccMbhEGKZ&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">key</span> <span class="o">=</span> <span class="n">PrivateKey</span><span class="p">(</span><span class="s1">&#39;cU6s7jckL3bZUUkb3Q2CD9vNu8F1o58K5R5a3JFtidoccMbhEGKZ&#39;</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">balance</span>
 <span class="go">0</span>
 </pre></div>
@@ -126,7 +126,8 @@ a future release they will become proper objects.</p>
 <p>BitSV communicates with the blockchain using trusted third-party APIs.
 Specifically, it can access:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://https://www.bitindex.network/docs.html">https://https://www.bitindex.network/docs.html</a> via <a class="reference internal" href="../dev/api.html#bitsv.network.services.BitIndex" title="bitsv.network.services.BitIndex"><code class="xref py py-class docutils literal notranslate"><span class="pre">BitIndex</span></code></a></p></li>
+<li><p>The <a class="reference external" href="https://www.mattercloud.net/">BitIndex</a> version 3 API (now re-branding as “MatterCloud” via <code class="xref py py-class docutils literal notranslate"><span class="pre">BitIndex3</span></code></p></li>
+<li><p><a class="reference external" href="https://developers.whatsonchain.com/#introductioncoming">Whatsonchain</a> via <a class="reference external" href="https://github.com/AustEcon/whatsonchain">https://github.com/AustEcon/whatsonchain</a>)</p></li>
 </ul>
 <div class="section" id="networkapi">
 <h3>NetworkAPI<a class="headerlink" href="#networkapi" title="Permalink to this headline">¶</a></h3>

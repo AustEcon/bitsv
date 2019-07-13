@@ -11,9 +11,9 @@ internal balance will always be in `satoshi`_.
 
 .. code-block:: python
 
-    >>> from bitsv import PrivateKeyTestnet
+    >>> from bitsv import PrivateKey
     >>>
-    >>> key = PrivateKeyTestnet('cU6s7jckL3bZUUkb3Q2CD9vNu8F1o58K5R5a3JFtidoccMbhEGKZ')
+    >>> key = PrivateKey('cU6s7jckL3bZUUkb3Q2CD9vNu8F1o58K5R5a3JFtidoccMbhEGKZ', network='test')
     >>> key.balance
     0
 
@@ -111,7 +111,8 @@ Services
 BitSV communicates with the blockchain using trusted third-party APIs.
 Specifically, it can access:
 
-- `<https://https://www.bitindex.network/docs.html>`_ via :class:`~bitsv.network.services.BitIndex`
+- The BitIndex_ version 3 API (now re-branding as "MatterCloud" via :class:`~bitsv.network.services.bitindex3.BitIndex3`
+- Whatsonchain_ via `<https://github.com/AustEcon/whatsonchain>`_)
 
 NetworkAPI
 ^^^^^^^^^^
@@ -119,6 +120,8 @@ NetworkAPI
 Private key network operations use :class:`~bitsv.network.NetworkAPI`. For each method,
 it polls a service and if an error occurs it tries another.
 
+.. _Whatsonchain: https://developers.whatsonchain.com/#introductioncoming
+.. _BitIndex: https://www.mattercloud.net/
 .. _satoshi: https://en.bitcoin.it/wiki/Satoshi_(unit)
 .. _blockchain: https://en.bitcoin.it/wiki/Block_chain
 .. _unspent transaction outputs: https://en.bitcoin.it/wiki/Transaction#Input
