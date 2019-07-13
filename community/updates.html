@@ -49,42 +49,155 @@ Twitter for occasional updates.</p>
 <div class="section" id="unreleased-see-master">
 <h2>Unreleased (see <a class="reference external" href="https://github.com/AustEcon/bitsv">master</a>)<a class="headerlink" href="#unreleased-see-master" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Add a get_transaction() function to network services that
-returns an instance of a new Transaction class which
-contains some common details of the transaction.</p></li>
-<li><p>Allow raw byte string to be used as transaction OP_RETURN
-message: automatic detection assumes a byte-like object when
-message does not have an encode() function. Increase message
-size to 220 bytes.</p></li>
-<li><p>NetworkAPI.get_tx_amount() is now working and properly handles
-backends returning string or decimal values.</p></li>
+<li><p>No new changes since 0.8.0 yet.</p></li>
 </ul>
 </div>
 <div class="section" id="id1">
-<h2>0.5.2 (2018-05-16)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>0.8.0 (2019-7-13)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p><strong>breaking</strong> <code class="docutils literal notranslate"><span class="pre">PrivateKeyTest</span></code> no longer exists (is now merged with <code class="docutils literal notranslate"><span class="pre">PrivateKey</span></code> class)</p></li>
+<li><p><strong>breaking</strong> bip32.py no longer exists (is now moved to a new repo: <a class="reference external" href="https://github.com/AustEcon/bsvbip32">https://github.com/AustEcon/bsvbip32</a>)</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Maintains modularity of codebase.</p></li>
+<li><p>Bip32 deserves it’s own repo as an extension to bitsv.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">BitIndex3</span></code> (with main, test, stn support) - teething issues still on server side for stn due to very large volumes and requirement for server upgrades.</p></li>
+<li><p><strong>breaking</strong> Refactored network services.py into separate modules (within services <strong>folder</strong>). (Only an issue for those who use these APIs directly rather than via PrivateKey)</p></li>
+<li><p><strong>breaking</strong> Refactored <code class="docutils literal notranslate"><span class="pre">NetworkAPI</span></code> class to be accessed via object instantiation rather than via classmethods. (Only an issue for those who access <code class="docutils literal notranslate"><span class="pre">NetworkAPI</span></code> class directly rather than via <code class="docutils literal notranslate"><span class="pre">PrivateKey</span></code>).</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Allows for naming and testing of 5 prime function calls to be the same across all three networks (main/test/stn) and minimizes duplication of code and potential for errors.</p></li>
+<li><p>Also allows for custom implementations of the <code class="docutils literal notranslate"><span class="pre">NetworkAPI</span></code> used by the <code class="docutils literal notranslate"><span class="pre">PrivateKey</span></code> on a case-by-case basis if necessary.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Added main / test / stn network to <code class="docutils literal notranslate"><span class="pre">NetworkAPI</span></code> class (and therefore <code class="docutils literal notranslate"><span class="pre">PrivateKey</span></code>) and normalization process for diverse (future) APIs.</p></li>
+<li><p>Improved the syntax for the send_op_return() function to accept a simple list
+of encoded bytes (old syntax still supported)</p></li>
+<li><p>Fixed a bug where a network error would result from leaving behind an amount &lt; <code class="docutils literal notranslate"><span class="pre">DUST</span></code> (courtesy Carpemer)</p></li>
+<li><p>Added retry wrapper for 400 and 500 errors (courtesy Carpemer)</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>will come into play when throttled to e.g. 3 requests per second by the new BitIndex API.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Added redundancy to the rates API (because the <a class="reference external" href="https://bitcoinsv-rates.com/api/rates/">https://bitcoinsv-rates.com/api/rates/</a>
+endpoint went down for several days). Therefore added a <code class="docutils literal notranslate"><span class="pre">Bitfinex</span></code> replacement in series:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Bitfinex endpoint “<a class="reference external" href="https://api.bitfinex.com/v1/pubticker/bsvusd">https://api.bitfinex.com/v1/pubticker/bsvusd</a>” (for BSV/USD) combined with</p></li>
+<li><p>FreeForexAPI endpoint “<a class="reference external" href="https://www.freeforexapi.com/api/live?pairs=">https://www.freeforexapi.com/api/live?pairs=</a>” (for foreign currency pairs)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>send_op_return() will now <strong>not</strong> consolidate utxos by default. (i.e. combine=False is default parameter)</p></li>
+<li><p>restored python3.5 and pypy3 compatibility</p></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>0.7.1 (2019-4-20)<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Legacy address now default __repr__</p></li>
+<li><p>Added documentation page for op_return related functionality see: <a class="reference external" href="https://austecon.github.io/bitsv/guide/op_return.html">https://austecon.github.io/bitsv/guide/op_return.html</a>
+added Python3.7 to travis CI testing</p></li>
+<li><p>Bip32 feature set - have refactored and added functions (no documentation yet - coming soon).</p></li>
+<li><p><strong>Breaking</strong>: Bip32 feature set refactored:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>File renamed from bip32utils.py –&gt; bip32.py and</p></li>
+<li><p><strong>Deprecation warning</strong>: Changed class name from bip32utils –&gt; “Bip32” (basically wrapping pycoin.key.Key functions):</p></li>
+<li><p>New functions: get_xpub, get_xprv, address, private_key, get_children, get_child_addresses, get_child_private_keys, sign, verify, chain_code, fingerprint</p></li>
+<li><p><strong>Deprecation warning</strong>: old class “bip32utils” is retained as an alias temporarily but will be removed with the next release.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>0.6.1 (2019-4-15)<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Fixed documentation –&gt; now hosted on gh-pages at <a class="reference external" href="https://austecon.github.io/bitsv/">https://austecon.github.io/bitsv/</a></p></li>
+<li><p>Added “confirmations” field back into Unspents / UTXOs</p></li>
+<li><p>Fixed tests –&gt; achieving coverage of 87% (needs new tests for new features added recently)</p></li>
+<li><p>Fixed badges on ReadMe for coverage: <a class="reference external" href="https://codecov.io/gh/austecon/bitsv">https://codecov.io/gh/austecon/bitsv</a> and travis CI: <a class="reference external" href="https://travis-ci.org/AustEcon/bitsv">https://travis-ci.org/AustEcon/bitsv</a></p></li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h2>0.6.0 (2019-4-7)<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p><strong>New Feature</strong>: Added Hierarchical deterministic wallet support (in bip32.py).</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Can use xprv key to generate Electrum SV or Handcash list of address / private key pairs</p></li>
+<li><p>Can use xpub key to generate list of addresses for viewing only</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Added BitIndex functions for dealing with extended public keys</p></li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h2>0.5.6 (2019-3-30)<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>PyPi ReadMe rendering issues.</p></li>
+</ul>
+</div>
+<div class="section" id="id6">
+<h2>0.5.5 (2019-3-29)<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Default fee set to 1 sat/byte for all transaction types.</p></li>
+<li><p>Updated ReadMe to include changes in 0.5.4 and updated examples.</p></li>
+</ul>
+</div>
+<div class="section" id="id7">
+<h2>0.5.4 (2019-03-25)<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Added 100kb OP_RETURN capability (fixed a bug).</p></li>
+<li><p>Fixed currency conversion courtesy “<a class="reference external" href="http://bitcoinsv-rates.com/api/rates/">http://bitcoinsv-rates.com/api/rates/</a>” api.</p></li>
+<li><p>Fixed issue with different APIs getting utxos out of sync with rapid transaction broadcasting.</p></li>
+<li><p>Fixed some tests and removed deprecated ones.</p></li>
+</ul>
+</div>
+<div class="section" id="id8">
+<h2>0.5.3 (2019-01-27)<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Port code base over to Bitcoin SV</p></li>
+<li><p>Allow raw byte string to be used as transaction OP_RETURN
+message. Increase message maximum OP_RETURN size to 220 bytes.</p></li>
+<li><p>Add a get_transaction() function to network services that
+returns an instance of a new Transaction class which
+contains some common details of the transaction.</p></li>
+</ul>
+</div>
+<div class="section" id="id9">
+<h2>0.5.2 (2018-05-16)<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>bccblock.info is offline, replace with cashexplorer.bitcoin.com.
 Hard fork happened yesterday. Not sure if bccblock.info was even ready
 for that.</p></li>
 </ul>
 </div>
-<div class="section" id="id2">
-<h2>0.5.1 (2018-03-11)<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id10">
+<h2>0.5.1 (2018-03-11)<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fix fee calculation with combined=False.</p></li>
 <li><p>Also lower fees since we can. Couple little tweaks.</p></li>
 <li><p>Delete a .orig file I had added before by mistake.</p></li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h2>0.5.0 (2018-02-03)<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id11">
+<h2>0.5.0 (2018-02-03)<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Breaking change! Add cashaddr support, return .address as
 cashaddr. That hopefully is all that breaks.</p></li>
 </ul>
 </div>
-<div class="section" id="id4">
-<h2>0.4.3 (2017-12-20)<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id12">
+<h2>0.4.3 (2017-12-20)<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Switch from Bitpay to BCCBlock.info.
 Bitpay API is unusable with their address format, unless we
@@ -92,20 +205,20 @@ switch over. Not interested in doing that in the near future so
 I found another block explorer.</p></li>
 </ul>
 </div>
-<div class="section" id="id5">
-<h2>0.4.2 (2017-12-20)<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id13">
+<h2>0.4.2 (2017-12-20)<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Raise exception when using pay2sh addresses.</p></li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h2>0.4.1 (2017-11-01)<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id14">
+<h2>0.4.1 (2017-11-01)<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Removed <code class="docutils literal notranslate"><span class="pre">blockr.io</span></code> network backend as <a class="reference external" href="https://www.coinbase.com">Coinbase</a> has shut it down.</p></li>
 </ul>
 </div>
-<div class="section" id="id7">
-<h2>0.4.0 (2017-04-19)<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id15">
+<h2>0.4.0 (2017-04-19)<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Changed elliptic curve backend from OpenSSL to libsecp256k1. This results
 in an order of magnitude faster key creation and signing/verifying.</p></li>
@@ -116,31 +229,31 @@ signatures instead of raising an exception. Also, <code class="docutils literal 
 a parameter as BIP-62 compliance is now required.</p></li>
 </ul>
 </div>
-<div class="section" id="id8">
-<h2>0.3.1 (2017-03-21)<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id16">
+<h2>0.3.1 (2017-03-21)<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><strong>Fixed</strong> :ref: <cite>cold storage &lt;coldstorage&gt;</cite> workflow.</p></li>
 <li><p>Improved performance of private key instantiation.</p></li>
 </ul>
 </div>
-<div class="section" id="id9">
-<h2>0.3.0 (2017-03-20)<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id17">
+<h2>0.3.0 (2017-03-20)<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Implemented a way to use private keys in :ref: <cite>cold storage &lt;coldstorage&gt;</cite>.</p></li>
 <li><p>Changed the default timeout of services from 5 to 10 seconds.</p></li>
 <li><p>Fixed network service redundancy by failing if response code is not 200.</p></li>
 </ul>
 </div>
-<div class="section" id="id10">
-<h2>0.2.0 (2017-03-17)<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id18">
+<h2>0.2.0 (2017-03-17)<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Improved stability of network tests.</p></li>
 <li><p>Added :func: <cite>~bitsv.verify_sig</cite>.</p></li>
 <li><p>Refactored crypto to yield over an order of magnitude faster hashing.</p></li>
 </ul>
 </div>
-<div class="section" id="id11">
-<h2>0.1.0 (2017-03-15)<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id19">
+<h2>0.1.0 (2017-03-15)<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Initial release.</p></li>
 </ul>
@@ -229,17 +342,25 @@ a parameter as BIP-62 compliance is now required.</p></li>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#release-history">Release History</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#unreleased-see-master">Unreleased (see master)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">0.5.2 (2018-05-16)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">0.5.1 (2018-03-11)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">0.5.0 (2018-02-03)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">0.4.3 (2017-12-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">0.4.2 (2017-12-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">0.4.1 (2017-11-01)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id7">0.4.0 (2017-04-19)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id8">0.3.1 (2017-03-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id9">0.3.0 (2017-03-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id10">0.2.0 (2017-03-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id11">0.1.0 (2017-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">0.8.0 (2019-7-13)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.7.1 (2019-4-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">0.6.1 (2019-4-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">0.6.0 (2019-4-7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">0.5.6 (2019-3-30)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">0.5.5 (2019-3-29)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">0.5.4 (2019-03-25)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">0.5.3 (2019-01-27)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">0.5.2 (2018-05-16)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">0.5.1 (2018-03-11)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id11">0.5.0 (2018-02-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">0.4.3 (2017-12-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id13">0.4.2 (2017-12-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id14">0.4.1 (2017-11-01)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id15">0.4.0 (2017-04-19)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id16">0.3.1 (2017-03-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id17">0.3.0 (2017-03-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id18">0.2.0 (2017-03-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id19">0.1.0 (2017-03-15)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
