@@ -23,23 +23,15 @@ on the curve from that value.
 Types
 -----
 
-BitSV defines 2 kinds of private keys: :class:`~bitsv.PrivateKey`, aliased as
-simply :class:`~bitsv.Key`, and :class:`~bitsv.PrivateKeyTestnet`. Both classes
-have the exact same functionality.
+In BitSV, there is one main method to access most of the functionality of this library.
+This is through the :class:`~bitsv.PrivateKey` class, aliased as :class:`~bitsv.Key`.
 
 .. code-block:: python
 
-    >>> from bitsv import Key, PrivateKey, PrivateKeyTestnet
+    >>> from bitsv import Key, PrivateKey
     >>>
     >>> Key == PrivateKey
     True
-    >>>
-    >>> dir(Key) == dir(PrivateKeyTestnet)
-    True
-
-The only difference is the network operations for :class:`~bitsv.PrivateKeyTestnet`
-will use Bitcoin SV's test network where coins have no value. As such, the derived
-address will also be different.
 
 Creation
 --------
@@ -48,8 +40,29 @@ Creation of a new private key is as simple as:
 
 .. code-block:: python
 
-    >>> from bitsv import Key
-    >>> key = Key()
+    >>> from bitsv import Key, PrivateKey
+    >>> # PrivateKey
+    >>> my_key = PrivateKey("Your Private Key as WIF here")
+    >>> # Using Key alias (does the exact same thing)
+    >>> my_key = Key("Your Private Key as WIF here")
+
+Testnet
+-------
+
+Bitcoin SV has two testing networks.
+The testnet ("test") and the scaling-testnet ("stn").
+To instantiate a PrivateKey to use either of the testing networks (where coins have no value
+and addresses have a different, one-byte prefix):
+
+.. code-block:: python
+
+    >>> from bitsv import Key, PrivateKey
+    >>> # testnet
+    >>> my_key_test = PrivateKey("Your Private Key as WIF here", network='test')
+    >>> # scaling-testnet
+    >>> my_key_stn = PrivateKey("Your Private Key as WIF here", network='stn')
+
+The :class:`~bitsv.PrivateKey` class defaults to network='main'.
 
 Public Point
 ------------
@@ -132,7 +145,15 @@ want to force the use of a particular class, you can do this:
     >>>
     >>> key = wif_to_key('cU6s7jckL3bZUUkb3Q2CD9vNu8F1o58K5R5a3JFtidoccMbhEGKZ')
     >>> print(key)
-    <PrivateKeyTestnet: muUFbvTKDEokGTVUjScMhw1QF2rtv5hxCz>
+    <PrivateKey Testnet: muUFbvTKDEokGTVUjScMhw1QF2rtv5hxCz>
+
+or to use scaling-testnet this must be explicitly given as a parameter (because testnet and scaling-testnet keys are indistimguishable from one another.
+
+.. code-block:: python
+
+    >>> wif_to_key("cU6s7jckL3bZUUkb3Q2CD9vNu8F1o58K5R5a3JFtidoccMbhEGKZ", network='stn')
+    <PrivateKey Scaling-Testnet: muUFbvTKDEokGTVUjScMhw1QF2rtv5hxCz>
+
 
 Hex
 ^^^

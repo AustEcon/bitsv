@@ -22,14 +22,14 @@ effortless to use, and have readable source code. It is heavily inspired by
 `Requests <https://github.com/kennethreitz/requests>`_ and
 `Keras <https://github.com/fchollet/keras>`_.
 
-**BitSV is so easy to use, in fact, you can do this:**
+**BitSV is so easy to use:**
 
 1. Simple payment:
 
 .. code-block:: python
 
     >>> import bitsv
-    >>> my_key = bitsv.Key('YourPrivateKeyGoesHere')
+    >>> my_key = bitsv.Key('YourPrivateKeyGoesHere')  # Defaults to "main" network
     >>> my_key.get_balance()
     10000000  # satoshis
     >>> # Can include a long list of tuples as outputs
@@ -48,7 +48,6 @@ Features
 
 - Python's fastest available implementation (100x faster than closest library)
 - 100kb OP_RETURN transactions made very simple
-- Hierarchical deterministic key support (thanks to pycoin_)
 - Fully supports 21 different currencies via BitcoinSVRates_ API
 - First class support for storing data in the blockchain
 - Compressed public keys by default
@@ -56,11 +55,11 @@ Features
 - Standard P2PKH transactions
 
 .. _BitcoinSVRates : http://bitcoinsv-rates.com/api/rates/
-.. _pycoin : https://github.com/richardkiss/pycoin
 
-Coming Soon
------------
-- bitsv_paste_ for posting html, audio, images, video directly to the blockchain
+Extension libraries
+-------------------
+- polyglot_ for posting html, audio, images, video directly to the blockchain and much more to come...
+- bsvbip32_ for hierarchical deterministic key support (as per BIP32 spec)
 
 User Guide
 ----------
@@ -113,4 +112,5 @@ pedantry, or lack thereof.
 Well done! There will be more soon, but right now you have nothing left to see.
 Remember, `a watched pot never boils <https://www.youtube.com/watch?v=EPr-JrW-a8o>`_.
 
-.. _bitsv_paste : https://github.com/AustEcon/bitsv_paste
+.. _polyglot : https://austecon.github.io/polyglot/
+.. _bsvbip32 : https://github.com/AustEcon/bsvbip32

@@ -44,7 +44,7 @@ If you wanted to use 35000 satoshi to buy ice cream, you need to use all 55000
 satoshi in the transaction. How this works is whatever is left over you send
 back to yourself as change.
 
-By default Bitcash will send any change to the same address you sent from. You
+By default BitSV will send any change to the same address you sent from. You
 can specify where leftover funds go like this:
 
 .. code-block:: python

@@ -17,7 +17,7 @@ Why BitSV?
 
 Origins
 -------
-BitSv is a fork of the library Bit by `Ofek Lev`_. What follows is his story of the origins:
+BitSV is a fork of the library Bit by `Ofek Lev`_. What follows is his story of the origins:
 
 Python's Bit story was pretty bleak. All libraries in use prior to Bit were
 marred by unfriendly APIs, lack of testing, lack of documentation, lack of
@@ -87,11 +87,9 @@ Special mention to:
 Other significant contributors
 
 - `Teran McKinney`_ for his work on bitcash
-- `richardkiss`_ for his work on pycoin (for Hierarchical Deterministic wallet functions)
 
 .. _Ofek Lev: https://github.com/ofek/bit
 .. _Teran McKinney: https://github.com/teran-mckinney
-.. _richardkiss: https://github.com/richardkiss/pycoin
 
 .. _pybitcointools: https://github.com/vbuterin/pybitcointools
 .. _scary: https://github.com/JoinMarket-Org/joinmarket/issues/61
