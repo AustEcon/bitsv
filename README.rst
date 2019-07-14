@@ -47,7 +47,6 @@ Planned improvements
 - Improved coverage of testing modules (currently at 84%).
 - Support for use of a local bitcoin full node instead of a Web-API.
   (paves the way for a RegTest environment for a rapid development cycle)
-- Documentation.
 - Work on the bsvbip32 library for hierarchical deterministic keys:
   https://github.com/AustEcon/bsvbip32. Plan for each node to access
   bitsv functionality so that building apps can be a breeze!
