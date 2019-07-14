@@ -21,6 +21,12 @@ Forked from Ofek's awesome Bit library: https://github.com/ofek/bit
 
 Noticeboard:
 ------------
+Latest Release - 0.8.0_ (2019-7-13)
+
+- Big changes_. Take note!
+
+.. _0.8.0: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
+.. _changes: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
 
 Legacy Addresses:
 
@@ -42,6 +48,10 @@ Planned improvements
 - Support for use of a local bitcoin full node instead of a Web-API.
   (paves the way for a RegTest environment for a rapid development cycle)
 - Documentation.
+- Work on the bsvbip32 library for hierarchical deterministic keys:
+  https://github.com/AustEcon/bsvbip32. Plan for each node to access
+  bitsv functionality so that building apps can be a breeze!
+  (competing implementations welcome. That's partly why modularity is a good idea!)
 
 ----------------------------
 
@@ -73,16 +83,13 @@ Here's the transaction `<https://whatsonchain.com/tx/dec895d1aa0e820984c5748984b
 
 .. code-block:: python
 
-    >>> # One example usecase for OP_RETURN metadata (3 lines of code)
     >>> import bitsv
     >>> my_key = bitsv.Key('YourPrivateKeyGoesHere')
-    >>> # input a list of tuples (data, encoding) pairs ("utf-8" or "hex" encoding)
-    >>> # each tuple in the list is a pushdata element within the OP_RETURN.
     >>> list_of_pushdata = ([bytes.fromhex('6d01'),  # encode hex to bytes
                              'New_Name'.encode('utf-8')])  # encode string to utf-8 encoded bytes
-    >>> # This sets memo.sv name (linked to this bitcoin address) to "New_Name"
-    >>> # (as per https://memo.sv/protocol)
     >>> my_key.send_op_return(list_of_pushdata)  # default fee = 1 sat/byte
+
+This sets memo.sv name (linked to this bitcoin address) to "New_Name" (as per https://memo.sv/protocol)
 
 Features
 --------
