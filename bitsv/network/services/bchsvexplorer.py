@@ -1,13 +1,13 @@
 import requests
 import json
-from decimal import Decimal
 
 from bitsv.network import currency_to_satoshi
 from bitsv.network.meta import Unspent
+
+# left here as a reminder to normalize get_transaction()
 from bitsv.network.transaction import Transaction, TxPart
 
 DEFAULT_TIMEOUT = 30
-BSV_TO_SAT_MULTIPLIER = 100000000
 
 
 class BchSVExplorerDotComAPI:
@@ -60,7 +60,7 @@ class BchSVExplorerDotComAPI:
         return r.json()
 
     @classmethod
-    def get_unspent(cls, address):
+    def get_unspents(cls, address):
         r = requests.get(cls.MAIN_UNSPENT_API.format(address), timeout=DEFAULT_TIMEOUT)
         r.raise_for_status()  # pragma: no cover
         return [
@@ -73,11 +73,11 @@ class BchSVExplorerDotComAPI:
         ]
 
     @classmethod
-    def broadcast_tx(cls, rawtx):  # pragma: no cover
+    def send_transaction(cls, rawtx):  # pragma: no cover
         r = requests.post(
             'https://bchsvexplorer.com/api/tx/send',
             data=json.dumps({'rawtx': rawtx}),
             headers=cls.headers,
         )
         r.raise_for_status()
-        return r.json()
+        return r.json()['txid']
