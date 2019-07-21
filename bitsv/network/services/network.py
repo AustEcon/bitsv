@@ -4,6 +4,7 @@ import requests
 import time
 import collections
 from .bitindex3 import BitIndex3
+from .bchsvexplorer import BchSVExplorerDotComAPI
 
 DEFAULT_TIMEOUT = 30
 BSV_TO_SAT_MULTIPLIER = 100000000
@@ -53,8 +54,6 @@ def retry_annotation(exception_to_check, tries=3, delay=1, backoff=2, logger=Non
                     msg = "{}, Retrying in {} seconds...".format(str(e), mdelay)
                     if logger:
                         logger.warning(msg)
-                    else:
-                        print(msg)
                     time.sleep(mdelay)
                     mtries -= 1
                     mdelay *= backoff
@@ -107,12 +106,13 @@ class NetworkAPI:
 
         # Instantiate Normalized apis
         self.bitindex3 = BitIndex3Normalized(api_key=None, network=self.network)
+        self.bchsvexplorer = BchSVExplorerDotComAPI  # classmethods, mainnet only
         #Example: self.whatsonchain = WhatsonchainNormalized(network=self.network) - https://developers.whatsonchain.com/
         #Example: self.blockchair = BlockchairNormalized(network=network) - https://github.com/Blockchair/Blockchair.Support
 
         # Allows extra apis for 'main' that may not support testnet (e.g. blockchair)
         if network == 'main':
-            self.list_of_apis = collections.deque([self.bitindex3])
+            self.list_of_apis = collections.deque([self.bitindex3, self.bchsvexplorer])
         elif network == 'test':
             self.list_of_apis = collections.deque([self.bitindex3])
         elif network == 'stn':
