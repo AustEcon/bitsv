@@ -64,34 +64,6 @@ def retry_annotation(exception_to_check, tries=3, delay=1, backoff=2, logger=Non
     return deco_retry
 
 
-class BitIndex3Normalized(BitIndex3):
-
-    def __init__(self, api_key=None, network="main"):
-        self.api_key = api_key
-        self.network = network
-        self.headers = self._get_headers()
-        self.authorized_headers = self._get_authorized_headers()
-
-    def _get_headers(self):
-        return {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-    def _get_authorized_headers(self):
-        headers = self._get_headers()
-        headers['api_key'] = self.api_key
-        return headers
-
-    def get_transactions(self, address):
-        # override "get_transactions" namespace to return a list of txids only to keep all apis the same
-        return self.get_balance(address)['transactions']
-
-    def get_unspents(self, address, sort=None):
-        # rename to "get_unspents" to keep all apis the same name
-        return self.get_utxos(address, sort=sort)
-
-
 class NetworkAPI:
     """
     A Class for handling network API redundancy.
@@ -105,7 +77,7 @@ class NetworkAPI:
         self.network = network
 
         # Instantiate Normalized apis
-        self.bitindex3 = BitIndex3Normalized(api_key=None, network=self.network)
+        self.bitindex3 = BitIndex3(api_key=None, network=self.network)
         self.bchsvexplorer = BchSVExplorerDotComAPI  # classmethods, mainnet only
         #Example: self.whatsonchain = WhatsonchainNormalized(network=self.network) - https://developers.whatsonchain.com/
         #Example: self.blockchair = BlockchairNormalized(network=network) - https://github.com/Blockchair/Blockchair.Support
