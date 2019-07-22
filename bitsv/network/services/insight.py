@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from bitsv.network import currency_to_satoshi
 from bitsv.network.meta import Unspent
-from bitsv.network.transaction import Transaction, TxPart
+from bitsv.network.transaction import Transaction, TxInput, TxOutput
 
 DEFAULT_TIMEOUT = 30
 BSV_TO_SAT_MULTIPLIER = 100000000
@@ -52,7 +52,7 @@ class InsightAPI:
                          (Decimal(response['fees']) * BSV_TO_SAT_MULTIPLIER).normalize())
 
         for txin in response['vin']:
-            part = TxPart(txin['addr'], txin['valueSat'], txin['scriptSig']['asm'])
+            part = TxInput(txin['addr'], txin['valueSat'], txin['scriptSig']['asm'])
             tx.add_input(part)
 
         for txout in response['vout']:
@@ -60,9 +60,9 @@ class InsightAPI:
             if 'addresses' in txout['scriptPubKey'] and txout['scriptPubKey']['addresses'] is not None:
                 addr = txout['scriptPubKey']['addresses'][0]
 
-            part = TxPart(addr,
-                          (Decimal(txout['value']) * BSV_TO_SAT_MULTIPLIER).normalize(),
-                          txout['scriptPubKey']['asm'])
+            part = TxOutput(addr,
+                            (Decimal(txout['value']) * BSV_TO_SAT_MULTIPLIER).normalize(),
+                            txout['scriptPubKey']['asm'])
             tx.add_output(part)
 
         return tx

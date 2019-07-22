@@ -1,13 +1,15 @@
 import requests
 import json
+from decimal import Decimal
 
 from bitsv.network import currency_to_satoshi
 from bitsv.network.meta import Unspent
 
 # left here as a reminder to normalize get_transaction()
-from bitsv.network.transaction import Transaction, TxPart
+from bitsv.network.transaction import Transaction, TxInput, TxOutput
 
 DEFAULT_TIMEOUT = 30
+BSV_TO_SAT_MULTIPLIER = 100000000
 
 
 class BchSVExplorerDotComAPI:
@@ -54,10 +56,30 @@ class BchSVExplorerDotComAPI:
 
     @classmethod
     def get_transaction(cls, txid):
-        # FIXME - response not normalized to match other APIs
         r = requests.get(cls.MAIN_TX_API.format(txid), timeout=DEFAULT_TIMEOUT)
-        r.raise_for_status()  # pragma: no cover
-        return r.json()
+        if r.status_code != 200:  # pragma: no cover
+            raise ConnectionError
+        response = r.json(parse_float=Decimal)
+
+        tx = Transaction(response['txid'],
+                         (Decimal(response['valueIn']) * BSV_TO_SAT_MULTIPLIER).normalize(),
+                         (Decimal(response['valueOut']) * BSV_TO_SAT_MULTIPLIER).normalize())
+
+        for txin in response['vin']:
+            part = TxInput(txin['addr'], txin['valueSat'])
+            tx.add_input(part)
+
+        for txout in response['vout']:
+            addr = None
+            if 'addresses' in txout['scriptPubKey'] and txout['scriptPubKey']['addresses'] is not None:
+                addr = txout['scriptPubKey']['addresses'][0]
+
+            part = TxOutput(addr,
+                          (Decimal(txout['value']) * BSV_TO_SAT_MULTIPLIER).normalize(),
+                          txout['scriptPubKey']['asm'])
+            tx.add_output(part)
+
+        return tx
 
     @classmethod
     def get_unspents(cls, address):
