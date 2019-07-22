@@ -29,7 +29,7 @@ class BitIndex3:
         headers['api_key'] = self.api_key
         return headers
 
-    def get_utxos(self, address, sort=False, sort_direction='asc'):
+    def get_unspents(self, address, sort=False, sort_direction='asc'):
         """Gets all unspent transaction outputs belonging to an address.
 
         :param address: Address to get utxos for
@@ -71,9 +71,22 @@ class BitIndex3:
             headers=self.headers,
         )
         r.raise_for_status()
-        return r.json()
+        return r.json()['balanceSat']
 
-    def get_transactions(
+    def get_transactions(self, address):
+        """
+        Get a list of txids for a given address
+
+        :param address: Address to get balances for
+        """
+        r = requests.get(
+            'https://api.bitindex.network/api/v3/{}/addr/{}'.format(self.network, address),
+            headers=self.headers,
+        )
+        r.raise_for_status()
+        return r.json()['transactions']
+
+    def get_transactions_detailed(
         self,
         address,
         from_index=0,
@@ -83,7 +96,7 @@ class BitIndex3:
         no_spent=True,
     ):
         """
-        Retrieve transactions for an address
+        Retrieve detailed information about transaction history for an address
 
         :param address: Address to get transactions for
         :param from_index:
