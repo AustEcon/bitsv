@@ -1,4 +1,5 @@
 from functools import wraps
+from warnings import warn
 
 import requests
 import time
@@ -92,6 +93,16 @@ class BitIndex3Normalized(BitIndex3):
         # rename to "get_unspents" to keep all apis the same name
         return self.get_utxos(address, sort=sort)
 
+    def get_unspent(self, address, sort=None):
+        """
+        Retain backwards compatibility for old `get_unspent` method
+        """
+        warn(
+            "BitIndex3Normalized.get_unspent is deprecated, use BitIndex3Normalized.get_unspents instead",
+            DeprecationWarning,
+        )
+        return self.get_unspent(address=address, sort=sort)
+
 
 class NetworkAPI:
     """
@@ -178,6 +189,16 @@ class NetworkAPI:
         """
         call_list = [api.get_unspents for api in self.list_of_apis]
         return self.invoke_api_call(call_list, address)
+
+    def get_unspent(self, address):
+        """
+        Retain backwards compatibility for old `get_unspent` method
+        """
+        warn(
+            "NetworkAPI.get_unspent is deprecated, use NetworkAPI.get_unspents instead",
+            DeprecationWarning,
+        )
+        return self.get_unspents(address=address)
 
     def broadcast_tx(self, tx_hex):  # pragma: no cover
         """Broadcasts a transaction to the blockchain.

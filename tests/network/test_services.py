@@ -120,6 +120,10 @@ class TestNetworkAPI:
         with pytest.raises(ConnectionError):
             mock_network_api_main.get_unspents(MAIN_ADDRESS_USED1)
 
+    def test_get_unspent_main_warning(self):
+        with pytest.deprecated_call():
+            network_api_main.get_unspent(MAIN_ADDRESS_USED2)
+
     # Test
     def test_get_balance_test_equal(self):
         results = [api.get_balance(TEST_ADDRESS_USED2) for api in network_api_test.list_of_apis]
@@ -144,6 +148,10 @@ class TestNetworkAPI:
     def test_get_unspents_test_failure(self):
         with pytest.raises(ConnectionError):
             mock_network_api_test.get_unspents(TEST_ADDRESS_USED2)
+
+    def test_get_unspent_test_warning(self):
+        with pytest.deprecated_call():
+            network_api_test.get_unspent(TEST_ADDRESS_USED3)
 
     # STN
     # Commented out until necessary server upgrades are done on BitIndex
@@ -170,7 +178,11 @@ class TestNetworkAPI:
 
     def test_get_unspents_stn_failure(self):
         with pytest.raises(ConnectionError):
-            mock_network_api_stn.get_unspents(TEST_ADDRESS_USED2)"""
+            mock_network_api_stn.get_unspents(TEST_ADDRESS_USED2)
+            
+    def test_get_unspent_stn_warning(self):
+        with pytest.deprecated_call():
+            network_api_stn.get_unspent(TEST_ADDRESS_USED3)"""
 
     # Retry
     def test_switch_serivce(self):
