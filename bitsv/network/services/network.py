@@ -3,11 +3,11 @@ from functools import wraps
 import requests
 import time
 import collections
+import logging
 from .bitindex3 import BitIndex3
 from .bchsvexplorer import BchSVExplorerDotComAPI
 
 DEFAULT_TIMEOUT = 30
-BSV_TO_SAT_MULTIPLIER = 100000000
 DEFAULT_RETRY = 3
 IGNORED_ERRORS = (ConnectionError,
                   requests.exceptions.ConnectionError,
@@ -26,7 +26,7 @@ def set_service_retry(retry):
     DEFAULT_RETRY = retry
 
 
-def retry_annotation(exception_to_check, tries=3, delay=1, backoff=2, logger=None):
+def retry_annotation(exception_to_check, tries=3, delay=1, backoff=2):
     """Retry calling the decorated function using an exponential backoff,
     the default delay sequence is 1s, 2s, 4s, 8s...
     http://www.saltycrane.com/blog/2009/11/trying-out-retry-decorator-python/
@@ -39,7 +39,7 @@ def retry_annotation(exception_to_check, tries=3, delay=1, backoff=2, logger=Non
     :type delay: int
     :param backoff: backoff multiplier e.g. value of 2 will double the delay each retry
     :type backoff: int
-    :param logger: logger to use. If None, print
+    :param logger: logger to use.
     :type logger: logging.Logger instance
     """
     def deco_retry(f):
@@ -52,8 +52,7 @@ def retry_annotation(exception_to_check, tries=3, delay=1, backoff=2, logger=Non
                     return f(*args, **kwargs)
                 except exception_to_check as e:
                     msg = "{}, Retrying in {} seconds...".format(str(e), mdelay)
-                    if logger:
-                        logger.warning(msg)
+                    logging.warning(msg)
                     time.sleep(mdelay)
                     mtries -= 1
                     mdelay *= backoff
