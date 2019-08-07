@@ -7,11 +7,10 @@ class Transaction:
 
     def __init__(self, txid, amount_in, amount_out):
         self.txid = txid
+        if amount_in - amount_out < 0:
+            raise ArithmeticError("Output is greater than input, leaving no room for a fee.")
+
         self.fee = amount_in - amount_out
-
-        if amount_in != amount_out + self.fee:
-            raise ArithmeticError("amount in is not equal to amount out + fee.")
-
         self.amount_in = amount_in
         self.amount_out = amount_out
 
@@ -37,7 +36,7 @@ class Transaction:
 
 class TxInput:
     """
-    Representation of a single input or output.
+    Representation of a single input
     """
 
     def __init__(self, address, amount):
@@ -50,7 +49,7 @@ class TxInput:
 
 class TxOutput:
     """
-    Representation of a single input or output.
+    Representation of a single output.
     """
 
     def __init__(self, address, amount, asm=None):
