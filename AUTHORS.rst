@@ -4,6 +4,8 @@ Maintainers
 -----------
 
 - AustEcon
+- teran-mckinney
+- joshua-s
 
 Contributors
 ------------

@@ -4,9 +4,10 @@ from decimal import Decimal
 from bitsv.network import currency_to_satoshi
 from bitsv.network.meta import Unspent
 from bitsv.network.transaction import Transaction, TxInput, TxOutput
+from bitsv.constants import BSV
 
 DEFAULT_TIMEOUT = 30
-BSV_TO_SAT_MULTIPLIER = 100000000
+BSV_TO_SAT_MULTIPLIER = BSV
 
 # This module is no longer actually used by anything but I don't mind keeping it here for the moment
 

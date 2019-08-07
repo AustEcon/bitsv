@@ -1,4 +1,3 @@
-from cashaddress import convert as cashaddress
 from coincurve import verify_signature as _vs
 
 from bitsv.base58 import b58decode_check, b58encode_check
@@ -38,8 +37,6 @@ def verify_sig(signature, data, public_key):
 
 
 def address_to_public_key_hash(address):
-    # Support cashaddr and "legacy" for now.
-    address = cashaddress.to_legacy_address(address)
     get_prefix(address)
     return b58decode_check(address)[1:]
 

@@ -7,14 +7,15 @@ from bitsv.network.meta import Unspent
 
 # left here as a reminder to normalize get_transaction()
 from bitsv.network.transaction import Transaction, TxInput, TxOutput
+from bitsv.constants import BSV
 
 DEFAULT_TIMEOUT = 30
-BSV_TO_SAT_MULTIPLIER = 100000000
+BSV_TO_SAT_MULTIPLIER = BSV
 
 
 class BchSVExplorerDotComAPI:
     """
-    Simple bitcoin SV REST API --> uses Legacy address format
+    Simple bitcoin SV REST API --> uses base58 address format (addresses start with "1")
     - get_address_info
     - get_balance
     - get_transactions
@@ -57,8 +58,7 @@ class BchSVExplorerDotComAPI:
     @classmethod
     def get_transaction(cls, txid):
         r = requests.get(cls.MAIN_TX_API.format(txid), timeout=DEFAULT_TIMEOUT)
-        if r.status_code != 200:  # pragma: no cover
-            raise ConnectionError
+        r.raise_for_status()  # pragma: no cover
         response = r.json(parse_float=Decimal)
 
         tx = Transaction(response['txid'],

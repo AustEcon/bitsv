@@ -3,7 +3,13 @@ Release History
 
 Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
 --------------------------------------------------------------
-- No new changes since 0.8.0 yet.
+- No new changes since 0.9.0 yet.
+
+0.9.0 (2019-08-07)
+------------------
+
+- **breaking** Bitcoin Cash addressees are no longer supported.
+- Added bchsvexplorer for redundancy on mainnet.
 
 0.8.0 (2019-7-13)
 -----------------

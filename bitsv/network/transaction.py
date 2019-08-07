@@ -32,8 +32,7 @@ class Transaction:
                 repr(self.amount_out),
                 repr(self.fee),
                 len(self.inputs),
-                len(self.outputs)
-        )
+                len(self.outputs))
 
 
 class TxInput:

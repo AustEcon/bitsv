@@ -6,18 +6,13 @@ from time import time
 import requests
 
 from bitsv.utils import Decimal
+from bitsv.constants import SATOSHI, uBSV, mBSV, BSV
 
 DEFAULT_CACHE_TIME = 60
 
 # Constant for use in deriving exchange
 # rates when given in terms of 1 BSV.
 ONE = Decimal(1)
-
-# https://en.bitcoin.it/wiki/Units
-SATOSHI = 1
-uBSV = 10 ** 2
-mBSV = 10 ** 5
-BSV = 10 ** 8
 
 SUPPORTED_CURRENCIES = OrderedDict([
     ('satoshi', 'Satoshi'),
@@ -250,7 +245,7 @@ class Bitfinex(BitcoinSVRates):
         r.raise_for_status()
         usdbsv = r.json()['mid']
         # Get satoshis per usd
-        rate = Decimal(100000000) / Decimal(usdbsv)
+        rate = Decimal(BSV) / Decimal(usdbsv)
         return rate
 
 
