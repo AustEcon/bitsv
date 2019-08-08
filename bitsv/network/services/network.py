@@ -5,7 +5,7 @@ import time
 import collections
 import logging
 from .bitindex3 import BitIndex3
-from .bchsvexplorer import BchSVExplorerDotComAPI
+from .bchsvexplorer import BCHSVExplorerAPI
 
 DEFAULT_TIMEOUT = 30
 DEFAULT_RETRY = 3
@@ -75,7 +75,7 @@ class NetworkAPI:
 
         # Instantiate Normalized apis
         self.bitindex3 = BitIndex3(api_key=None, network=self.network)
-        self.bchsvexplorer = BchSVExplorerDotComAPI  # classmethods, mainnet only
+        self.bchsvexplorer = BCHSVExplorerAPI  # classmethods, mainnet only
         #Example: self.whatsonchain = WhatsonchainNormalized(network=self.network) - https://developers.whatsonchain.com/
         #Example: self.blockchair = BlockchairNormalized(network=network) - https://github.com/Blockchair/Blockchair.Support
 

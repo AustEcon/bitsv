@@ -13,7 +13,7 @@ DEFAULT_TIMEOUT = 30
 BSV_TO_SAT_MULTIPLIER = BSV
 
 
-class BchSVExplorerDotComAPI:
+class BCHSVExplorerAPI:
     """
     Simple bitcoin SV REST API --> uses base58 address format (addresses start with "1")
     - get_address_info
@@ -75,8 +75,8 @@ class BchSVExplorerDotComAPI:
                 addr = txout['scriptPubKey']['addresses'][0]
 
             part = TxOutput(addr,
-                          (Decimal(txout['value']) * BSV_TO_SAT_MULTIPLIER).normalize(),
-                          txout['scriptPubKey']['asm'])
+                            (Decimal(txout['value']) * BSV_TO_SAT_MULTIPLIER).normalize(),
+                            txout['scriptPubKey']['asm'])
             tx.add_output(part)
 
         return tx
