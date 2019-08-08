@@ -2,7 +2,8 @@ import json
 import requests
 
 from bitsv.network.meta import Unspent
-
+from bitsv.network.transaction import Transaction, TxInput, TxOutput
+from decimal import Decimal
 
 class BitIndex3:
     """
@@ -145,7 +146,47 @@ class BitIndex3:
             headers=self.headers,
         )
         r.raise_for_status()
-        return r.json()
+        response = r.json()
+        response_vin = response['vin']
+        response_vout = response['vout']
+
+        # get txid
+        txid = response['txid']
+
+        # get amount_in
+        running_total_vin = 0
+        for i in response_vin:
+            running_total_vin += int(i['valueSat'])
+        amount_in = running_total_vin
+
+        # get amount_out
+        running_total_vout = 0
+        for i in response_vout:
+            running_total_vout += int(i['valueSat'])
+        amount_out = running_total_vout
+
+        tx = Transaction(txid,
+                         amount_in,
+                         amount_out)
+
+        # add TxInputs
+        for txin in response_vin:
+            part = TxInput(txin['addr'], txin['valueSat'])
+            tx.add_input(part)
+
+        # add TxOutputs
+        for txout in response_vout:
+            addr = None
+            if 'addresses' in txout['scriptPubKey'] and txout['scriptPubKey'][
+                'addresses'] is not None:
+                addr = txout['scriptPubKey']['addresses'][0]
+
+            part = TxOutput(addr,
+                            txout['valueSat'],
+                            txout['scriptPubKey']['asm'])
+            tx.add_output(part)
+
+        return tx
 
     def get_raw_transaction(self, transaction_id):
         """
