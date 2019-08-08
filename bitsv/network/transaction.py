@@ -27,9 +27,9 @@ class Transaction:
         return 'Transaction(txid={}, amount_in={}, amount_out={}, ' \
                'fee={}, inputs={}, outputs={})'.format(
                 repr(self.txid),
-                repr(self.amount_in),
-                repr(self.amount_out),
-                repr(self.fee),
+                str(self.amount_in),
+                str(self.amount_out),
+                str(self.fee),
                 len(self.inputs),
                 len(self.outputs))
 
