@@ -71,7 +71,8 @@ class BCHSVExplorerAPI:
 
         for txout in response['vout']:
             addr = None
-            if 'addresses' in txout['scriptPubKey'] and txout['scriptPubKey']['addresses'] is not None:
+            if 'addresses' in txout['scriptPubKey'] and \
+                    txout['scriptPubKey']['addresses'] is not None:
                 addr = txout['scriptPubKey']['addresses'][0]
 
             part = TxOutput(addr,
@@ -80,6 +81,13 @@ class BCHSVExplorerAPI:
             tx.add_output(part)
 
         return tx
+
+    @classmethod
+    def raw_get_transaction(cls, txid):
+        """un-altered return value from API - useful for debugging"""
+        r = requests.get(cls.MAIN_TX_API.format(txid), timeout=DEFAULT_TIMEOUT)
+        r.raise_for_status()  # pragma: no cover
+        return r.json()
 
     @classmethod
     def get_unspents(cls, address):

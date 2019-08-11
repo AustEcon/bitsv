@@ -177,8 +177,8 @@ class BitIndex3:
         # add TxOutputs
         for txout in response_vout:
             addr = None
-            if 'addresses' in txout['scriptPubKey'] and txout['scriptPubKey'][
-                'addresses'] is not None:
+            if 'addresses' in txout['scriptPubKey'] and \
+                    txout['scriptPubKey']['addresses'] is not None:
                 addr = txout['scriptPubKey']['addresses'][0]
 
             part = TxOutput(addr,
@@ -187,6 +187,16 @@ class BitIndex3:
             tx.add_output(part)
 
         return tx
+
+    def raw_get_transaction(self, transaction_id):
+        """raw version of get_transaction(). Gives un-altered return value of API
+        (useful for debugging)"""
+        r = requests.get(
+            'https://api.bitindex.network/api/v3/{}/tx/{}'.format(self.network, transaction_id),
+            headers=self.headers,
+        )
+        r.raise_for_status()
+        return r.json()
 
     def get_raw_transaction(self, transaction_id):
         """

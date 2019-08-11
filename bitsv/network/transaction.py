@@ -1,4 +1,4 @@
-
+from bitsv.utils import is_valid_hex, asm_to_list
 
 class Transaction:
     """Represents a transaction returned from the network."""
@@ -55,24 +55,14 @@ class TxOutput:
     def __init__(self, address, amount, asm=None):
         self.address = address
         self.amount = amount
-        self.op_return = None
+        self.data = None
 
         if address is None and asm is not None:
             if asm.startswith('OP_RETURN '):
-                self.op_return = asm[10:]
-            elif asm.startswith('return ['):
-                self.op_return = asm[8:-1]
-
-    def message(self):
-        """Attempt to decode the op_return value (if there is one) as a UTF-8 string."""
-
-        if self.op_return is None:
-            return None
-
-        return bytearray.fromhex(self.op_return).decode('utf-8')
+                self.data = asm_to_list(asm)
 
     def __repr__(self):
-        if self.address is None and self.op_return is not None:
-            return "Output(OP_RETURN={}, amount_burned={})".format(self.message(), self.amount)
+        if self.address is None and self.data is not None:
+            return "Output(OP_RETURN, amount_burned={})".format(self.amount)
         else:
             return "Output(address={}, amount={:.0f})".format(self.address, self.amount)
