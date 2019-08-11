@@ -5,11 +5,13 @@ Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
 --------------------------------------------------------------
 - No new changes since 0.9.0 yet.
 
-0.9.0 (2019-08-07)
+0.9.0 (2019-08-11)
 ------------------
 
 - **breaking** Bitcoin Cash addressees are no longer supported.
 - Added bchsvexplorer for redundancy on mainnet.
+- PrivateKey.get_transaction() now returns a ``Transaction`` object with ``TxInput`` and ``TxOutput`` objects within it.
+- Metadata is represented in ``TxOutput.data`` as a list of ``pushdata`` fields.
 
 0.8.0 (2019-7-13)
 -----------------

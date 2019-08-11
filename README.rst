@@ -21,18 +21,22 @@ Forked from Ofek's awesome Bit library: https://github.com/ofek/bit
 
 Noticeboard:
 ------------
-Latest Release - 0.8.0_ (2019-7-13)
+Latest Release - 0.9.0_ (2019-08-11)
 
-- Big changes_. Take note!
+.. _0.9.0: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
 
-.. _0.8.0: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
+- Bitcoin Cash addressees are no longer supported.
+- Added bchsvexplorer for redundancy on mainnet.
+- PrivateKey.get_transaction() now returns a Transaction object with TxInput and TxOutput objects
+within it.
+- Metadata is represented in TxOutput.data as a list of pushdata fields.
+
+- Also big changes_ in 0.8.0 so please take note.
+
 .. _changes: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
 
-Legacy Addresses:
-
-- Bitcoin SV will be reinstating legacy address format as the default standard
-  (see: https://bitcoinsv.io/2019/07/12/bitcoin-sv-node-v0-2-1-released/).
-  However, "cashaddress" is a great tool for conversions if needed. https://github.com/oskyk/cashaddress/
+- "cashaddress" is a great tool for address conversions if ever needed. https://github
+.com/oskyk/cashaddress/
 
 Default Fee = 1 sat/byte:
 
@@ -51,6 +55,8 @@ Planned improvements
   https://github.com/AustEcon/bsvbip32. Plan for each node to access
   bitsv functionality so that building apps can be a breeze!
   (competing implementations welcome. That's partly why modularity is a good idea!)
+- Add Whatsonchain API for added redundancy across main / test and stn networks.
+- Minor updates to documentation for 0.9.0 release are still needed re: PrivateKey.get_transaction()
 
 ----------------------------
 
