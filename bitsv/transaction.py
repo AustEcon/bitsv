@@ -1,5 +1,5 @@
 import logging
-from collections import namedtuple
+from collections import namedtuple, deque
 
 from bitsv.crypto import double_sha256, sha256
 from bitsv.exceptions import InsufficientFunds
@@ -137,7 +137,7 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
     fee is in satoshis per byte.
     """
 
-    outputs = outputs.copy()
+    outputs = deque(outputs)
 
     for i, output in enumerate(outputs):
         dest, amount, currency = output
@@ -147,7 +147,7 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
         raise ValueError('Transactions must have at least one unspent.')
 
     # Temporary storage so all outputs precede messages.
-    messages = []
+    messages = deque()
     total_op_return_size = 0
 
     if message and (custom_pushdata is False):
@@ -159,12 +159,11 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
         message_chunks = chunk_data(message, MESSAGE_LIMIT)
 
         for message in message_chunks:
-            messages.append((message, 0))
+            messages.appendleft((message, 0))
             total_op_return_size += get_op_return_size(message, custom_pushdata=False)
 
     elif message and (custom_pushdata is True):
         if len(message) >= MESSAGE_LIMIT:
-            # FIXME add capability for MESSAGE_LIMIT bytes for custom pushdata elements
             raise ValueError("Currently cannot exceed 100000 bytes with custom_pushdata.")
         else:
             messages.append((message, 0))
@@ -208,7 +207,7 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
         raise InsufficientFunds('Balance {} is less than {} (including '
                                 'fee).'.format(total_in, total_out))
 
-    outputs.extend(messages)
+    outputs.extendleft(messages)
 
     return unspents, outputs
 
