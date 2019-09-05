@@ -363,15 +363,14 @@ class PrivateKey(BaseKey):
         if not outputs:
             outputs = []
 
-        self.get_unspents()
         pushdata = op_return.create_pushdata(list_of_pushdata)
         rawtx = self.create_transaction(outputs,
                                         fee=fee,
                                         message=pushdata,
                                         custom_pushdata=True,
                                         combine=combine,
-                                        unspents=unspents,
-                                        leftover=leftover)
+                                        unspents=unspents or self.unspents,
+                                        leftover=leftover or self.address)
 
         return rawtx
 

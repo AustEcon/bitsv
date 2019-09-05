@@ -1,17 +1,18 @@
 import platform, os
-
 from bitcoinrpc.authproxy import AuthServiceProxy
-from cashaddress import convert as cashaddress
 
 from .insight import BSV_TO_SAT_MULTIPLIER
 from bitsv.network.meta import Unspent
-from bitsv.network.transaction import Transaction, TxPart
+from bitsv.network.transaction import Transaction, TxInput, TxOutput
+
 
 class FullNode:
 
-    def __init__(self, conf_dir=None, rpcuserpass=None, rpcport=None, rpchost='127.0.0.1', network="main"):
+    # TODO - add exception handling for "BrokenPipeError" --> to reconnect and try once again.
+
+    def __init__(self, conf_dir=None, rpcuser=None, rpcpassword=None, rpcport=None, rpchost='127.0.0.1', network="main"):
         if rpcport is None:
-            rpcport = {'main':8332,'test':18332,'stn':9332}[network]
+            rpcport = {'main':8332,'test':18332,'stn':9332, 'regtest':18332}[network]
         if conf_dir is None:
             if platform.system() == 'Darwin':
                 conf_dir = os.path.expanduser('~/Library/Application Support/Bitcoin/')
@@ -23,13 +24,19 @@ class FullNode:
             conf_dir = os.path.join(conf_dir, 'testnet3')
         elif network == 'stn':
             conf_dir = os.path.join(conf_dir, 'stn')
-        if rpcuserpass is None:
+        if rpcuser is None:
             cookie = os.path.join(conf_dir, '.cookie')
             with open(cookie) as f:
                 rpcuserpass = f.read()
 
-        uri = "http://%s@%s:%s" % (rpcuserpass, rpchost, rpcport)
+        # Use cookie if no rpcuser specified
+        if rpcuser:
+            uri = "http://{}:{}@{}:{}".format(rpcuser, rpcpassword, rpchost, rpcport)
+        else:
+            uri = "http://{}@{}:{}".format(rpcuserpass, rpchost, rpcport)
+
         self.rpc = AuthServiceProxy(uri)
+
         rpcnet = self.rpc.getblockchaininfo()['chain']
         if rpcnet != network:
             raise ValueError("rpc server is on '%s' network, you passed '%s'" % (rpcnet, network))
@@ -37,49 +44,44 @@ class FullNode:
         self.conf_dir = conf_dir
 
     def get_balance(self, address):
-        print('get_balance')
         return sum(unspent.amount for unspent in self.get_unspents(address))
 
     def get_transactions(self, address):
         acct = self.rpc.getaccount(address)
         txs = self.rpc.listtransactions(acct)
-
-        txs = filter(
-            lambda tx: 'address' in tx and
-                cashaddress.to_legacy_address(tx['address']) == address,
-            txs)
         txids = (tx['txid'] for tx in txs)
-        txids = list(dict.fromkeys(txids))
-        txids.reverse()
+        txids = list(txids)
         return txids
 
     def get_transaction(self, txid):
-        txsum = self.rpc.gettransaction(txid, True)
-        txdet = self.rpc.decoderawtransaction(txsum['hex'])
+        rawtx = self.rpc.getrawtransaction(txid)
+        txjson = self.rpc.decoderawtransaction(rawtx)
         inputs = []
         outputs = []
-        amtin = 0
-        amtout = 0
-        for vin in txdet['vin']:
-            src = self.rpc.gettransaction(vin['txid'], True)
+        amount_in = 0
+        amount_out = 0
+        for vin in txjson['vin']:
+            src = self.rpc.getrawtransaction(vin['txid'], True)
             src = self.rpc.decoderawtransaction(src['hex'])
             src = src['vout'][vin['vout']]
             addr = None
             if 'addresses' in src['scriptPubKey']:
-                addr = cashaddress.to_legacy_address(src['scriptPubKey']['addresses'][0])
-            amt = int((src['value'] * BSV_TO_SAT_MULTIPLIER).normalize()),
-            amtin += amt
-            part = TxPart(addr, amt, asm=vin['scriptSig']['asm'])
+                addr = src['scriptPubKey']['addresses'][0]
+            amount = int((src['value'] * BSV_TO_SAT_MULTIPLIER).normalize())
+            amount_in += amount
+            part = TxInput(addr, amount)
             inputs += [part]
-        for vout in txdet['vout']:
+
+        for vout in txjson['vout']:
             addr = None
             if 'addresses' in vout['scriptPubKey']:
-                addr = cashaddress.to_legacy_address(vout['scriptPubKey']['addresses'][0])
-            amt = int((vout['value'] * BSV_TO_SAT_MULTIPLIER).normalize()),
-            amtout -= amt
-            part = TxPart(addr, amt, asm=vout['scriptPubKey']['asm'])
+                addr = vout['scriptPubKey']['addresses'][0]
+            amount = int((vout['value'] * BSV_TO_SAT_MULTIPLIER).normalize())
+            amount_out += amount
+            part = TxOutput(addr, amount, asm=vout['scriptPubKey']['asm'])
             outputs += [part]
-        tx = Transaction(txjson['txid'], txjson['blockhash'], amtin, amtout, amtin - amtout)
+
+        tx = Transaction(txjson['txid'], amount_in, amount_out)
         for part in inputs:
             tx.add_input(part)
         for part in outputs:
