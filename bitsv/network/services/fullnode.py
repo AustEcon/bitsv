@@ -1,17 +1,20 @@
 import platform, os
+from functools import wraps
 from bitcoinrpc.authproxy import AuthServiceProxy
-
 from .insight import BSV_TO_SAT_MULTIPLIER
 from bitsv.network.meta import Unspent
 from bitsv.network.transaction import Transaction, TxInput, TxOutput
 from pathlib import Path
+
 
 bitsv_methods = [
     'get_balance',
     'get_transactions',
     'get_transaction',
     'get_unspents',
-    'send_transaction'
+    'send_transaction',
+    'rpc_connect',
+    'rpc_reconnect'
 ]
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -23,8 +26,6 @@ with open(path_to_standardrpcmethods.as_posix(), 'r') as f:
 
 class FullNode:
 
-    # TODO - add exception handling for "BrokenPipeError" --> to reconnect and try once again.
-
     def __init__(self, conf_dir=None, rpcuser=None, rpcpassword=None, rpcport=None, rpchost='127.0.0.1', network="main"):
         if rpcport is None:
             rpcport = {'main':8332,'test':18332,'stn':9332, 'regtest':18332}[network]
@@ -35,10 +36,14 @@ class FullNode:
                 conf_dir = os.path.join(os.environ['APPDATA'], 'Bitcoin')
             else:
                 conf_dir = os.path.expanduser('~/.bitcoin')
+
+        if network == 'regtest':
+            conf_dir = os.path.join(conf_dir, 'regtest')
         if network == 'test':
             conf_dir = os.path.join(conf_dir, 'testnet3')
         elif network == 'stn':
             conf_dir = os.path.join(conf_dir, 'stn')
+
         if rpcuser is None:
             cookie = os.path.join(conf_dir, '.cookie')
             with open(cookie) as f:
@@ -50,29 +55,53 @@ class FullNode:
         else:
             uri = "http://{}@{}:{}".format(rpcuserpass, rpchost, rpcport)
 
-        self.rpc = AuthServiceProxy(uri)
+        self.network = network
+        self.conf_dir = conf_dir
+        self.uri = uri
+        self.rpc = AuthServiceProxy(self.uri)
+        self.rpcport = rpcport
+        self.rpchost = rpchost
+        self.network = network
 
         rpcnet = self.rpc.getblockchaininfo()['chain']
         if rpcnet != network:
             raise ValueError("rpc server is on '%s' network, you passed '%s'" % (rpcnet, network))
-        self.network = network
-        self.conf_dir = conf_dir
+
+    def __getattr__(self, rpc_method):
+        return RPCMethod(rpc_method, self)
 
     def __dir__(self):
-        all_methods = []
-        all_methods.extend(bitsv_methods)
-        all_methods.extend(standardmethods)
-        return all_methods
+        fulllist = []
+        fulllist.extend(bitsv_methods)
+        fulllist.extend(standardmethods)
+        fulllist.extend(self.__dict__.keys())
+        return fulllist
 
-    def __getattr__(self, attr):
-        if attr in bitsv_methods:
-            return attr
-        if attr in standardmethods:
-            return getattr(self.rpc, attr)
+    def rpc_connect(self):
+        return AuthServiceProxy(self.uri)
 
+    def rpc_reconnect(self):
+        self.rpc = AuthServiceProxy(self.uri)
+
+    class Decorators:
+
+        @classmethod
+        def handle_broken_pipe(cls, f):
+            @wraps(f)
+            def reconnect_if_needed(self, *args, **kwargs):
+                try:
+                    return f(self, *args, **kwargs)
+                except BrokenPipeError:
+                    self.rpc_reconnect()  # reconnect and try again
+                    return f(self, *args)
+
+            return reconnect_if_needed
+
+    @Decorators.handle_broken_pipe
     def get_balance(self, address):
         return sum(unspent.amount for unspent in self.get_unspents(address))
 
+    @Decorators.handle_broken_pipe
     def get_transactions(self, address):
         acct = self.rpc.getaccount(address)
         txs = self.rpc.listtransactions(acct)
@@ -80,6 +109,7 @@ class FullNode:
         txids = list(txids)
         return txids
 
+    @Decorators.handle_broken_pipe
     def get_transaction(self, txid):
         rawtx = self.rpc.getrawtransaction(txid)
         txjson = self.rpc.decoderawtransaction(rawtx)
@@ -115,6 +145,7 @@ class FullNode:
             tx.add_output(part)
         return tx
 
+    @Decorators.handle_broken_pipe
     def get_unspents(self, address):
         unspents = self.rpc.listunspent(0, 9999999, [address], True)
         return [Unspent(
@@ -125,5 +156,27 @@ class FullNode:
             txindex=tx['vout']
         ) for tx in unspents]
 
+    @Decorators.handle_broken_pipe
     def send_transaction(self, tx_hex):
         return self.rpc.sendrawtransaction(tx_hex, True)
+
+
+class RPCMethod:
+    def __init__(self, rpc_method, host):
+        self._rpc_method = rpc_method
+        self._host = host
+
+    def __getattr__(self, rpc_method):
+        if rpc_method in standardmethods:
+            return RPCMethod(rpc_method, self._host)
+        else:
+            raise AttributeError("No such method: {} exists".format(rpc_method))
+
+    def __call__(self, *args):
+        try:
+            result = getattr(self._host.rpc, self._rpc_method)(*args)
+            return result
+        except BrokenPipeError:  # TODO add logging
+            self._host.rpc = self._host.rpc_connect()  # reconnect and try again
+            result = getattr(self._host.rpc, self._rpc_method)(*args)
+            return result
