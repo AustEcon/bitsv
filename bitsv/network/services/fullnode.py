@@ -4,6 +4,21 @@ from bitcoinrpc.authproxy import AuthServiceProxy
 from .insight import BSV_TO_SAT_MULTIPLIER
 from bitsv.network.meta import Unspent
 from bitsv.network.transaction import Transaction, TxInput, TxOutput
+from pathlib import Path
+
+bitsv_methods = [
+    'get_balance',
+    'get_transactions',
+    'get_transaction',
+    'get_unspents',
+    'send_transaction'
+]
+
+BASE_DIR = Path(__file__).resolve().parent
+path_to_standardrpcmethods = Path.joinpath(BASE_DIR, "standardrpcmethods").with_suffix('.txt')
+
+with open(path_to_standardrpcmethods.as_posix(), 'r') as f:
+    standardmethods = [lines.strip() for lines in f]
 
 
 class FullNode:
@@ -42,6 +57,18 @@ class FullNode:
             raise ValueError("rpc server is on '%s' network, you passed '%s'" % (rpcnet, network))
         self.network = network
         self.conf_dir = conf_dir
+
+    def __dir__(self):
+        all_methods = []
+        all_methods.extend(bitsv_methods)
+        all_methods.extend(standardmethods)
+        return all_methods
+
+    def __getattr__(self, attr):
+        if attr in bitsv_methods:
+            return attr
+        if attr in standardmethods:
+            return getattr(self.rpc, attr)
 
     def get_balance(self, address):
         return sum(unspent.amount for unspent in self.get_unspents(address))
