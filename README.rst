@@ -21,22 +21,31 @@ Forked from Ofek's awesome Bit library: https://github.com/ofek/bit
 
 Noticeboard:
 ------------
-Latest Release - 0.9.0_ (2019-08-11)
+
+Latest Release - 0.10.0_ (2019-10-27)
+
+.. _0.10.0: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
+
+- Added new Fullnode class for connecting to local bitcoin node via JSON-RPC (thanks goes to https://github.com/xloem for the initial legwork).
+- Fullnode class works for Mainnet, Testnet, Scaling-testnet and RegTest (local mock blockchain).
+- Reordered outputs to always have 'false return' metadata included in the **first** output instead of the last. This will fix a new issue that arose with rendering of images etc. on bico.media.
+- Prepend OP_FALSE to OP_RETURN in preparation for Genesis upgrade coming in February.
+- Add 'sweep' function to PrivateKey class for sending all coins to a given address.
+
+Previous Release - 0.9.0_ (2019-08-11)
 
 .. _0.9.0: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
 
 - Bitcoin Cash addressees are no longer supported.
 - Added bchsvexplorer for redundancy on mainnet.
-- PrivateKey.get_transaction() now returns a Transaction object with TxInput and TxOutput objects
-within it.
+- PrivateKey.get_transaction() now returns a Transaction object with TxInput and TxOutput objects within it.
 - Metadata is represented in TxOutput.data as a list of pushdata fields.
 
 - Also big changes_ in 0.8.0 so please take note.
 
 .. _changes: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
 
-- "cashaddress" is a great tool for address conversions if ever needed. https://github
-.com/oskyk/cashaddress/
+- "cashaddress" is a great tool for address conversions if ever needed. https://github.com/oskyk/cashaddress/
 
 Default Fee = 1 sat/byte:
 
@@ -49,8 +58,7 @@ Planned improvements
 --------------------
 
 - Improved coverage of testing modules (currently at 84%).
-- Support for use of a local bitcoin full node instead of a Web-API.
-  (paves the way for a RegTest environment for a rapid development cycle)
+- (Mostly done in 0.10.0) Support for use of a local bitcoin full node instead of a Web-API. (paves the way for a RegTest environment for a rapid development cycle)
 - Work on the bsvbip32 library for hierarchical deterministic keys:
   https://github.com/AustEcon/bsvbip32. Plan for each node to access
   bitsv functionality so that building apps can be a breeze!
