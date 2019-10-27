@@ -432,6 +432,19 @@ class PrivateKey(BaseKey):
 
         return calc_txid(tx_hex)
 
+    def sweep(self, receiving_address, combine=True, message=None, unspents=None,
+              custom_pushdata=False):
+        """Send all bitcoins associated with private key to the receiving address.
+
+        If unspents are specified, it will only send the remainder from these utxos to the
+        receiving address (after tx creation).
+
+        The 'low-level' / more versatile way of doing this is to pass this address to the
+        "leftover" parameter of PrivateKey.send()"""
+
+        return self.send(outputs=[], leftover=receiving_address, combine=combine, message=message,
+                         unspents=unspents, custom_pushdata=False)
+
     def send(self, outputs, fee=None, leftover=None, combine=True,
              message=None, unspents=None, custom_pushdata=False):  # pragma: no cover
         """Creates a signed P2PKH transaction and attempts to broadcast it on
