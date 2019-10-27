@@ -136,10 +136,12 @@ Credits
 - `ofek`_ for the original bit codebase.
 - `teran-mckinney`_ for his work on the bitcash fork
 - `joshua smith`_ for adding BitIndex3
+- `xloem`_ for help with adding Fullnode connectivity
 
 .. _ofek: https://github.com/ofek/bit
 .. _teran-mckinney: https://github.com/sporestack/bitcash
 .. _joshua Smith: https://github.com/joshua-s
+.. _xloem: https://github.com/xloem
 
 Donate
 --------
