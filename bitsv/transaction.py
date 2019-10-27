@@ -26,6 +26,7 @@ HASH_TYPE = 0x41.to_bytes(4, byteorder='little')
 ##
 
 OP_0 = b'\x00'
+OP_FALSE = b'\00'
 OP_CHECKLOCKTIMEVERIFY = b'\xb1'
 OP_CHECKSIG = b'\xac'
 OP_DUP = b'v'
@@ -101,7 +102,7 @@ def get_op_return_size(message, custom_pushdata=False):
     if custom_pushdata is False:
         op_return_size = (
             8  # int64_t amount 0x00000000
-            + len(OP_RETURN)  # 1 byte
+            + len(OP_FALSE + OP_RETURN)  # 2 bytes
             + len(get_op_pushdata_code(message))  # 1 byte if <75 bytes, 2 bytes if OP_PUSHDATA1...
             + len(message)  # Max 220 bytes at present
         )
@@ -109,7 +110,7 @@ def get_op_return_size(message, custom_pushdata=False):
     if custom_pushdata is True:
         op_return_size = (
             8  # int64_t amount 0x00000000
-            + len(OP_RETURN)  # 1 byte
+            + len(OP_FALSE + OP_RETURN)  # 2 bytes
             + len(message)  # Unsure if Max size will be >220 bytes due to extra OP_PUSHDATA codes...
         )
 
@@ -130,7 +131,8 @@ def get_op_pushdata_code(dest):
         return OP_PUSHDATA4 + length_data.to_bytes(4, byteorder='little')  # OP_PUSHDATA4 format
 
 
-def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=None, compressed=True, custom_pushdata=False):
+def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=None, compressed=True,
+                     custom_pushdata=False):
     """
     sanitize_tx_data()
 
@@ -188,7 +190,8 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
 
         for index, unspent in enumerate(unspents):
             total_in += unspent.amount
-            calculated_fee = estimate_tx_fee(len(unspents[:index + 1]), num_outputs, fee, compressed, total_op_return_size)
+            calculated_fee = estimate_tx_fee(len(unspents[:index + 1]), num_outputs, fee,
+                                             compressed, total_op_return_size)
             total_out = sum_outputs + calculated_fee
 
             if total_in >= total_out:
@@ -230,7 +233,7 @@ def construct_output_block(outputs, custom_pushdata=False):
         # Blockchain storage
         else:
             if custom_pushdata is False:
-                script = OP_RETURN + get_op_pushdata_code(dest) + dest
+                script = OP_FALSE + OP_RETURN + get_op_pushdata_code(dest) + dest
 
                 output_block += b'\x00\x00\x00\x00\x00\x00\x00\x00'
 
@@ -239,7 +242,7 @@ def construct_output_block(outputs, custom_pushdata=False):
                 if type(dest) != bytes:
                     raise TypeError("custom pushdata must be of type: bytes")
                 else:
-                    script = (OP_RETURN + dest)
+                    script = (OP_FALSE + OP_RETURN + dest)
 
                 output_block += b'\x00\x00\x00\x00\x00\x00\x00\x00'
 

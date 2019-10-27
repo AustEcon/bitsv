@@ -60,13 +60,14 @@ MESSAGES = [
 ]
 OUTPUT_BLOCK = ('50c30000000000001976a914e7c1345fc8f87c68170b3aa798a956c2fe6a9eff88ac'
                 '0888fc04000000001976a91492461bde6283b461ece7ddf4dbf1e0a48bd113d888ac')
-OUTPUT_BLOCK_MESSAGES = ('50c30000000000001976a914e7c1345fc8f87c68170b3aa798a956c2fe6a9eff88ac'
-                         '0888fc04000000001976a91492461bde6283b461ece7ddf4dbf1e0a48bd113d888ac'
-                         '0000000000000000076a0568656c6c6f'
-                         '0000000000000000076a057468657265')
-OUTPUT_BLOCK_MESSAGE_PUSHDATA = ('50c30000000000001976a914e7c1345fc8f87c68170b3aa798a956c2fe6a9eff88ac'
-                                 '0888fc04000000001976a91492461bde6283b461ece7ddf4dbf1e0a48bd113d888ac'
-                                 '0000000000000000076a0568656c6c6f')
+OUTPUT_BLOCK_MESSAGES = ('50c30000000000001976a914e7c1345fc8f87c68170b3aa798a956c2fe6'
+                         'a9eff88ac0888fc04000000001976a91492461bde6283b461ece7ddf4db'
+                         'f1e0a48bd113d888ac000000000000000008006a0568656c6c6f0000000'
+                         '00000000008006a057468657265')
+OUTPUT_BLOCK_MESSAGE_PUSHDATA = ('50c30000000000001976a914e7c1345fc8f87c68170b3aa798a'
+                                 '956c2fe6a9eff88ac0888fc04000000001976a91492461bde62'
+                                 '83b461ece7ddf4dbf1e0a48bd113d888ac00000000000000000'
+                                 '8006a0568656c6c6f')
 SIGNED_DATA = (b'\x85\xc7\xf6\xc6\x80\x13\xc2g\xd3t\x8e\xb8\xb4\x1f\xcc'
                b'\x92x~\n\x1a\xac\xc0\xf0\xff\xf7\xda\xfe0\xb7!6t')
 
