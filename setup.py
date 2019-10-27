@@ -44,11 +44,10 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy'
     ],
 
-    install_requires=['coincurve>=4.3.0', 'requests'],
+    install_requires=['coincurve>=4.3.0', 'requests', 'bitcoinrpc'],
     extras_require={
         'cli': ('appdirs', 'click', 'privy', 'tinydb'),
         'cache': ('lmdb', ),
-        'fullnode': ('bitcoinrpc'),
     },
     tests_require=['pytest'],
 

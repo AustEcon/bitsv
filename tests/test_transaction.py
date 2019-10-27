@@ -108,8 +108,8 @@ class TestSanitizeTxData:
         )
 
         assert len(outputs) == 3
-        assert outputs[2][0] == b'hello'
-        assert outputs[2][1] == 0
+        assert outputs[0][0] == b'hello'
+        assert outputs[0][1] == 0
 
     def test_message_pushdata(self):
         unspents_original = [Unspent(10000, 0, '', '', 0),
@@ -124,8 +124,8 @@ class TestSanitizeTxData:
         )
 
         assert len(outputs) == 3
-        assert outputs[2][0] == b'\x05' + b'hello'
-        assert outputs[2][1] == 0
+        assert outputs[0][0] == b'\x05' + b'hello'
+        assert outputs[0][1] == 0
 
     def test_fee_applied(self):
         unspents_original = [Unspent(1000, 0, '', '', 0),

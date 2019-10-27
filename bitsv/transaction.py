@@ -209,7 +209,7 @@ def sanitize_tx_data(unspents, outputs, fee, leftover, combine=True, message=Non
 
     outputs.extendleft(messages)
 
-    return unspents, outputs
+    return unspents, list(outputs)
 
 
 def construct_output_block(outputs, custom_pushdata=False):
