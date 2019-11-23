@@ -9,10 +9,9 @@ from pathlib import Path
 
 bitsv_methods = [
     'get_balance',
-    'get_transactions',
     'get_transaction',
     'get_unspents',
-    'send_transaction',
+    'broadcast_tx',
     'rpc_connect',
     'rpc_reconnect'
 ]
@@ -102,14 +101,6 @@ class FullNode:
         return sum(unspent.amount for unspent in self.get_unspents(address))
 
     @Decorators.handle_broken_pipe
-    def get_transactions(self, address):
-        acct = self.rpc.getaccount(address)
-        txs = self.rpc.listtransactions(acct)
-        txids = (tx['txid'] for tx in txs)
-        txids = list(txids)
-        return txids
-
-    @Decorators.handle_broken_pipe
     def get_transaction(self, txid):
         rawtx = self.rpc.getrawtransaction(txid)
         txjson = self.rpc.decoderawtransaction(rawtx)
@@ -118,16 +109,19 @@ class FullNode:
         amount_in = 0
         amount_out = 0
         for vin in txjson['vin']:
-            src = self.rpc.getrawtransaction(vin['txid'], True)
-            src = self.rpc.decoderawtransaction(src['hex'])
-            src = src['vout'][vin['vout']]
-            addr = None
-            if 'addresses' in src['scriptPubKey']:
-                addr = src['scriptPubKey']['addresses'][0]
-            amount = int((src['value'] * BSV_TO_SAT_MULTIPLIER).normalize())
-            amount_in += amount
-            part = TxInput(addr, amount)
-            inputs += [part]
+            if vin.get('coinbase'):
+                raise NotImplementedError("Handling of coinbase transaction inputs not implemented")
+            else:
+                src = self.rpc.getrawtransaction(vin['txid'], True)
+                src = self.rpc.decoderawtransaction(src['hex'])
+                src = src['vout'][vin['vout']]
+                addr = None
+                if 'addresses' in src['scriptPubKey']:
+                    addr = src['scriptPubKey']['addresses'][0]
+                amount = int((src['value'] * BSV_TO_SAT_MULTIPLIER).normalize())
+                amount_in += amount
+                part = TxInput(addr, amount)
+                inputs += [part]
 
         for vout in txjson['vout']:
             addr = None
@@ -157,7 +151,7 @@ class FullNode:
         ) for tx in unspents]
 
     @Decorators.handle_broken_pipe
-    def send_transaction(self, tx_hex):
+    def broadcast_tx(self, tx_hex):
         return self.rpc.sendrawtransaction(tx_hex, True)
 
 

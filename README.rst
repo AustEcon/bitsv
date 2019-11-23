@@ -22,7 +22,7 @@ Forked from Ofek's awesome Bit library: https://github.com/ofek/bit
 Noticeboard:
 ------------
 
-Latest Release - 0.10.0_ (2019-10-27)
+Latest Release - 0.10.0_ (2019-11-23)
 
 .. _0.10.0: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
 
@@ -103,6 +103,32 @@ Here's the transaction `<https://whatsonchain.com/tx/dec895d1aa0e820984c5748984b
     >>> my_key.send_op_return(list_of_pushdata)  # default fee = 1 sat/byte
 
 This sets memo.sv name (linked to this bitcoin address) to "New_Name" (as per https://memo.sv/protocol)
+
+3. Connect to a local 'fullnode' via JSON-RPC:
+
+.. code-block:: python
+
+    >>> from bitsv import Fullnode
+    >>> fullnode = FullNode(
+            conf_dir='/home/username/.bitcoin/regtest.conf',
+            rpcuser='user',
+            rpcpassword='password',
+            network='regtest')
+
+note: wallet features of the node software will soon be deprecated. However, possible use cases may include
+
+    - Rapid transaction broadcasting ~ 200tx/sec):
+    - Regtesting of app in AzurePipelines or Travis CI for example.
+    - Learning / reproducing "too-long-mempool-chain" type errors without waiting a long time for confirmations.
+
+The fullnode object has a complete internal list of all JSON-RPC methods added to __dict__ for code completion and methods return appropriate
+error messages:
+
+.. figure:: images/obj_dict.png
+
+For more detailed examples of using the Fullnode class, see README_
+
+.. _README: https://github.com/AustEcon/bitsv/blob/master/bitsv/network/services/README.rst
 
 Features
 --------

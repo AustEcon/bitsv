@@ -5,7 +5,7 @@ Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
 --------------------------------------------------------------
 - No new changes since 0.10.0 yet.
 
-0.10.0 (2019-10-27)
+0.10.0 (2019-11-23)
 -------------------
 
 - Added new Fullnode class for connecting to local bitcoin node via JSON-RPC (thanks goes to https://github.com/xloem for the initial legwork).
