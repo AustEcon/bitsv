@@ -1,3 +1,4 @@
+standardmethods = """
 getbestblockhash
 getblock
 getblockchaininfo
@@ -102,3 +103,5 @@ sendtoaddress
 setaccount
 settxfee
 signmessage
+"""
+standard_methods = standardmethods.splitlines()[1::]

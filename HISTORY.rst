@@ -3,9 +3,9 @@ Release History
 
 Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
 --------------------------------------------------------------
-- No new changes since 0.10.0 yet.
+- No new changes since 0.10.1 yet.
 
-0.10.0 (2019-11-23)
+0.10.1 (2019-11-24)
 -------------------
 
 - Added new Fullnode class for connecting to local bitcoin node via JSON-RPC (thanks goes to https://github.com/xloem for the initial legwork).
@@ -13,6 +13,7 @@ Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
 - Reordered outputs to always have 'false return' metadata included in the **first** output instead of the last. This will fix a new issue that arose with rendering of images etc. on bico.media.
 - Prepend OP_FALSE to OP_RETURN in preparation for Genesis upgrade coming in February.
 - Add 'sweep' function to PrivateKey class for sending all coins to a given address.
+- 0.10.1 includes a patch for rpc methods list
 
 0.9.0 (2019-08-11)
 ------------------

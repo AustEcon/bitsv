@@ -4,8 +4,7 @@ from bitcoinrpc.authproxy import AuthServiceProxy
 from .insight import BSV_TO_SAT_MULTIPLIER
 from bitsv.network.meta import Unspent
 from bitsv.network.transaction import Transaction, TxInput, TxOutput
-from pathlib import Path
-
+from .standardrpcmethods import standard_methods
 
 bitsv_methods = [
     'get_balance',
@@ -15,12 +14,6 @@ bitsv_methods = [
     'rpc_connect',
     'rpc_reconnect'
 ]
-
-BASE_DIR = Path(__file__).resolve().parent
-path_to_standardrpcmethods = Path.joinpath(BASE_DIR, "standardrpcmethods").with_suffix('.txt')
-
-with open(path_to_standardrpcmethods.as_posix(), 'r') as f:
-    standardmethods = [lines.strip() for lines in f]
 
 
 class FullNode:
@@ -72,7 +65,7 @@ class FullNode:
     def __dir__(self):
         fulllist = []
         fulllist.extend(bitsv_methods)
-        fulllist.extend(standardmethods)
+        fulllist.extend(standard_methods)
         fulllist.extend(self.__dict__.keys())
         return fulllist
 
@@ -161,7 +154,7 @@ class RPCMethod:
         self._host = host
 
     def __getattr__(self, rpc_method):
-        if rpc_method in standardmethods:
+        if rpc_method in standard_methods:
             return RPCMethod(rpc_method, self._host)
         else:
             raise AttributeError("No such method: {} exists".format(rpc_method))
