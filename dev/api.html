@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Developer Interface &#8212; BitSV 0.9.0 documentation</title>
+    <title>Developer Interface &#8212; BitSV 0.10.2 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -485,6 +485,16 @@ transaction data.</p>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="bitsv.PrivateKey.sweep">
+<code class="sig-name descname">sweep</code><span class="sig-paren">(</span><em class="sig-param">receiving_address</em>, <em class="sig-param">combine=True</em>, <em class="sig-param">message=None</em>, <em class="sig-param">unspents=None</em>, <em class="sig-param">custom_pushdata=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.sweep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send all bitcoins associated with private key to the receiving address.</p>
+<p>If unspents are specified, it will only send the remainder from these utxos to the
+receiving address (after tx creation).</p>
+<p>The ‘low-level’ / more versatile way of doing this is to pass this address to the
+“leftover” parameter of PrivateKey.send()</p>
 </dd></dl>
 
 <dl class="method">
