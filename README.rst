@@ -22,9 +22,9 @@ Forked from Ofek's awesome Bit library: https://github.com/ofek/bit
 Noticeboard:
 ------------
 
-Latest Release - 0.10.1_ (2019-11-24)
+Latest Major Release - 0.10.2_ (2019-11-28)
 
-.. _0.10.1: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
+.. _0.10.2: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
 
 - Added new Fullnode class for connecting to local bitcoin node via JSON-RPC (thanks goes to https://github.com/xloem for the initial legwork).
 - Fullnode class works for Mainnet, Testnet, Scaling-testnet and RegTest (local mock blockchain).
@@ -32,8 +32,9 @@ Latest Release - 0.10.1_ (2019-11-24)
 - Prepend OP_FALSE to OP_RETURN in preparation for Genesis upgrade coming in February.
 - Add 'sweep' function to PrivateKey class for sending all coins to a given address.
 - 0.10.1 includes a patch for rpc methods list
+- 0.10.2 includes a patch to fix broken API endpoint for foreign currency conversions.
 
-Previous Release - 0.9.0_ (2019-08-11)
+Previous Major Release - 0.9.0_ (2019-08-11)
 
 .. _0.9.0: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
 

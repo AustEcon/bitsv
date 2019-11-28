@@ -3,7 +3,11 @@ Release History
 
 Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
 --------------------------------------------------------------
-- No new changes since 0.10.1 yet.
+- No new changes since 0.10.2 yet.
+
+0.10.2 (2019-11-28)
+-------------------
+- Fixed broken API endpoint for foreign currency conversions.
 
 0.10.1 (2019-11-24)
 -------------------
