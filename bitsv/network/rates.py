@@ -73,26 +73,26 @@ CURRENCY_PRECISION = {
 
 # "https://www.freeforexapi.com/api/live" - 208 supported currencies at this api. Only 20 of the main ones listed here.
 USD_PAIRS = {
-    'eur': "USDEUR",
-    'gbp': "USDGBP",
-    'jpy': "USDJPY",
-    'cny': "USDCNY",
-    'cad': "USDCAD",
-    'aud': "USDAUD",
-    'nzd': "USDNZD",
-    'rub': "USDRUB",
-    'brl': "USDBRL",
-    'chf': "USDCHF",
-    'sek': "USDSEK",
-    'dkk': "USDDKK",
-    'isk': "USDISK",
-    'pln': "USDPLN",
-    'hkd': "USDHKD",
-    'krw': "USDKRW",
-    'sgd': "USDSGD",
-    'thb': "USDTHB",
-    'twd': "USDTWD",
-    'clp': "USDCLP"
+    'eur': "EUR",
+    'gbp': "GBP",
+    'jpy': "JPY",
+    'cny': "CNY",
+    'cad': "CAD",
+    'aud': "AUD",
+    'nzd': "NZD",
+    'rub': "RUB",
+    'brl': "BRL",
+    'chf': "CHF",
+    'sek': "SEK",
+    'dkk': "DKK",
+    'isk': "ISK",
+    'pln': "PLN",
+    'hkd': "HKD",
+    'krw': "KRW",
+    'sgd': "SGD",
+    'thb': "THB",
+    'twd': "TWD",
+    'clp': "CLP"
 }
 
 
@@ -218,7 +218,7 @@ class Bitfinex(BitcoinSVRates):
 
     # Will use the usd/bsv rate from Bitfinex to then calculate the foreign exchange (fx) rates using another api:
     BITFINEX_BSVUSD_ENDPOINT = "https://api.bitfinex.com/v1/pubticker/bsvusd"
-    FREEFOREXAPI_ENDPOINT = "https://www.freeforexapi.com/api/live?pairs="
+    EXCHANGERATEAPI_ENDPOINT = "https://api.exchangerate-api.com/v4/latest/USD"
 
     # Overwrites BitcoinSVRates method
     @classmethod
@@ -229,9 +229,9 @@ class Bitfinex(BitcoinSVRates):
         satoshis_per_usd = cls.usd_to_satoshi()
 
         # Get fx rate / usd rate
-        r = requests.get(cls.FREEFOREXAPI_ENDPOINT + USD_PAIRS[currency])
+        r = requests.get(cls.EXCHANGERATEAPI_ENDPOINT)
         r.raise_for_status()
-        fx_rate = r.json()['rates'][USD_PAIRS[currency]]['rate']
+        fx_rate = r.json()['rates'][USD_PAIRS[currency]]
 
         # calculate satoshis / fx rate
         satoshis_per_fx_rate = Decimal(satoshis_per_usd) * (Decimal(1) / Decimal(fx_rate))
@@ -256,27 +256,27 @@ class RatesAPI:
     IGNORED_ERRORS = (requests.exceptions.ConnectionError,
                       requests.exceptions.Timeout)
 
-    USD_RATES = [BitcoinSVRates.usd_to_satoshi, Bitfinex.usd_to_satoshi]
-    EUR_RATES = [BitcoinSVRates.eur_to_satoshi, Bitfinex.eur_to_satoshi]
-    GBP_RATES = [BitcoinSVRates.gbp_to_satoshi, Bitfinex.gbp_to_satoshi]
-    JPY_RATES = [BitcoinSVRates.jpy_to_satoshi, Bitfinex.jpy_to_satoshi]
-    CNY_RATES = [BitcoinSVRates.cny_to_satoshi, Bitfinex.cny_to_satoshi]
-    HKD_RATES = [BitcoinSVRates.hkd_to_satoshi, Bitfinex.hkd_to_satoshi]
-    CAD_RATES = [BitcoinSVRates.cad_to_satoshi, Bitfinex.cad_to_satoshi]
-    AUD_RATES = [BitcoinSVRates.aud_to_satoshi, Bitfinex.aud_to_satoshi]
-    NZD_RATES = [BitcoinSVRates.nzd_to_satoshi, Bitfinex.nzd_to_satoshi]
-    RUB_RATES = [BitcoinSVRates.rub_to_satoshi, Bitfinex.rub_to_satoshi]
-    BRL_RATES = [BitcoinSVRates.brl_to_satoshi, Bitfinex.brl_to_satoshi]
-    CHF_RATES = [BitcoinSVRates.chf_to_satoshi, Bitfinex.chf_to_satoshi]
-    SEK_RATES = [BitcoinSVRates.sek_to_satoshi, Bitfinex.sek_to_satoshi]
-    DKK_RATES = [BitcoinSVRates.dkk_to_satoshi, Bitfinex.dkk_to_satoshi]
-    ISK_RATES = [BitcoinSVRates.isk_to_satoshi, Bitfinex.isk_to_satoshi]
-    PLN_RATES = [BitcoinSVRates.pln_to_satoshi, Bitfinex.pln_to_satoshi]
-    KRW_RATES = [BitcoinSVRates.krw_to_satoshi, Bitfinex.krw_to_satoshi]
-    CLP_RATES = [BitcoinSVRates.clp_to_satoshi, Bitfinex.clp_to_satoshi]
-    SGD_RATES = [BitcoinSVRates.sgd_to_satoshi, Bitfinex.sgd_to_satoshi]
-    THB_RATES = [BitcoinSVRates.thb_to_satoshi, Bitfinex.thb_to_satoshi]
-    TWD_RATES = [BitcoinSVRates.twd_to_satoshi, Bitfinex.twd_to_satoshi]
+    USD_RATES = [Bitfinex.usd_to_satoshi]
+    EUR_RATES = [Bitfinex.eur_to_satoshi]
+    GBP_RATES = [Bitfinex.gbp_to_satoshi]
+    JPY_RATES = [Bitfinex.jpy_to_satoshi]
+    CNY_RATES = [Bitfinex.cny_to_satoshi]
+    HKD_RATES = [Bitfinex.hkd_to_satoshi]
+    CAD_RATES = [Bitfinex.cad_to_satoshi]
+    AUD_RATES = [Bitfinex.aud_to_satoshi]
+    NZD_RATES = [Bitfinex.nzd_to_satoshi]
+    RUB_RATES = [Bitfinex.rub_to_satoshi]
+    BRL_RATES = [Bitfinex.brl_to_satoshi]
+    CHF_RATES = [Bitfinex.chf_to_satoshi]
+    SEK_RATES = [Bitfinex.sek_to_satoshi]
+    DKK_RATES = [Bitfinex.dkk_to_satoshi]
+    ISK_RATES = [Bitfinex.isk_to_satoshi]
+    PLN_RATES = [Bitfinex.pln_to_satoshi]
+    KRW_RATES = [Bitfinex.krw_to_satoshi]
+    CLP_RATES = [Bitfinex.clp_to_satoshi]
+    SGD_RATES = [Bitfinex.sgd_to_satoshi]
+    THB_RATES = [Bitfinex.thb_to_satoshi]
+    TWD_RATES = [Bitfinex.twd_to_satoshi]
 
     @classmethod
     def usd_to_satoshi(cls):  # pragma: no cover
