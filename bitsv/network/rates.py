@@ -117,16 +117,16 @@ def bsv_to_satoshi():
     return BSV
 
 
-class BitcoinSVRates:
-    # Would be better if this were HTTPS as rate information can be used
-    # maliciously.
-    SINGLE_RATE = 'http://bitcoinsv-rates.com/api/rates/'
+class CryptoCompareRates:
+    # https://min-api.cryptocompare.com/documentation
+    SINGLE_RATE = 'https://min-api.cryptocompare.com/data/price?fsym=BSV&tsyms='
 
     @classmethod
     def currency_to_satoshi(cls, currency):
-        r = requests.get(cls.SINGLE_RATE + currency)
+        upper_currency = currency.upper()
+        r = requests.get(cls.SINGLE_RATE + upper_currency)
         r.raise_for_status()
-        rate = r.json()['value']
+        rate = r.json()[upper_currency]
         return int(ONE / Decimal(rate) * BSV)
 
     @classmethod
@@ -214,13 +214,13 @@ class BitcoinSVRates:
         return cls.currency_to_satoshi('twd')
 
 
-class Bitfinex(BitcoinSVRates):
+class Bitfinex(CryptoCompareRates):
 
     # Will use the usd/bsv rate from Bitfinex to then calculate the foreign exchange (fx) rates using another api:
     BITFINEX_BSVUSD_ENDPOINT = "https://api.bitfinex.com/v1/pubticker/bsvusd"
     EXCHANGERATEAPI_ENDPOINT = "https://api.exchangerate-api.com/v4/latest/USD"
 
-    # Overwrites BitcoinSVRates method
+    # Overwrites CryptoCompareRates method
     @classmethod
     def currency_to_satoshi(cls, currency):
         if currency == 'usd':
@@ -237,7 +237,7 @@ class Bitfinex(BitcoinSVRates):
         satoshis_per_fx_rate = Decimal(satoshis_per_usd) * (Decimal(1) / Decimal(fx_rate))
         return satoshis_per_fx_rate
 
-    # Overwrite BitcoinSVRates method
+    # Overwrite CryptoCompareRates method
     @classmethod
     def usd_to_satoshi(cls):  # pragma: no cover
         # Special case - Uses Bitfinex to get the USD rate
@@ -254,36 +254,37 @@ class RatesAPI:
     number of satoshi.
     """
     IGNORED_ERRORS = (requests.exceptions.ConnectionError,
-                      requests.exceptions.Timeout)
+                      requests.exceptions.Timeout,
+                      requests.exceptions.HTTPError)
 
-    USD_RATES = [Bitfinex.usd_to_satoshi]
-    EUR_RATES = [Bitfinex.eur_to_satoshi]
-    GBP_RATES = [Bitfinex.gbp_to_satoshi]
-    JPY_RATES = [Bitfinex.jpy_to_satoshi]
-    CNY_RATES = [Bitfinex.cny_to_satoshi]
-    HKD_RATES = [Bitfinex.hkd_to_satoshi]
-    CAD_RATES = [Bitfinex.cad_to_satoshi]
-    AUD_RATES = [Bitfinex.aud_to_satoshi]
-    NZD_RATES = [Bitfinex.nzd_to_satoshi]
-    RUB_RATES = [Bitfinex.rub_to_satoshi]
-    BRL_RATES = [Bitfinex.brl_to_satoshi]
-    CHF_RATES = [Bitfinex.chf_to_satoshi]
-    SEK_RATES = [Bitfinex.sek_to_satoshi]
-    DKK_RATES = [Bitfinex.dkk_to_satoshi]
-    ISK_RATES = [Bitfinex.isk_to_satoshi]
-    PLN_RATES = [Bitfinex.pln_to_satoshi]
-    KRW_RATES = [Bitfinex.krw_to_satoshi]
-    CLP_RATES = [Bitfinex.clp_to_satoshi]
-    SGD_RATES = [Bitfinex.sgd_to_satoshi]
-    THB_RATES = [Bitfinex.thb_to_satoshi]
-    TWD_RATES = [Bitfinex.twd_to_satoshi]
+    USD_RATES = [Bitfinex, CryptoCompareRates]
+    EUR_RATES = [Bitfinex, CryptoCompareRates]
+    GBP_RATES = [Bitfinex, CryptoCompareRates]
+    JPY_RATES = [Bitfinex, CryptoCompareRates]
+    CNY_RATES = [Bitfinex, CryptoCompareRates]
+    HKD_RATES = [Bitfinex, CryptoCompareRates]
+    CAD_RATES = [Bitfinex, CryptoCompareRates]
+    AUD_RATES = [Bitfinex, CryptoCompareRates]
+    NZD_RATES = [Bitfinex, CryptoCompareRates]
+    RUB_RATES = [Bitfinex, CryptoCompareRates]
+    BRL_RATES = [Bitfinex, CryptoCompareRates]
+    CHF_RATES = [Bitfinex, CryptoCompareRates]
+    SEK_RATES = [Bitfinex, CryptoCompareRates]
+    DKK_RATES = [Bitfinex, CryptoCompareRates]
+    ISK_RATES = [Bitfinex, CryptoCompareRates]
+    PLN_RATES = [Bitfinex, CryptoCompareRates]
+    KRW_RATES = [Bitfinex, CryptoCompareRates]
+    CLP_RATES = [Bitfinex, CryptoCompareRates]
+    SGD_RATES = [Bitfinex, CryptoCompareRates]
+    THB_RATES = [Bitfinex, CryptoCompareRates]
+    TWD_RATES = [Bitfinex, CryptoCompareRates]
 
     @classmethod
     def usd_to_satoshi(cls):  # pragma: no cover
 
         for api_call in cls.USD_RATES:
             try:
-                return api_call()
+                return api_call.usd_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -294,7 +295,7 @@ class RatesAPI:
 
         for api_call in cls.EUR_RATES:
             try:
-                return api_call()
+                return api_call.eur_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -305,7 +306,7 @@ class RatesAPI:
 
         for api_call in cls.GBP_RATES:
             try:
-                return api_call()
+                return api_call.gbp_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -316,7 +317,7 @@ class RatesAPI:
 
         for api_call in cls.JPY_RATES:
             try:
-                return api_call()
+                return api_call.jpy_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -327,7 +328,7 @@ class RatesAPI:
 
         for api_call in cls.CNY_RATES:
             try:
-                return api_call()
+                return api_call.cny_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -338,7 +339,7 @@ class RatesAPI:
 
         for api_call in cls.HKD_RATES:
             try:
-                return api_call()
+                return api_call.hkd_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -349,7 +350,7 @@ class RatesAPI:
 
         for api_call in cls.CAD_RATES:
             try:
-                return api_call()
+                return api_call.cad_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -360,7 +361,7 @@ class RatesAPI:
 
         for api_call in cls.AUD_RATES:
             try:
-                return api_call()
+                return api_call.aud_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -371,7 +372,7 @@ class RatesAPI:
 
         for api_call in cls.NZD_RATES:
             try:
-                return api_call()
+                return api_call.nzd_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -382,7 +383,7 @@ class RatesAPI:
 
         for api_call in cls.RUB_RATES:
             try:
-                return api_call()
+                return api_call.rub_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -393,7 +394,7 @@ class RatesAPI:
 
         for api_call in cls.BRL_RATES:
             try:
-                return api_call()
+                return api_call.brl_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -404,7 +405,7 @@ class RatesAPI:
 
         for api_call in cls.CHF_RATES:
             try:
-                return api_call()
+                return api_call.chf_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -415,7 +416,7 @@ class RatesAPI:
 
         for api_call in cls.SEK_RATES:
             try:
-                return api_call()
+                return api_call.sek_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -426,7 +427,7 @@ class RatesAPI:
 
         for api_call in cls.DKK_RATES:
             try:
-                return api_call()
+                return api_call.dkk_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -437,7 +438,7 @@ class RatesAPI:
 
         for api_call in cls.ISK_RATES:
             try:
-                return api_call()
+                return api_call.isk_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -448,7 +449,7 @@ class RatesAPI:
 
         for api_call in cls.PLN_RATES:
             try:
-                return api_call()
+                return api_call.pln_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -459,7 +460,7 @@ class RatesAPI:
 
         for api_call in cls.KRW_RATES:
             try:
-                return api_call()
+                return api_call.krw_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -470,7 +471,7 @@ class RatesAPI:
 
         for api_call in cls.CLP_RATES:
             try:
-                return api_call()
+                return api_call.clp_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -481,7 +482,7 @@ class RatesAPI:
 
         for api_call in cls.SGD_RATES:
             try:
-                return api_call()
+                return api_call.sgd_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -492,7 +493,7 @@ class RatesAPI:
 
         for api_call in cls.THB_RATES:
             try:
-                return api_call()
+                return api_call.thb_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
@@ -503,7 +504,7 @@ class RatesAPI:
 
         for api_call in cls.TWD_RATES:
             try:
-                return api_call()
+                return api_call.twd_to_satoshi()
             except cls.IGNORED_ERRORS:
                 pass
 
