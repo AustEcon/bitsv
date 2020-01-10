@@ -374,7 +374,7 @@ class PrivateKey(BaseKey):
 
         return rawtx
 
-    def send_op_return(self, list_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+    def send_op_return(self, list_of_pushdata, outputs=None, fee=0.5, unspents=None, leftover=None, combine=False):
         """Sends a rawtx with OP_RETURN metadata ready for broadcast.
 
         Parameters
