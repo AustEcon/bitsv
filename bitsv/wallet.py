@@ -315,7 +315,7 @@ class PrivateKey(BaseKey):
 
         return create_p2pkh_transaction(self, unspents, outputs, custom_pushdata=custom_pushdata)
 
-    def create_op_return_tx(self, list_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+    def create_op_return_tx(self, list_of_pushdata, outputs=None, fee=0.5, unspents=None, leftover=None, combine=False):
         """Creates a rawtx with OP_RETURN metadata ready for broadcast.
 
         Parameters
