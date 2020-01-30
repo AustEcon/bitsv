@@ -2,7 +2,7 @@
 # to be included in the next block. Default is therefore set to 1 sat / byte
 DEFAULT_FEE_FAST = 4
 DEFAULT_FEE_MEDIUM = 2
-DEFAULT_FEE_SLOW = 1
+DEFAULT_FEE_SLOW = 0.5
 
 # FIXME: Need to add in a fees API. Issue #1
 # URL = 'https://bitcoincashfees.earn.com/api/v1/fees/recommended'
@@ -19,7 +19,7 @@ def get_fee(speed=FEE_SPEED_SLOW):
 
     :param speed: One of: 'fast', 'medium', 'slow'.
     :type speed: ``string``
-    :rtype: ``int``
+    :rtype: ``float``
     """
     if speed == FEE_SPEED_FAST:
         return DEFAULT_FEE_FAST
