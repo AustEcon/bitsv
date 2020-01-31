@@ -1,5 +1,5 @@
-# Bitcoin SV has very low fees. 1 sat / byte is basically garaunteed
-# to be included in the next block. Default is therefore set to 1 sat / byte
+# Bitcoin SV has very low fees. 1 sat / byte is basically guaranteed
+# to be included in the next block. Default is therefore set to DEFAULT_FEE_MEDIUM
 DEFAULT_FEE_FAST = 2
 DEFAULT_FEE_MEDIUM = 1
 DEFAULT_FEE_SLOW = 0.5
