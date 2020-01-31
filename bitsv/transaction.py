@@ -8,6 +8,7 @@ from bitsv.network.rates import currency_to_satoshi_cached
 from bitsv.utils import (
     bytes_to_hex, chunk_data, hex_to_bytes, int_to_varint
 )
+import math
 
 VERSION_1 = 0x01.to_bytes(4, byteorder='little')
 SEQUENCE = 0xffffffff.to_bytes(4, byteorder='little')
@@ -90,7 +91,7 @@ def estimate_tx_fee(n_in, n_out, satoshis, compressed, op_return_size=0):
         + 4  # time lock
     )
 
-    estimated_fee = estimated_size * satoshis
+    estimated_fee = math.ceil(estimated_size * satoshis)
 
     logging.debug('Estimated fee: {} satoshis for {} bytes'.format(estimated_fee, estimated_size))
 

@@ -6,7 +6,7 @@ from bitsv.format import (
     bytes_to_wif, public_key_to_address, public_key_to_coords, wif_to_bytes,
     address_to_public_key_hash
 )
-from bitsv.network import NetworkAPI, get_fee, satoshi_to_currency_cached
+from bitsv.network import NetworkAPI, get_fee, satoshi_to_currency_cached, fees
 from bitsv.network.meta import Unspent
 from bitsv.transaction import (
     calc_txid, create_p2pkh_transaction, sanitize_tx_data,
@@ -276,8 +276,8 @@ class PrivateKey(BaseKey):
                         must be :ref:`supported <supported currencies>`.
         :type outputs: ``list`` of ``tuple``
         :param fee: The number of satoshi per byte to pay to miners. By default
-                    BitSV will use a fee of 1 sat/byte.
-        :type fee: ``int``
+                    BitSV will use a fee of `~bitsv.network.fees.DEFAULT_FEE_MEDIUM`.
+        :type fee: ``float``
         :param leftover: The destination that will receive any change from the
                          transaction. By default BitSV will send any change to
                          the same address you sent from.
@@ -315,13 +315,13 @@ class PrivateKey(BaseKey):
 
         return create_p2pkh_transaction(self, unspents, outputs, custom_pushdata=custom_pushdata)
 
-    def create_op_return_tx(self, list_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+    def create_op_return_tx(self, list_of_pushdata, outputs=None, fee=fees.DEFAULT_FEE_MEDIUM, unspents=None, leftover=None, combine=False):
         """Creates a rawtx with OP_RETURN metadata ready for broadcast.
 
         Parameters
         ----------
         list_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
-        fee : sat/byte (defaults to 1 satoshi per byte)
+        fee : sat/byte (defaults to `~bitsv.network.fees.DEFAULT_FEE_MEDIUM`)
 
         Returns
         -------
@@ -342,8 +342,8 @@ class PrivateKey(BaseKey):
                         must be :ref:`supported <supported currencies>`.
         :type outputs: ``list`` of ``tuple``
         :param fee: The number of satoshi per byte to pay to miners. By default
-                    BitSV will use a fee of 1 sat/byte
-        :type fee: ``int``
+                    BitSV will use a fee of `~bitsv.network.fees.DEFAULT_FEE_MEDIUM`
+        :type fee: ``float``
         :param leftover: The destination that will receive any change from the
                          transaction. By default BitSV will send any change to
                          the same address you sent from.
@@ -374,13 +374,13 @@ class PrivateKey(BaseKey):
 
         return rawtx
 
-    def send_op_return(self, list_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+    def send_op_return(self, list_of_pushdata, outputs=None, fee=fees.DEFAULT_FEE_MEDIUM, unspents=None, leftover=None, combine=False):
         """Sends a rawtx with OP_RETURN metadata ready for broadcast.
 
         Parameters
         ----------
         list_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either "hex" or "utf-8"
-        fee : sat/byte (defaults to 1 satoshi per byte)
+        fee : sat/byte (defaults to `~bitsv.network.fees.DEFAULT_FEE_MEDIUM`)
 
         Returns
         -------
@@ -401,8 +401,8 @@ class PrivateKey(BaseKey):
                         must be :ref:`supported <supported currencies>`.
         :type outputs: ``list`` of ``tuple``
         :param fee: The number of satoshi per byte to pay to miners. By default
-                    BitSV will use a fee of 1 sat/byte
-        :type fee: ``int``
+                    BitSV will use a fee of `~bitsv.network.fees.DEFAULT_FEE_MEDIUM`
+        :type fee: ``float``
         :param leftover: The destination that will receive any change from the
                          transaction. By default BitSV will send any change to
                          the same address you sent from.
@@ -458,8 +458,8 @@ class PrivateKey(BaseKey):
                         must be :ref:`supported <supported currencies>`.
         :type outputs: ``list`` of ``tuple``
         :param fee: The number of satoshi per byte to pay to miners. By default
-                    BitSV will use a fee of 1 sat/byte.
-        :type fee: ``int``
+                    BitSV will use a fee of `~bitsv.network.fees.DEFAULT_FEE_MEDIUM`.
+        :type fee: ``float``
         :param leftover: The destination that will receive any change from the
                          transaction. By default BitSV will send any change to
                          the same address you sent from.
@@ -509,8 +509,8 @@ class PrivateKey(BaseKey):
                            compressed public key. This influences the fee.
         :type compressed: ``bool``
         :param fee: The number of satoshi per byte to pay to miners. By default
-                    BitSV will use a fee of 1 sat/byte
-        :type fee: ``int``
+                    BitSV will use a fee of `~bitsv.network.fees.DEFAULT_FEE_MEDIUM`
+        :type fee: ``float``
         :param leftover: The destination that will receive any change from the
                          transaction. By default BitSV will send any change to
                          the same address you sent from.
