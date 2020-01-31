@@ -6,7 +6,7 @@ from bitsv.format import (
     bytes_to_wif, public_key_to_address, public_key_to_coords, wif_to_bytes,
     address_to_public_key_hash
 )
-from bitsv.network import NetworkAPI, get_fee, satoshi_to_currency_cached
+from bitsv.network import NetworkAPI, get_fee, satoshi_to_currency_cached, fees
 from bitsv.network.meta import Unspent
 from bitsv.transaction import (
     calc_txid, create_p2pkh_transaction, sanitize_tx_data,
@@ -315,7 +315,7 @@ class PrivateKey(BaseKey):
 
         return create_p2pkh_transaction(self, unspents, outputs, custom_pushdata=custom_pushdata)
 
-    def create_op_return_tx(self, list_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+    def create_op_return_tx(self, list_of_pushdata, outputs=None, fee=fees.DEFAULT_FEE_MEDIUM, unspents=None, leftover=None, combine=False):
         """Creates a rawtx with OP_RETURN metadata ready for broadcast.
 
         Parameters
@@ -374,7 +374,7 @@ class PrivateKey(BaseKey):
 
         return rawtx
 
-    def send_op_return(self, list_of_pushdata, outputs=None, fee=1, unspents=None, leftover=None, combine=False):
+    def send_op_return(self, list_of_pushdata, outputs=None, fee=fees.DEFAULT_FEE_MEDIUM, unspents=None, leftover=None, combine=False):
         """Sends a rawtx with OP_RETURN metadata ready for broadcast.
 
         Parameters
