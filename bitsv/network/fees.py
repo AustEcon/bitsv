@@ -1,7 +1,7 @@
 # Bitcoin SV has very low fees. 1 sat / byte is basically garaunteed
 # to be included in the next block. Default is therefore set to 1 sat / byte
-DEFAULT_FEE_FAST = 4
-DEFAULT_FEE_MEDIUM = 2
+DEFAULT_FEE_FAST = 2
+DEFAULT_FEE_MEDIUM = 1
 DEFAULT_FEE_SLOW = 0.5
 
 # FIXME: Need to add in a fees API. Issue #1
@@ -14,7 +14,7 @@ FEE_SPEED_SLOW = 'slow'
 
 # FIXME: Not sure if this is better, bools are better, or creating its
 # own type is better.
-def get_fee(speed=FEE_SPEED_SLOW):
+def get_fee(speed=FEE_SPEED_MEDIUM):
     """Gets the recommended satoshi per byte fee.
 
     :param speed: One of: 'fast', 'medium', 'slow'.
