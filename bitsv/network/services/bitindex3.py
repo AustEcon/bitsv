@@ -47,7 +47,7 @@ class BitIndex3:
             params = {'sort': None}
 
         r = requests.post(
-            'https://api.bitindex.network/api/v3/{}/addrs/utxo'.format(self.network),
+            'https://api.mattercloud.net/api/v3/{}/addrs/utxo'.format(self.network),
             params=params,
             data=json.dumps({'addrs': address}),
             headers=self.headers,
@@ -68,7 +68,7 @@ class BitIndex3:
         :param address: Address to get balances for
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/addr/{}'.format(self.network, address),
+            'https://api.mattercloud.net/api/v3/{}/addr/{}'.format(self.network, address),
             headers=self.headers,
         )
         r.raise_for_status()
@@ -81,7 +81,7 @@ class BitIndex3:
         :param address: Address to get balances for
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/addr/{}'.format(self.network, address),
+            'https://api.mattercloud.net/api/v3/{}/addr/{}'.format(self.network, address),
             headers=self.headers,
         )
         r.raise_for_status()
@@ -107,7 +107,7 @@ class BitIndex3:
         :param no_spent: Default: True
         """
         r = requests.post(
-            'https://api.bitindex.network/api/v3/{}/addrs/txs'.format(self.network),
+            'https://api.mattercloud.net/api/v3/{}/addrs/txs'.format(self.network),
             data=json.dumps({
                 "addrs": address,
                 "fromIndex": from_index,
@@ -128,7 +128,7 @@ class BitIndex3:
         :param raw_transaction: The raw transaction
         """
         r = requests.post(
-            'https://api.bitindex.network/api/v3/{}/tx/send'.format(self.network),
+            'https://api.mattercloud.net/api/v3/{}/tx/send'.format(self.network),
             data=json.dumps({'rawtx': raw_transaction}),
             headers=self.headers,
         )
@@ -142,7 +142,7 @@ class BitIndex3:
         :param transaction_id: The transaction ID
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/tx/{}'.format(self.network, transaction_id),
+            'https://api.mattercloud.net/api/v3/{}/tx/{}'.format(self.network, transaction_id),
             headers=self.headers,
         )
         r.raise_for_status()
@@ -192,7 +192,7 @@ class BitIndex3:
         """raw version of get_transaction(). Gives un-altered return value of API
         (useful for debugging)"""
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/tx/{}'.format(self.network, transaction_id),
+            'https://api.mattercloud.net/api/v3/{}/tx/{}'.format(self.network, transaction_id),
             headers=self.headers,
         )
         r.raise_for_status()
@@ -205,7 +205,7 @@ class BitIndex3:
         :param transaction_id: The transaction ID
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/rawtx/{}'.format(self.network, transaction_id),
+            'https://api.mattercloud.net/api/v3/{}/rawtx/{}'.format(self.network, transaction_id),
             headers=self.authorized_headers,
         )
         r.raise_for_status()
@@ -218,7 +218,7 @@ class BitIndex3:
         :param query: The type of status to query. Can be 'getInfo', 'getDifficulty', 'getBestBlockHash', or 'getLastBlockHash'.
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/status'.format(self.network),
+            'https://api.mattercloud.net/api/v3/{}/status'.format(self.network),
             params={'q': query},
             headers=self.authorized_headers,
         )
@@ -232,7 +232,7 @@ class BitIndex3:
         :param height: Block height
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/block-index/{}'.format(self.network, height),
+            'https://api.mattercloud.net/api/v3/{}/block-index/{}'.format(self.network, height),
             headers=self.authorized_headers,
         )
         r.raise_for_status()
@@ -245,7 +245,7 @@ class BitIndex3:
         :param block_hash: Block hash
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/block/{}'.format(self.network, block_hash),
+            'https://api.mattercloud.net/api/v3/{}/block/{}'.format(self.network, block_hash),
             headers=self.authorized_headers,
         )
         r.raise_for_status()
@@ -258,7 +258,7 @@ class BitIndex3:
         :param block_hash: Block hash
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/rawblock/{}'.format(self.network, block_hash),
+            'https://api.mattercloud.net/api/v3/{}/rawblock/{}'.format(self.network, block_hash),
             headers=self.authorized_headers,
         )
         r.raise_for_status()
@@ -272,7 +272,7 @@ class BitIndex3:
         :param reserve_time: Time in seconds to reserve xpub before it will be handed out again (optional)
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/xpub/{}/addrs/next'.format(self.network, xpub),
+            'https://api.mattercloud.net/api/v3/{}/xpub/{}/addrs/next'.format(self.network, xpub),
             params={'reserveTime': reserve_time},
             headers=self.authorized_headers,
         )
@@ -297,7 +297,7 @@ class BitIndex3:
         :param address: Filter by a specific address in the xpub
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{self.network}/xpub/{xpub}/addrs'.format(self.network, xpub),
+            'https://api.mattercloud.net/api/v3/{self.network}/xpub/{xpub}/addrs'.format(self.network, xpub),
             params={
                 'offset': offset,
                 'limit': limit,
@@ -316,7 +316,7 @@ class BitIndex3:
         :param xpub: Xpub to query utxos
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/xpub/{}/status'.format(self.network, xpub),
+            'https://api.mattercloud.net/api/v3/{}/xpub/{}/status'.format(self.network, xpub),
             headers=self.authorized_headers,
         )
         r.raise_for_status()
@@ -330,7 +330,7 @@ class BitIndex3:
         :param sort: Format is 'field:asc' such as 'value:desc' to sort by value descending
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/xpub/{}/utxo'.format(self.network, xpub),
+            'https://api.mattercloud.net/api/v3/{}/xpub/{}/utxo'.format(self.network, xpub),
             params={'sort': sort},
             headers=self.authorized_headers,
         )
@@ -344,7 +344,7 @@ class BitIndex3:
         :param xpub: Xpub to query utxos
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/xpub/{}/txs'.format(self.network, xpub),
+            'https://api.mattercloud.net/api/v3/{}/xpub/{}/txs'.format(self.network, xpub),
             headers=self.authorized_headers,
         )
         r.raise_for_status()
@@ -355,7 +355,7 @@ class BitIndex3:
         Get the configured webhook endpoint
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/webhook/endpoint'.format(self.network),
+            'https://api.mattercloud.net/api/v3/{}/webhook/endpoint'.format(self.network),
             headers=self.authorized_headers,
         )
         r.raise_for_status()
@@ -370,7 +370,7 @@ class BitIndex3:
         :param secret: Secret parameter passed back to your API for security purposes
         """
         r = requests.put(
-            'https://api.bitindex.network/api/v3/{}/webhook/endpoint'.format(self.network),
+            'https://api.mattercloud.net/api/v3/{}/webhook/endpoint'.format(self.network),
             data=json.dumps({
                 'url': url,
                 'enabled': enabled,
@@ -386,7 +386,7 @@ class BitIndex3:
         Get monitored addresses and xpubs
         """
         r = requests.get(
-            'https://api.bitindex.network/api/v3/{}/webhook/monitored_addrs'.format(self.network),
+            'https://api.mattercloud.net/api/v3/{}/webhook/monitored_addrs'.format(self.network),
             headers=self.authorized_headers,
         )
         r.raise_for_status()
@@ -399,7 +399,7 @@ class BitIndex3:
         :param address: Address or xpub key to track and monitor
         """
         r = requests.put(
-            'https://api.bitindex.network/api/v3/{}/webhook/monitored_addrs'.format(self.network),
+            'https://api.mattercloud.net/api/v3/{}/webhook/monitored_addrs'.format(self.network),
             data=json.dumps({'addr': address}),
             headers=self.authorized_headers,
         )
