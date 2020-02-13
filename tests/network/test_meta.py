@@ -3,10 +3,9 @@ from bitsv.network.meta import Unspent
 
 class TestUnspent:
     def test_init(self):
-        unspent = Unspent(10000, 7, 'script', 'txid', 0)
+        unspent = Unspent(10000, 7, 'txid', 0)
         assert unspent.amount == 10000
         assert unspent.confirmations == 7
-        assert unspent.script == 'script'
         assert unspent.txid == 'txid'
         assert unspent.txindex == 0
 

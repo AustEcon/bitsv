@@ -56,7 +56,6 @@ class BitIndex3:
         return [Unspent(
             amount=tx['satoshis'],
             confirmations=tx['confirmations'],
-            script=tx['scriptPubKey'],
             txid=tx['txid'],
             txindex=tx['vout'],
         ) for tx in r.json()]

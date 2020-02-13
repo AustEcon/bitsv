@@ -291,13 +291,11 @@ def create_p2pkh_transaction(private_key, unspents, outputs, custom_pushdata=Fal
     # Optimize for speed, not memory, by pre-computing values.
     inputs = []
     for unspent in unspents:
-        script = hex_to_bytes(unspent.script)
-        script_len = int_to_varint(len(script))
         txid = hex_to_bytes(unspent.txid)[::-1]
         txindex = unspent.txindex.to_bytes(4, byteorder='little')
         amount = unspent.amount.to_bytes(8, byteorder='little')
 
-        inputs.append(TxIn(script, script_len, txid, txindex, amount))
+        inputs.append(TxIn('', 0, txid, txindex, amount))
 
     hashPrevouts = double_sha256(b''.join([i.txid+i.txindex for i in inputs]))
     hashSequence = double_sha256(b''.join([SEQUENCE for i in inputs]))
