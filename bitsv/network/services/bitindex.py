@@ -57,7 +57,6 @@ class BitIndex:
         r = requests.post('https://api.mattercloud.net/api/addrs/utxo', data=json_payload, headers=headers)
         r.raise_for_status()
         return [Unspent(amount=currency_to_satoshi(tx['amount'], 'bsv'),
-                        script=tx['scriptPubKey'],
                         txid=tx['txid'],
                         txindex=tx['vout'],
                         confirmations=tx['confirmations']) for tx in r.json()]

@@ -1,87 +1,61 @@
-import json
-import requests
+from typing import List
 
-DEFAULT_TIMEOUT = 30
+from whatsonchain.api import Whatsonchain
+
+from bitsv.constants import BSV
+from bitsv.network.meta import Unspent
+from bitsv.network.transaction import TxInput, TxOutput, Transaction
 
 
-class WhatsonchainAPI:
-    """Only Testnet supported currently. STN may be added soon. Mainnet too."""
+def woc_tx_to_transaction(response):
+    tx_inputs = []
+    for vin in response['vin']:
+        tx_input = TxInput(txid=vin['txid'], index=vin['vout'])
+        tx_inputs.append(tx_input)
 
-    # Whatsonchain for all testnet functions
-    TESTNET = 'https://api.whatsonchain.com/v1/bsv/{}'.format('test')
-    TESTNET_WOC_STATUS = TESTNET + '/woc'
-    TESTNET_GET_BLOCK_BY_HASH = TESTNET + 'block/hash/{}'
-    TESTNET_GET_BLOCK_BY_HEIGHT = TESTNET + '/block/height/{}'
-    TESTNET_GET_BLOCK_BY_HASH_BY_PAGE = TESTNET + '/block/hash/{}/page/{}'  # Needs .format(hash,page_number)
-    TESTNET_GET_TRANSACTION_BY_HASH = TESTNET + '/tx/hash/{}'
-    TESTNET_POST_RAWTX = TESTNET + '/tx/raw'  # json payload = {"txHex": "hex..."}
+    tx_outputs = []
+    for vout in response['vout']:
+        tx_output = TxOutput(scriptpubkey=vout['scriptPubKey']['hex'],
+                             amount=int(vout['value']*BSV))
+        tx_outputs.append(tx_output)
+    tx = Transaction(response['txid'], tx_inputs, tx_outputs)
 
-    @classmethod
-    def get_woc_status_testnet(cls):
-        """returns 'what's on chain' if online"""
-        r = requests.get(cls.TESTNET_WOC_STATUS, timeout=DEFAULT_TIMEOUT)
-        if r.status_code != 200:  # pragma: no cover
-            raise ConnectionError
-        return r.text
+    return tx
 
-    @classmethod
-    def get_block_by_hash_testnet(cls, _hash):
-        r = requests.get(cls.TESTNET_GET_BLOCK_BY_HASH.format(_hash), timeout=DEFAULT_TIMEOUT)
-        if r.status_code != 200:  # pragma: no cover
-            raise ConnectionError
-        return r.json()
 
-    @classmethod
-    def get_block_by_height_testnet(cls, _height):
-        r = requests.get(cls.TESTNET_GET_BLOCK_BY_HEIGHT.format(_height), timeout=DEFAULT_TIMEOUT)
-        if r.status_code != 200:  # pragma: no cover
-            raise ConnectionError
-        return r.json()
+def woc_utxos_to_unspents(woc_utxos, block_height):
+    utxos = []
+    for utxo in woc_utxos:
+        u = Unspent(amount=utxo['value'],
+                    confirmations=0 if utxo['height'] in [0, -1] else block_height-utxo['height']+1,
+                    txid=utxo['tx_hash'],
+                    txindex=utxo['tx_pos'])
+        utxos.append(u)
+    return utxos
 
-    @classmethod
-    def get_block_by_hash_by_page_testnet(cls, _hash, page_number):
-        """Only to be used for large blocks > 1000 txs. Allows paging through lists of transactions.
-        Returns Null if there are not more than 1000 transactions in the block"""
-        r = requests.get(cls.TESTNET_GET_BLOCK_BY_HASH_BY_PAGE.format(_hash, page_number), timeout=DEFAULT_TIMEOUT)
-        if r.status_code != 200:  # pragma: no cover
-            raise ConnectionError
-        return r.json()
 
-    @classmethod
-    def get_transaction_by_hash_testnet(cls, _hash):
-        r = requests.get(cls.TESTNET_GET_TRANSACTION_BY_HASH.format(_hash), timeout=DEFAULT_TIMEOUT)
-        if r.status_code != 200:  # pragma: no cover
-            raise ConnectionError
-        return r.json()
+class WhatsonchainNormalised(Whatsonchain):
 
-    @classmethod
-    def broadcast_rawtx_testnet(cls, rawtx):
-        # FIXME not actually tested yet
-        """Broadcasts a rawtx to testnet"""
-        json_payload = json.dumps({"txHex": rawtx})
-        headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        }
-        r = requests.post(cls.TESTNET_POST_RAWTX, data=json_payload, headers=headers, timeout=DEFAULT_TIMEOUT)
-        if r.status_code != 200:  # pragma: no cover
-            raise ConnectionError
-        return r.json()
+    def __init__(self, network, *args, **kwargs):
+        super().__init__(network, *args, **kwargs)
+    """A wrapper for https://pypi.org/project/whatsonchain/ to return bitsv-compatible types."""
 
-    # Whatsonchain STN endpoints
-    STN = 'https://api.whatsonchain.com/v1/bsv/{}'.format('stn')
-    STN_WOC_STATUS = STN + '/woc'
-    STN_GET_BLOCK_BY_HASH = STN + 'block/hash/{}'
-    STN_GET_BLOCK_BY_HEIGHT = STN + '/block/height/{}'
-    STN_GET_BLOCK_BY_HASH_BY_PAGE = STN + '/block/hash/{}/page/{}'  # Needs .format(hash,page_number)
-    STN_GET_TRANSACTION_BY_HASH = STN + '/tx/hash/{}'
-    STN_POST_RAWTX = STN + '/tx/raw'  # json payload = {"txHex": "hex..."}
+    def get_balance(self, address: str) -> int:
+        result = self.get_balance(address)
+        return result['confirmed'] + result['unconfirmed']
 
-    # Whatsonchain mainnet endpoints (included here as may come in handy later)
-    MAINNET = 'https://api.whatsonchain.com/v1/bsv/{}'.format('main')
-    MAINNET_WOC_STATUS = MAINNET + '/woc'
-    MAINNET_GET_BLOCK_BY_HASH = MAINNET + 'block/hash/{}'
-    MAINNET_GET_BLOCK_BY_HEIGHT = MAINNET + '/block/height/{}'
-    MAINNET_GET_BLOCK_BY_HASH_BY_PAGE = MAINNET + '/block/hash/{}/page/{}'  # Needs .format(hash,page_number)
-    MAINNET_GET_TRANSACTION_BY_HASH = MAINNET + '/tx/hash/{}'
-    MAINNET_POST_RAWTX = STN + '/tx/raw'  # json payload = {"txHex": "hex..."}
+    def get_transactions(self, address: str) -> List[str]:
+        hist = self.get_history(address)
+        return [tx['tx_hash'] for tx in hist]
+
+    def get_transaction(self, txid: str) -> Transaction:
+        response = self.get_transaction_by_hash(txid)
+        return woc_tx_to_transaction(response)
+
+    def get_unspents(self, address: str) -> List[Unspent]:
+        block_height = self.get_chain_info()['blocks']
+        utxos = self.get_utxos(address)
+        return woc_utxos_to_unspents(utxos, block_height)
+
+    def broadcast_tx(self, tx_hex: str) -> str:
+        return self.broadcast_rawtx(tx_hex)

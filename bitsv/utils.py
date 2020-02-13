@@ -58,22 +58,6 @@ def int_to_varint(val):
         return b'\xff'+val.to_bytes(8, 'little')
 
 
-def sort_utxos_by_txindex(utxos):
-    return sorted(utxos, key=lambda utxo: utxo.txindex)
-
-
-def sort_utxos_by_txid(utxos):
-    return sorted(utxos, key=lambda utxo: utxo.txid)
-
-
-def sort_utxos_by_amount(utxos):
-    return sorted(utxos, key=lambda utxo: utxo.amount)
-
-
-def sort_utxos_by_confirmations(utxos):
-    return sorted(utxos, key=lambda utxo: utxo.confirmations)
-
-
 def is_valid_hex(s):
     """Can only detect if something definitely is *not* hex (could still return true by
     coincidence).
