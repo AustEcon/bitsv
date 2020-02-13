@@ -55,30 +55,36 @@ class BCHSVExplorerAPI:
         r.raise_for_status()  # pragma: no cover
         return r.json()['transactions']
 
+    def woc_tx_to_transaction(response):
+        tx_inputs = []
+        for vin in response['vin']:
+            tx_input = TxInput(txid=vin['txid'], index=vin['vout'])
+            tx_inputs.append(tx_input)
+
+        tx_outputs = []
+        for vout in response['vout']:
+            tx_output = TxOutput(scriptpubkey=vout['scriptPubKey']['hex'], amount=vout['value'])
+            tx_outputs.append(tx_output)
+        tx = Transaction(response['txid'], tx_inputs, tx_outputs)
+
+        return tx
+
     @classmethod
     def get_transaction(cls, txid):
         r = requests.get(cls.MAIN_TX_API.format(txid), timeout=DEFAULT_TIMEOUT)
         r.raise_for_status()  # pragma: no cover
         response = r.json(parse_float=Decimal)
 
-        tx = Transaction(response['txid'],
-                         (Decimal(response['valueIn']) * BSV_TO_SAT_MULTIPLIER).normalize(),
-                         (Decimal(response['valueOut']) * BSV_TO_SAT_MULTIPLIER).normalize())
+        tx_inputs = []
+        for vin in response['vin']:
+            tx_input = TxInput(vin['txid'], vin['vout'])
+            tx_inputs.append(tx_input)
 
-        for txin in response['vin']:
-            part = TxInput(txin['addr'], txin['valueSat'])
-            tx.add_input(part)
-
-        for txout in response['vout']:
-            addr = None
-            if 'addresses' in txout['scriptPubKey'] and \
-                    txout['scriptPubKey']['addresses'] is not None:
-                addr = txout['scriptPubKey']['addresses'][0]
-
-            part = TxOutput(addr,
-                            (Decimal(txout['value']) * BSV_TO_SAT_MULTIPLIER).normalize(),
-                            txout['scriptPubKey']['asm'])
-            tx.add_output(part)
+        tx_outputs = []
+        for vout in response['vout']:
+            tx_output = TxOutput(scriptpubkey=vout['scriptPubKey']['hex'], amount=vout['valueSat'])
+            tx_outputs.append(tx_output)
+        tx = Transaction(response['txid'], tx_inputs, tx_outputs)
 
         return tx
 
@@ -95,7 +101,6 @@ class BCHSVExplorerAPI:
         r.raise_for_status()  # pragma: no cover
         return [
             Unspent(currency_to_satoshi(tx['amount'], 'bsv'),
-                    tx['confirmations'],
                     tx['scriptPubKey'],
                     tx['txid'],
                     tx['vout'])

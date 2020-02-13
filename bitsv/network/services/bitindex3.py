@@ -3,7 +3,22 @@ import requests
 
 from bitsv.network.meta import Unspent
 from bitsv.network.transaction import Transaction, TxInput, TxOutput
-from decimal import Decimal
+
+
+def woc_tx_to_transaction(response):
+    tx_inputs = []
+    for vin in response['vin']:
+        tx_input = TxInput(txid=vin['txid'], index=vin['vout'])
+        tx_inputs.append(tx_input)
+
+    tx_outputs = []
+    for vout in response['vout']:
+        tx_output = TxOutput(scriptpubkey=vout['scriptPubKey']['hex'],
+                             amount=vout['value'])
+        tx_outputs.append(tx_output)
+    tx = Transaction(response['txid'], tx_inputs, tx_outputs)
+    return tx
+
 
 class BitIndex3:
     """
@@ -146,45 +161,17 @@ class BitIndex3:
         )
         r.raise_for_status()
         response = r.json()
-        response_vin = response['vin']
-        response_vout = response['vout']
 
-        # get txid
-        txid = response['txid']
+        tx_inputs = []
+        for vin in response['vin']:
+            tx_input = TxInput(vin['txid'], vin['vout'])
+            tx_inputs.append(tx_input)
 
-        # get amount_in
-        running_total_vin = 0
-        for i in response_vin:
-            running_total_vin += int(i['valueSat'])
-        amount_in = running_total_vin
-
-        # get amount_out
-        running_total_vout = 0
-        for i in response_vout:
-            running_total_vout += int(i['valueSat'])
-        amount_out = running_total_vout
-
-        tx = Transaction(txid,
-                         amount_in,
-                         amount_out)
-
-        # add TxInputs
-        for txin in response_vin:
-            part = TxInput(txin['addr'], txin['valueSat'])
-            tx.add_input(part)
-
-        # add TxOutputs
-        for txout in response_vout:
-            addr = None
-            if 'addresses' in txout['scriptPubKey'] and \
-                    txout['scriptPubKey']['addresses'] is not None:
-                addr = txout['scriptPubKey']['addresses'][0]
-
-            part = TxOutput(addr,
-                            txout['valueSat'],
-                            txout['scriptPubKey']['asm'])
-            tx.add_output(part)
-
+        tx_outputs = []
+        for vout in response['vout']:
+            tx_output = TxOutput(scriptpubkey=vout['scriptPubKey']['hex'], amount=vout['valueSat'])
+            tx_outputs.append(tx_output)
+        tx = Transaction(response['txid'], tx_inputs, tx_outputs)
         return tx
 
     def raw_get_transaction(self, transaction_id):

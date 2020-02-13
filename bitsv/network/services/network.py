@@ -4,6 +4,9 @@ import requests
 import time
 import collections
 import logging
+
+from .whatsonchain import WhatsonchainNormalised
+
 from .bitindex3 import BitIndex3
 from .bchsvexplorer import BCHSVExplorerAPI
 
@@ -76,16 +79,16 @@ class NetworkAPI:
         # Instantiate Normalized apis
         self.bitindex3 = BitIndex3(api_key=None, network=self.network)
         self.bchsvexplorer = BCHSVExplorerAPI  # classmethods, mainnet only
-        #Example: self.whatsonchain = WhatsonchainNormalized(network=self.network) - https://developers.whatsonchain.com/
-        #Example: self.blockchair = BlockchairNormalized(network=network) - https://github.com/Blockchair/Blockchair.Support
+        self.whatsonchain = WhatsonchainNormalised(network=self.network)
 
         # Allows extra apis for 'main' that may not support testnet (e.g. blockchair)
         if network == 'main':
-            self.list_of_apis = collections.deque([self.bitindex3, self.bchsvexplorer])
+            self.list_of_apis = collections.deque([self.whatsonchain, self.bitindex3,
+                                                   self.bchsvexplorer])
         elif network == 'test':
-            self.list_of_apis = collections.deque([self.bitindex3])
+            self.list_of_apis = collections.deque([self.whatsonchain, self.bitindex3])
         elif network == 'stn':
-            self.list_of_apis = collections.deque([self.bitindex3])
+            self.list_of_apis = collections.deque([self.whatsonchain, self.bitindex3])
         else:
             raise ValueError("network must be either 'main', 'test' or 'stn'")
 

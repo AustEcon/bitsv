@@ -1,10 +1,13 @@
-import platform, os
+import platform
+import os
 from functools import wraps
 from bitcoinrpc.authproxy import AuthServiceProxy
-from .insight import BSV_TO_SAT_MULTIPLIER
+from bitsv.constants import BSV
 from bitsv.network.meta import Unspent
 from bitsv.network.transaction import Transaction, TxInput, TxOutput
 from .standardrpcmethods import standard_methods
+
+BSV_TO_SAT_MULTIPLIER = BSV
 
 bitsv_methods = [
     'get_balance',
@@ -138,7 +141,6 @@ class FullNode:
         return [Unspent(
             amount=int((tx['amount'] * BSV_TO_SAT_MULTIPLIER).normalize()),
             confirmations=tx['confirmations'],
-            script=tx['scriptPubKey'],
             txid=tx['txid'],
             txindex=tx['vout']
         ) for tx in unspents]
