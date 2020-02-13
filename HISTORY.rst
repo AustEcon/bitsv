@@ -5,6 +5,10 @@ Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
 --------------------------------------------------------------
 - No new changes since 0.10.2 yet.
 
+0.10.4 (2019-02-13)
+-------------------
+- Update main api url from https://api.bitindex.network to https://api.mattercloud.net
+
 0.10.3 (2019-01-31)
 -------------------
 - Allow transaction fee less than 1 sat/byte (i.e. float) c/o `gitzhou <https://github.com/gitzhou>`_
