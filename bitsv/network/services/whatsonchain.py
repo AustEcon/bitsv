@@ -31,7 +31,7 @@ def woc_utxos_to_unspents(woc_utxos, block_height):
                     txid=utxo['tx_hash'],
                     txindex=utxo['tx_pos'])
         utxos.append(u)
-    return utxos
+    return sorted(utxos, key=lambda utxo: (-utxo.confirmations, utxo.amount))
 
 
 class WhatsonchainNormalised(Whatsonchain):

@@ -55,20 +55,6 @@ class BCHSVExplorerAPI:
         r.raise_for_status()  # pragma: no cover
         return r.json()['transactions']
 
-    def woc_tx_to_transaction(response):
-        tx_inputs = []
-        for vin in response['vin']:
-            tx_input = TxInput(txid=vin['txid'], index=vin['vout'])
-            tx_inputs.append(tx_input)
-
-        tx_outputs = []
-        for vout in response['vout']:
-            tx_output = TxOutput(scriptpubkey=vout['scriptPubKey']['hex'], amount=vout['value'])
-            tx_outputs.append(tx_output)
-        tx = Transaction(response['txid'], tx_inputs, tx_outputs)
-
-        return tx
-
     @classmethod
     def get_transaction(cls, txid):
         r = requests.get(cls.MAIN_TX_API.format(txid), timeout=DEFAULT_TIMEOUT)
@@ -99,13 +85,14 @@ class BCHSVExplorerAPI:
     def get_unspents(cls, address):
         r = requests.get(cls.MAIN_UNSPENT_API.format(address), timeout=DEFAULT_TIMEOUT)
         r.raise_for_status()  # pragma: no cover
-        return [
-            Unspent(currency_to_satoshi(tx['amount'], 'bsv'),
-                    tx['scriptPubKey'],
-                    tx['txid'],
-                    tx['vout'])
-            for tx in r.json()
+        utxos = [
+            Unspent(amount=currency_to_satoshi(utxo['amount'], 'bsv'),
+                    confirmations=utxo['confirmations'],
+                    txid=utxo['txid'],
+                    txindex=utxo['vout'])
+            for utxo in r.json()
         ]
+        return sorted(utxos, key=lambda utxo: (-utxo.confirmations, utxo.amount))
 
     @classmethod
     def send_transaction(cls, rawtx):  # pragma: no cover
