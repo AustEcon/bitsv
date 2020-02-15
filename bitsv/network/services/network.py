@@ -83,11 +83,12 @@ class NetworkAPI:
 
         # Allows extra apis for 'main' that may not support testnet (e.g. blockchair)
         if network == 'main':
-            self.list_of_apis = collections.deque([self.bitindex3, self.bchsvexplorer])
+            self.list_of_apis = collections.deque([self.whatsonchain, self.bitindex3,
+                                                   self.bchsvexplorer])
         elif network == 'test':
-            self.list_of_apis = collections.deque([self.bitindex3])
+            self.list_of_apis = collections.deque([self.whatsonchain, self.bitindex3])
         elif network == 'stn':
-            self.list_of_apis = collections.deque([self.bitindex3])
+            self.list_of_apis = collections.deque([self.whatsonchain, self.bitindex3])
         else:
             raise ValueError("network must be either 'main', 'test' or 'stn'")
 

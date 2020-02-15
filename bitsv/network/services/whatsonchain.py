@@ -35,13 +35,13 @@ def woc_utxos_to_unspents(woc_utxos, block_height):
 
 
 class WhatsonchainNormalised(Whatsonchain):
+    """A wrapper for https://pypi.org/project/whatsonchain/ to return bitsv-compatible types."""
 
     def __init__(self, network, *args, **kwargs):
         super().__init__(network, *args, **kwargs)
-    """A wrapper for https://pypi.org/project/whatsonchain/ to return bitsv-compatible types."""
 
     def get_balance(self, address: str) -> int:
-        result = self.get_balance(address)
+        result = super().get_balance(address)
         return result['confirmed'] + result['unconfirmed']
 
     def get_transactions(self, address: str) -> List[str]:
@@ -57,5 +57,5 @@ class WhatsonchainNormalised(Whatsonchain):
         utxos = self.get_utxos(address)
         return woc_utxos_to_unspents(utxos, block_height)
 
-    def broadcast_tx(self, tx_hex: str) -> str:
+    def send_transaction(self, tx_hex: str) -> str:
         return self.broadcast_rawtx(tx_hex)
