@@ -55,6 +55,7 @@ Twitter for occasional updates.</p>
 <div class="section" id="id1">
 <h2>0.11.0 (2019-02-15)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
+<li><p>Added WhatsOnChain API for mainnet and testnet (MatterCloud is now a paid-only service)</p></li>
 <li><p>Unspent data type: removed ‘script’ (scriptpubkey) attribute (unavailable from main WhatsOnChain and Satoshi.io APIs and is not even used for anything in the codebase at present)</p></li>
 <li><p>Transaction, TxOutput, TxInput data types: removed unnecessary ‘cruft’ like ‘amount_in’, ‘amount_out’ and ‘fee’ (also to facilitate use of WhatsOnChain etc. and reduce maintenance overheads).</p></li>
 <li><p>MatterCloud now activated via <strong>‘MATTERCLOUD_API_KEY’ environment variable</strong> which will make it the highest priority API in the list.</p></li>
