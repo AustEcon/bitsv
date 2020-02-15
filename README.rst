@@ -21,8 +21,17 @@ Forked from Ofek's awesome Bit library: https://github.com/ofek/bit
 
 Noticeboard:
 ------------
+Latest Major Release - 0.11.0_ (2019-02-15)
 
-Latest Major Release - 0.10.4_ (2019-02-13)
+.. _0.11.0: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
+
+- Added WhatsOnChain API for mainnet and testnet
+- Unspent data type: removed 'script' (scriptpubkey) attribute (unavailable from WhatsOnChain and Satoshi.io APIs and is unused in the codebase).
+- Transaction, TxOutput, TxInput data types: removed unnecessary 'cruft' like 'amount_in', 'amount_out' and 'fee' (also to facilitate use of WhatsOnChain etc. and reduce maintenance overheads).
+- MatterCloud now activated via **'MATTERCLOUD_API_KEY' environment variable** which makes it the highest priority API in the list for main, test, stn. Otherwise WhatsOnChain is used by default.
+
+
+Previous Major Release - 0.10.4_ (2019-02-13)
 
 .. _0.10.4: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
 
@@ -36,27 +45,6 @@ Latest Major Release - 0.10.4_ (2019-02-13)
 - 0.10.3 allow transaction fee less than 1 sat/byte (i.e. float) c/o `gitzhou <https://github.com/gitzhou>`_
 - 0.10.4 update main api url from https://api.bitindex.network to https://api.mattercloud.net
 
-Previous Major Release - 0.9.0_ (2019-08-11)
-
-.. _0.9.0: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
-
-- Bitcoin Cash addressees are no longer supported.
-- Added bchsvexplorer for redundancy on mainnet.
-- PrivateKey.get_transaction() now returns a Transaction object with TxInput and TxOutput objects within it.
-- Metadata is represented in TxOutput.data as a list of pushdata fields.
-
-- Also big changes_ in 0.8.0 so please take note.
-
-.. _changes: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
-
-- "cashaddress" is a great tool for address conversions if ever needed. https://github.com/oskyk/cashaddress/
-
-Default Fee = 1 sat/byte:
-
-- The capacity of the Bitcoin SV network is such that 1 sat/byte virtually guarantees that
-  your transaction will be included in the next block. This is therefore the default. However, it is
-  trivial to specify a higher transaction fee by including this as an additional parameter to any
-  of the transaction related functions.
 
 Planned improvements
 --------------------

@@ -3,7 +3,15 @@ Release History
 
 Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
 --------------------------------------------------------------
-- No new changes since 0.10.2 yet.
+- No new changes since 0.11.0 yet.
+
+0.11.0 (2019-02-15)
+-------------------
+- Added WhatsOnChain API for mainnet and testnet (MatterCloud is now a paid-only service)
+- Unspent data type: removed 'script' (scriptpubkey) attribute (unavailable from main WhatsOnChain and Satoshi.io APIs and is not even used for anything in the codebase at present)
+- Transaction, TxOutput, TxInput data types: removed unnecessary 'cruft' like 'amount_in', 'amount_out' and 'fee' (also to facilitate use of WhatsOnChain etc. and reduce maintenance overheads).
+- MatterCloud now activated via **'MATTERCLOUD_API_KEY' environment variable** which will make it the highest priority API in the list.
+- Renamed BitIndex3 to MatterCloud
 
 0.10.4 (2019-02-13)
 -------------------
