@@ -1,8 +1,11 @@
 import json
+
 import requests
 
 from bitsv.network.meta import Unspent
 from bitsv.network.transaction import Transaction, TxInput, TxOutput
+
+MATTERCLOUD_API_KEY_VARNAME = 'MATTERCLOUD_API_KEY'
 
 
 def woc_tx_to_transaction(response):
@@ -20,9 +23,9 @@ def woc_tx_to_transaction(response):
     return tx
 
 
-class BitIndex3:
+class MatterCloud:
     """
-    Implements version 3 of the BitIndex API
+    Implements version 3 of the MatterCloud API
 
     :param network: select 'main', 'test', or 'stn'
     :type network: ``str``
@@ -68,12 +71,13 @@ class BitIndex3:
             headers=self.headers,
         )
         r.raise_for_status()
-        return [Unspent(
+        utxos = [Unspent(
             amount=tx['satoshis'],
             confirmations=tx['confirmations'],
             txid=tx['txid'],
             txindex=tx['vout'],
         ) for tx in r.json()]
+        return sorted(utxos, key=lambda utxo: (-utxo.confirmations, utxo.amount))
 
     def get_balance(self, address):
         """
@@ -283,7 +287,7 @@ class BitIndex3:
         :param address: Filter by a specific address in the xpub
         """
         r = requests.get(
-            'https://api.mattercloud.net/api/v3/{self.network}/xpub/{xpub}/addrs'.format(self.network, xpub),
+            'https://api.mattercloud.net/api/v3/{}/xpub/{}/addrs'.format(self.network, xpub),
             params={
                 'offset': offset,
                 'limit': limit,
@@ -393,7 +397,7 @@ class BitIndex3:
         return r.json()
 
 
-class BitIndex3MainNet(BitIndex3):
+class MatterCloudMainNet(MatterCloud):
     """
     Implements version 3 of the BitIndex API using the mainnet network
     """
@@ -402,7 +406,7 @@ class BitIndex3MainNet(BitIndex3):
         return super().__init__(*args, **kwargs, network='main')
 
 
-class BitIndex3TestNet(BitIndex3):
+class MatterCloudTestNet(MatterCloud):
     """
     Implements version 3 of the BitIndex API using the testnet network
     """
@@ -411,7 +415,7 @@ class BitIndex3TestNet(BitIndex3):
         return super().__init__(*args, **kwargs, network='test')
 
 
-class BitIndex3STN(BitIndex3):
+class MatterCloudSTN(MatterCloud):
     """
     Implements version 3 of the BitIndex API using the STN network
     """

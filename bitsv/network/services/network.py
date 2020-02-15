@@ -1,3 +1,4 @@
+import os
 from functools import wraps
 
 import requests
@@ -7,7 +8,7 @@ import logging
 
 from .whatsonchain import WhatsonchainNormalised
 
-from .bitindex3 import BitIndex3
+from .mattercloud import MatterCloud, MATTERCLOUD_API_KEY_VARNAME
 from .bchsvexplorer import BCHSVExplorerAPI
 
 DEFAULT_TIMEOUT = 30
@@ -77,20 +78,23 @@ class NetworkAPI:
         self.network = network
 
         # Instantiate Normalized apis
-        self.bitindex3 = BitIndex3(api_key=None, network=self.network)
         self.bchsvexplorer = BCHSVExplorerAPI  # classmethods, mainnet only
         self.whatsonchain = WhatsonchainNormalised(network=self.network)
 
         # Allows extra apis for 'main' that may not support testnet (e.g. blockchair)
         if network == 'main':
-            self.list_of_apis = collections.deque([self.whatsonchain, self.bitindex3,
-                                                   self.bchsvexplorer])
+            self.list_of_apis = collections.deque([self.whatsonchain, self.bchsvexplorer])
         elif network == 'test':
-            self.list_of_apis = collections.deque([self.whatsonchain, self.bitindex3])
+            self.list_of_apis = collections.deque([self.whatsonchain])
         elif network == 'stn':
-            self.list_of_apis = collections.deque([self.whatsonchain, self.bitindex3])
+            self.list_of_apis = collections.deque([self.whatsonchain])
         else:
             raise ValueError("network must be either 'main', 'test' or 'stn'")
+
+        mattercloud_api_key = os.environ.get(MATTERCLOUD_API_KEY_VARNAME, None)
+        if mattercloud_api_key:
+            self.bitindex3 = MatterCloud(api_key=mattercloud_api_key, network=self.network)
+            self.list_of_apis.appendleft(self.bitindex3)
 
     @retry_annotation(IGNORED_ERRORS, tries=DEFAULT_RETRY)
     def retry_wrapper_call(self, api_call, param):
