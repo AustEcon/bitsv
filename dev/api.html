@@ -4,14 +4,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Developer Interface &#8212; BitSV 0.10.2 documentation</title>
+    <title>Developer Interface &#8212; BitSV 0.10.4 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="Authors" href="../community/authors.html" />
@@ -84,7 +84,7 @@ byte is disregarded. Compression will be used by all new keys.</p></li>
 <code class="sig-name descname">create_op_return_tx</code><span class="sig-paren">(</span><em class="sig-param">list_of_pushdata</em>, <em class="sig-param">outputs=None</em>, <em class="sig-param">fee=1</em>, <em class="sig-param">unspents=None</em>, <em class="sig-param">leftover=None</em>, <em class="sig-param">combine=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.create_op_return_tx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a rawtx with OP_RETURN metadata ready for broadcast.</p>
 <p>list_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either “hex” or “utf-8”
-fee : sat/byte (defaults to 1 satoshi per byte)</p>
+fee : sat/byte (defaults to <cite>~bitsv.network.fees.DEFAULT_FEE_MEDIUM</cite>)</p>
 <p>rawtx</p>
 <dl class="simple">
 <dt>list_of_pushdata =  [(‘6d01’, ‘hex’),</dt><dd><p>(‘bitPUSHER’, ‘utf-8’)]</p>
@@ -99,8 +99,8 @@ fee : sat/byte (defaults to 1 satoshi per byte)</p>
 be either an int, float, or string as long as it is
 a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
 must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
-<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi per byte to pay to miners. By default
-BitSV will use a fee of 1 sat/byte</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – The number of satoshi per byte to pay to miners. By default
+BitSV will use a fee of <cite>~bitsv.network.fees.DEFAULT_FEE_MEDIUM</cite></p></li>
 <li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
 transaction. By default BitSV will send any change to
 the same address you sent from.</p></li>
@@ -133,8 +133,8 @@ communicate with the blockchain itself.</p></li>
 be either an int, float, or string as long as it is
 a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
 must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
-<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi per byte to pay to miners. By default
-BitSV will use a fee of 1 sat/byte.</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – The number of satoshi per byte to pay to miners. By default
+BitSV will use a fee of <cite>~bitsv.network.fees.DEFAULT_FEE_MEDIUM</cite>.</p></li>
 <li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
 transaction. By default BitSV will send any change to
 the same address you sent from.</p></li>
@@ -322,8 +322,8 @@ a valid input to <code class="docutils literal notranslate"><span class="pre">de
 must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
 <li><p><strong>compressed</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not the <code class="docutils literal notranslate"><span class="pre">address</span></code> corresponds to a
 compressed public key. This influences the fee.</p></li>
-<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi per byte to pay to miners. By default
-BitSV will use a fee of 1 sat/byte</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – The number of satoshi per byte to pay to miners. By default
+BitSV will use a fee of <cite>~bitsv.network.fees.DEFAULT_FEE_MEDIUM</cite></p></li>
 <li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
 transaction. By default BitSV will send any change to
 the same address you sent from.</p></li>
@@ -381,8 +381,8 @@ the blockchain. This accepts the same arguments as
 be either an int, float, or string as long as it is
 a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
 must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
-<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi per byte to pay to miners. By default
-BitSV will use a fee of 1 sat/byte.</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – The number of satoshi per byte to pay to miners. By default
+BitSV will use a fee of <cite>~bitsv.network.fees.DEFAULT_FEE_MEDIUM</cite>.</p></li>
 <li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
 transaction. By default BitSV will send any change to
 the same address you sent from.</p></li>
@@ -414,7 +414,7 @@ communicate with the blockchain itself.</p></li>
 <code class="sig-name descname">send_op_return</code><span class="sig-paren">(</span><em class="sig-param">list_of_pushdata</em>, <em class="sig-param">outputs=None</em>, <em class="sig-param">fee=1</em>, <em class="sig-param">unspents=None</em>, <em class="sig-param">leftover=None</em>, <em class="sig-param">combine=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.send_op_return" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends a rawtx with OP_RETURN metadata ready for broadcast.</p>
 <p>list_of_pushdata : a list of tuples (pushdata, encoding) where encoding is either “hex” or “utf-8”
-fee : sat/byte (defaults to 1 satoshi per byte)</p>
+fee : sat/byte (defaults to <cite>~bitsv.network.fees.DEFAULT_FEE_MEDIUM</cite>)</p>
 <p>rawtx</p>
 <dl class="simple">
 <dt>list_of_pushdata =  [(‘6d01’, ‘hex’),</dt><dd><p>(‘bitPUSHER’, ‘utf-8’)]</p>
@@ -429,8 +429,8 @@ fee : sat/byte (defaults to 1 satoshi per byte)</p>
 be either an int, float, or string as long as it is
 a valid input to <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>. The currency
 must be <a class="reference internal" href="../guide/rates.html#supported-currencies"><span class="std std-ref">supported</span></a>.</p></li>
-<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The number of satoshi per byte to pay to miners. By default
-BitSV will use a fee of 1 sat/byte</p></li>
+<li><p><strong>fee</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>) – The number of satoshi per byte to pay to miners. By default
+BitSV will use a fee of <cite>~bitsv.network.fees.DEFAULT_FEE_MEDIUM</cite></p></li>
 <li><p><strong>leftover</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The destination that will receive any change from the
 transaction. By default BitSV will send any change to
 the same address you sent from.</p></li>
@@ -807,68 +807,8 @@ the public key.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="bitsv.network.services.BitIndex">
-<em class="property">class </em><code class="sig-prename descclassname">bitsv.network.services.</code><code class="sig-name descname">BitIndex</code><a class="headerlink" href="#bitsv.network.services.BitIndex" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="bitsv.network.services.BitIndex.broadcast_rawtx">
-<em class="property">static </em><code class="sig-name descname">broadcast_rawtx</code><span class="sig-paren">(</span><em class="sig-param">rawtx</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.services.BitIndex.broadcast_rawtx" title="Permalink to this definition">¶</a></dt>
-<dd><p>broadcasts a create_rawtx as hex to network via BitIndex api</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bitsv.network.services.BitIndex.get_balance">
-<em class="property">static </em><code class="sig-name descname">get_balance</code><span class="sig-paren">(</span><em class="sig-param">address</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.services.BitIndex.get_balance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets utxos for given legacy address</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bitsv.network.services.BitIndex.get_tx">
-<em class="property">static </em><code class="sig-name descname">get_tx</code><span class="sig-paren">(</span><em class="sig-param">tx</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.services.BitIndex.get_tx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets utxos for given legacy address</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bitsv.network.services.BitIndex.get_txs">
-<em class="property">static </em><code class="sig-name descname">get_txs</code><span class="sig-paren">(</span><em class="sig-param">address</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.services.BitIndex.get_txs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets utxos for given legacy address</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bitsv.network.services.BitIndex.get_utxo">
-<em class="property">static </em><code class="sig-name descname">get_utxo</code><span class="sig-paren">(</span><em class="sig-param">address</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.services.BitIndex.get_utxo" title="Permalink to this definition">¶</a></dt>
-<dd><p>gets utxos for given address BitIndex api</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bitsv.network.services.BitIndex.get_xpub_balance">
-<em class="property">static </em><code class="sig-name descname">get_xpub_balance</code><span class="sig-paren">(</span><em class="sig-param">xpub</em>, <em class="sig-param">api_key</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.services.BitIndex.get_xpub_balance" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="bitsv.network.services.BitIndex.get_xpub_status">
-<em class="property">static </em><code class="sig-name descname">get_xpub_status</code><span class="sig-paren">(</span><em class="sig-param">xpub</em>, <em class="sig-param">api_key</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.services.BitIndex.get_xpub_status" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="bitsv.network.services.BitIndex.get_xpub_tx">
-<em class="property">static </em><code class="sig-name descname">get_xpub_tx</code><span class="sig-paren">(</span><em class="sig-param">xpub</em>, <em class="sig-param">api_key</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.services.BitIndex.get_xpub_tx" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="bitsv.network.services.BitIndex.get_xpub_utxos">
-<em class="property">static </em><code class="sig-name descname">get_xpub_utxos</code><span class="sig-paren">(</span><em class="sig-param">xpub</em>, <em class="sig-param">api_key</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.services.BitIndex.get_xpub_utxos" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="bitsv.network.services.BitIndex.xpub_register">
-<em class="property">static </em><code class="sig-name descname">xpub_register</code><span class="sig-paren">(</span><em class="sig-param">xpub</em>, <em class="sig-param">api_key</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.services.BitIndex.xpub_register" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="bitsv.network.meta.Unspent">
-<em class="property">class </em><code class="sig-prename descclassname">bitsv.network.meta.</code><code class="sig-name descname">Unspent</code><span class="sig-paren">(</span><em class="sig-param">amount</em>, <em class="sig-param">confirmations</em>, <em class="sig-param">script</em>, <em class="sig-param">txid</em>, <em class="sig-param">txindex</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.meta.Unspent" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">bitsv.network.meta.</code><code class="sig-name descname">Unspent</code><span class="sig-paren">(</span><em class="sig-param">amount</em>, <em class="sig-param">confirmations</em>, <em class="sig-param">txid</em>, <em class="sig-param">txindex</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.meta.Unspent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents an unspent transaction output (UTXO).</p>
 <dl class="attribute">
 <dt id="bitsv.network.meta.Unspent.amount">
@@ -883,11 +823,6 @@ the public key.</p>
 <dl class="method">
 <dt id="bitsv.network.meta.Unspent.from_dict">
 <em class="property">classmethod </em><code class="sig-name descname">from_dict</code><span class="sig-paren">(</span><em class="sig-param">d</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.meta.Unspent.from_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="bitsv.network.meta.Unspent.script">
-<code class="sig-name descname">script</code><a class="headerlink" href="#bitsv.network.meta.Unspent.script" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -991,14 +926,14 @@ cached using a decorator for 60 seconds by default. See <a class="reference inte
 <h2>Fees<a class="headerlink" href="#fees" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="bitsv.network.get_fee">
-<code class="sig-prename descclassname">bitsv.network.</code><code class="sig-name descname">get_fee</code><span class="sig-paren">(</span><em class="sig-param">speed='slow'</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.get_fee" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bitsv.network.</code><code class="sig-name descname">get_fee</code><span class="sig-paren">(</span><em class="sig-param">speed='medium'</em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.network.get_fee" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the recommended satoshi per byte fee.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>speed</strong> (<code class="docutils literal notranslate"><span class="pre">string</span></code>) – One of: ‘fast’, ‘medium’, ‘slow’.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1146,7 +1081,7 @@ cached using a decorator for 60 seconds by default. See <a class="reference inte
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script><!-- From https://github.com/kennethreitz/requests/blob/master/docs/_templates/hacks.html -->
+<script>$('#searchbox').show(0);</script><!-- From https://github.com/kennethreitz/requests/blob/master/docs/_templates/hacks.html -->
 
 <!-- Alabaster (krTheme++) Hacks -->
 
