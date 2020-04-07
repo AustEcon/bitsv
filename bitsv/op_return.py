@@ -7,7 +7,7 @@ MESSAGE_LIMIT = 100000  # The real limiting factor seems to be total transaction
 
 def get_op_pushdata_code(data):
     length_data = len(data)
-    if length_data <= 0x4c:  # (https://en.bitcoin.it/wiki/Script)
+    if length_data < 0x4c:  # (https://en.bitcoin.it/wiki/Script)
         return length_data.to_bytes(1, byteorder='little')
     elif length_data <= 0xff:
         return OP_PUSHDATA1 + length_data.to_bytes(1, byteorder='little')  # OP_PUSHDATA1 format
