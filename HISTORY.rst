@@ -5,6 +5,10 @@ Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
 --------------------------------------------------------------
 - No new changes since 0.11.0 yet.
 
+0.11.1 (2020-04-10)
+-------------------
+- Fixed an off-by-one bug for generating pushdata op_codes for data-carrier 'op_return' txs - c/o `gitzhou <https://github.com/gitzhou>`_.
+
 0.11.0 (2019-02-15)
 -------------------
 - Added WhatsOnChain API for mainnet and testnet (MatterCloud is now a paid-only service)

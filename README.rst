@@ -21,14 +21,15 @@ Forked from Ofek's awesome Bit library: https://github.com/ofek/bit
 
 Noticeboard:
 ------------
-Latest Major Release - 0.11.0_ (2019-02-15)
+Latest Major Release - 0.11.1_ (2019-04-10)
 
-.. _0.11.0: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
+.. _0.11.1: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
 
 - Added WhatsOnChain API for mainnet and testnet
 - Unspent data type: removed 'script' (scriptpubkey) attribute (unavailable from WhatsOnChain and Satoshi.io APIs and is unused in the codebase).
 - Transaction, TxOutput, TxInput data types: removed unnecessary 'cruft' like 'amount_in', 'amount_out' and 'fee' (also to facilitate use of WhatsOnChain etc. and reduce maintenance overheads).
 - MatterCloud now activated via **'MATTERCLOUD_API_KEY' environment variable** which makes it the highest priority API in the list for main, test, stn. Otherwise WhatsOnChain is used by default.
+- 0.11.1 Fixed an off-by-one bug for generating pushdata op_codes for data-carrier 'op_return' txs - c/o `gitzhou <https://github.com/gitzhou>`_.
 
 
 Previous Major Release - 0.10.4_ (2019-02-13)
