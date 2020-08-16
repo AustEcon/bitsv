@@ -163,5 +163,5 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         """
         call_list = [api.send_transaction for api in self.list_of_apis]
-        self.invoke_api_call(call_list, tx_hex)
-        return
+        tx_id = self.invoke_api_call(call_list, tx_hex)
+        return tx_id
