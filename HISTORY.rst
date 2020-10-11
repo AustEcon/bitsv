@@ -3,7 +3,12 @@ Release History
 
 Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
 --------------------------------------------------------------
-- No new changes since 0.11.0 yet.
+- No new changes since 0.11.2 yet.
+
+
+0.11.2 (2020-10-11)
+-------------------
+- NetworkAPI.broadcast_tx() now returns the txid instead of null.
 
 0.11.1 (2020-04-10)
 -------------------
