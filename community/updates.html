@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Stay Informed &#8212; BitSV 0.11.2 documentation</title>
+    <title>Stay Informed &#8212; BitSV 0.11.3 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -54,19 +54,25 @@ Twitter for occasional updates.</p>
 </ul>
 </div>
 <div class="section" id="id1">
-<h2>0.11.2 (2020-10-11)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>0.11.3 (2020-11-7)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>make ‘prepare_transaction’ a &#64;classmethod as it should not require a private key (breaking change as function signature now requires the ‘network’ as a positional argument)</p></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>0.11.2 (2020-10-11)<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>NetworkAPI.broadcast_tx() now returns the txid instead of null.</p></li>
 </ul>
 </div>
-<div class="section" id="id2">
-<h2>0.11.1 (2020-04-10)<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h2>0.11.1 (2020-04-10)<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed an off-by-one bug for generating pushdata op_codes for data-carrier ‘op_return’ txs - c/o <a class="reference external" href="https://github.com/gitzhou">gitzhou</a>.</p></li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h2>0.11.0 (2019-02-15)<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>0.11.0 (2019-02-15)<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added WhatsOnChain API for mainnet and testnet (MatterCloud is now a paid-only service)</p></li>
 <li><p>Unspent data type: removed ‘script’ (scriptpubkey) attribute (unavailable from main WhatsOnChain and Satoshi.io APIs and is not even used for anything in the codebase at present)</p></li>
@@ -75,26 +81,26 @@ Twitter for occasional updates.</p>
 <li><p>Renamed BitIndex3 to MatterCloud</p></li>
 </ul>
 </div>
-<div class="section" id="id4">
-<h2>0.10.4 (2019-02-13)<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>0.10.4 (2019-02-13)<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Update main api url from <a class="reference external" href="https://api.bitindex.network">https://api.bitindex.network</a> to <a class="reference external" href="https://api.mattercloud.net">https://api.mattercloud.net</a></p></li>
 </ul>
 </div>
-<div class="section" id="id5">
-<h2>0.10.3 (2019-01-31)<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h2>0.10.3 (2019-01-31)<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Allow transaction fee less than 1 sat/byte (i.e. float) c/o <a class="reference external" href="https://github.com/gitzhou">gitzhou</a></p></li>
 </ul>
 </div>
-<div class="section" id="id7">
-<h2>0.10.2 (2019-11-28)<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id8">
+<h2>0.10.2 (2019-11-28)<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed broken API endpoint for foreign currency conversions.</p></li>
 </ul>
 </div>
-<div class="section" id="id8">
-<h2>0.10.1 (2019-11-24)<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id9">
+<h2>0.10.1 (2019-11-24)<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added new Fullnode class for connecting to local bitcoin node via JSON-RPC (thanks goes to <a class="reference external" href="https://github.com/xloem">https://github.com/xloem</a> for the initial legwork).</p></li>
 <li><p>Fullnode class works for Mainnet, Testnet, Scaling-testnet and RegTest (local mock blockchain).</p></li>
@@ -104,8 +110,8 @@ Twitter for occasional updates.</p>
 <li><p>0.10.1 includes a patch for rpc methods list</p></li>
 </ul>
 </div>
-<div class="section" id="id9">
-<h2>0.9.0 (2019-08-11)<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id10">
+<h2>0.9.0 (2019-08-11)<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><strong>breaking</strong> Bitcoin Cash addressees are no longer supported.</p></li>
 <li><p>Added bchsvexplorer for redundancy on mainnet.</p></li>
@@ -113,8 +119,8 @@ Twitter for occasional updates.</p>
 <li><p>Metadata is represented in <code class="docutils literal notranslate"><span class="pre">TxOutput.data</span></code> as a list of <code class="docutils literal notranslate"><span class="pre">pushdata</span></code> fields.</p></li>
 </ul>
 </div>
-<div class="section" id="id10">
-<h2>0.8.0 (2019-7-13)<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id11">
+<h2>0.8.0 (2019-7-13)<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p><strong>breaking</strong> <code class="docutils literal notranslate"><span class="pre">PrivateKeyTest</span></code> no longer exists (is now merged with <code class="docutils literal notranslate"><span class="pre">PrivateKey</span></code> class)</p></li>
 <li><p><strong>breaking</strong> bip32.py no longer exists (is now moved to a new repo: <a class="reference external" href="https://github.com/AustEcon/bsvbip32">https://github.com/AustEcon/bsvbip32</a>)</p>
@@ -159,8 +165,8 @@ endpoint went down for several days). Therefore added a <code class="docutils li
 <li><p>restored python3.5 and pypy3 compatibility</p></li>
 </ul>
 </div>
-<div class="section" id="id11">
-<h2>0.7.1 (2019-4-20)<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id12">
+<h2>0.7.1 (2019-4-20)<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>Legacy address now default __repr__</p></li>
 <li><p>Added documentation page for op_return related functionality see: <a class="reference external" href="https://austecon.github.io/bitsv/guide/op_return.html">https://austecon.github.io/bitsv/guide/op_return.html</a>
@@ -178,8 +184,8 @@ added Python3.7 to travis CI testing</p></li>
 </li>
 </ul>
 </div>
-<div class="section" id="id12">
-<h2>0.6.1 (2019-4-15)<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id13">
+<h2>0.6.1 (2019-4-15)<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fixed documentation –&gt; now hosted on gh-pages at <a class="reference external" href="https://austecon.github.io/bitsv/">https://austecon.github.io/bitsv/</a></p></li>
 <li><p>Added “confirmations” field back into Unspents / UTXOs</p></li>
@@ -187,8 +193,8 @@ added Python3.7 to travis CI testing</p></li>
 <li><p>Fixed badges on ReadMe for coverage: <a class="reference external" href="https://codecov.io/gh/austecon/bitsv">https://codecov.io/gh/austecon/bitsv</a> and travis CI: <a class="reference external" href="https://travis-ci.org/AustEcon/bitsv">https://travis-ci.org/AustEcon/bitsv</a></p></li>
 </ul>
 </div>
-<div class="section" id="id13">
-<h2>0.6.0 (2019-4-7)<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id14">
+<h2>0.6.0 (2019-4-7)<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p><strong>New Feature</strong>: Added Hierarchical deterministic wallet support (in bip32.py).</p>
 <blockquote>
@@ -201,21 +207,21 @@ added Python3.7 to travis CI testing</p></li>
 <li><p>Added BitIndex functions for dealing with extended public keys</p></li>
 </ul>
 </div>
-<div class="section" id="id14">
-<h2>0.5.6 (2019-3-30)<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id15">
+<h2>0.5.6 (2019-3-30)<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>PyPi ReadMe rendering issues.</p></li>
 </ul>
 </div>
-<div class="section" id="id15">
-<h2>0.5.5 (2019-3-29)<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id16">
+<h2>0.5.5 (2019-3-29)<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Default fee set to 1 sat/byte for all transaction types.</p></li>
 <li><p>Updated ReadMe to include changes in 0.5.4 and updated examples.</p></li>
 </ul>
 </div>
-<div class="section" id="id16">
-<h2>0.5.4 (2019-03-25)<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id17">
+<h2>0.5.4 (2019-03-25)<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Added 100kb OP_RETURN capability (fixed a bug).</p></li>
 <li><p>Fixed currency conversion courtesy “<a class="reference external" href="http://bitcoinsv-rates.com/api/rates/">http://bitcoinsv-rates.com/api/rates/</a>” api.</p></li>
@@ -223,8 +229,8 @@ added Python3.7 to travis CI testing</p></li>
 <li><p>Fixed some tests and removed deprecated ones.</p></li>
 </ul>
 </div>
-<div class="section" id="id17">
-<h2>0.5.3 (2019-01-27)<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id18">
+<h2>0.5.3 (2019-01-27)<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Port code base over to Bitcoin SV</p></li>
 <li><p>Allow raw byte string to be used as transaction OP_RETURN
@@ -234,31 +240,31 @@ returns an instance of a new Transaction class which
 contains some common details of the transaction.</p></li>
 </ul>
 </div>
-<div class="section" id="id18">
-<h2>0.5.2 (2018-05-16)<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id19">
+<h2>0.5.2 (2018-05-16)<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>bccblock.info is offline, replace with cashexplorer.bitcoin.com.
 Hard fork happened yesterday. Not sure if bccblock.info was even ready
 for that.</p></li>
 </ul>
 </div>
-<div class="section" id="id19">
-<h2>0.5.1 (2018-03-11)<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id20">
+<h2>0.5.1 (2018-03-11)<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Fix fee calculation with combined=False.</p></li>
 <li><p>Also lower fees since we can. Couple little tweaks.</p></li>
 <li><p>Delete a .orig file I had added before by mistake.</p></li>
 </ul>
 </div>
-<div class="section" id="id20">
-<h2>0.5.0 (2018-02-03)<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id21">
+<h2>0.5.0 (2018-02-03)<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Breaking change! Add cashaddr support, return .address as
 cashaddr. That hopefully is all that breaks.</p></li>
 </ul>
 </div>
-<div class="section" id="id21">
-<h2>0.4.3 (2017-12-20)<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id22">
+<h2>0.4.3 (2017-12-20)<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Switch from Bitpay to BCCBlock.info.
 Bitpay API is unusable with their address format, unless we
@@ -266,20 +272,20 @@ switch over. Not interested in doing that in the near future so
 I found another block explorer.</p></li>
 </ul>
 </div>
-<div class="section" id="id22">
-<h2>0.4.2 (2017-12-20)<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id23">
+<h2>0.4.2 (2017-12-20)<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Raise exception when using pay2sh addresses.</p></li>
 </ul>
 </div>
-<div class="section" id="id23">
-<h2>0.4.1 (2017-11-01)<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id24">
+<h2>0.4.1 (2017-11-01)<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Removed <code class="docutils literal notranslate"><span class="pre">blockr.io</span></code> network backend as <a class="reference external" href="https://www.coinbase.com">Coinbase</a> has shut it down.</p></li>
 </ul>
 </div>
-<div class="section" id="id24">
-<h2>0.4.0 (2017-04-19)<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id25">
+<h2>0.4.0 (2017-04-19)<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Changed elliptic curve backend from OpenSSL to libsecp256k1. This results
 in an order of magnitude faster key creation and signing/verifying.</p></li>
@@ -290,31 +296,31 @@ signatures instead of raising an exception. Also, <code class="docutils literal 
 a parameter as BIP-62 compliance is now required.</p></li>
 </ul>
 </div>
-<div class="section" id="id25">
-<h2>0.3.1 (2017-03-21)<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id26">
+<h2>0.3.1 (2017-03-21)<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><strong>Fixed</strong> :ref: <cite>cold storage &lt;coldstorage&gt;</cite> workflow.</p></li>
 <li><p>Improved performance of private key instantiation.</p></li>
 </ul>
 </div>
-<div class="section" id="id26">
-<h2>0.3.0 (2017-03-20)<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id27">
+<h2>0.3.0 (2017-03-20)<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Implemented a way to use private keys in :ref: <cite>cold storage &lt;coldstorage&gt;</cite>.</p></li>
 <li><p>Changed the default timeout of services from 5 to 10 seconds.</p></li>
 <li><p>Fixed network service redundancy by failing if response code is not 200.</p></li>
 </ul>
 </div>
-<div class="section" id="id27">
-<h2>0.2.0 (2017-03-17)<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id28">
+<h2>0.2.0 (2017-03-17)<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Improved stability of network tests.</p></li>
 <li><p>Added :func: <cite>~bitsv.verify_sig</cite>.</p></li>
 <li><p>Refactored crypto to yield over an order of magnitude faster hashing.</p></li>
 </ul>
 </div>
-<div class="section" id="id28">
-<h2>0.1.0 (2017-03-15)<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id29">
+<h2>0.1.0 (2017-03-15)<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Initial release.</p></li>
 </ul>
@@ -403,33 +409,34 @@ a parameter as BIP-62 compliance is now required.</p></li>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#release-history">Release History</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#unreleased-see-master">Unreleased (see master)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">0.11.2 (2020-10-11)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">0.11.1 (2020-04-10)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">0.11.0 (2019-02-15)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">0.10.4 (2019-02-13)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">0.10.3 (2019-01-31)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id7">0.10.2 (2019-11-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id8">0.10.1 (2019-11-24)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id9">0.9.0 (2019-08-11)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id10">0.8.0 (2019-7-13)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id11">0.7.1 (2019-4-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id12">0.6.1 (2019-4-15)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id13">0.6.0 (2019-4-7)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id14">0.5.6 (2019-3-30)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id15">0.5.5 (2019-3-29)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id16">0.5.4 (2019-03-25)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id17">0.5.3 (2019-01-27)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id18">0.5.2 (2018-05-16)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id19">0.5.1 (2018-03-11)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id20">0.5.0 (2018-02-03)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id21">0.4.3 (2017-12-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id22">0.4.2 (2017-12-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id23">0.4.1 (2017-11-01)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id24">0.4.0 (2017-04-19)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id25">0.3.1 (2017-03-21)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id26">0.3.0 (2017-03-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id27">0.2.0 (2017-03-17)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id28">0.1.0 (2017-03-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">0.11.3 (2020-11-7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.11.2 (2020-10-11)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">0.11.1 (2020-04-10)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">0.11.0 (2019-02-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">0.10.4 (2019-02-13)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">0.10.3 (2019-01-31)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">0.10.2 (2019-11-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">0.10.1 (2019-11-24)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">0.9.0 (2019-08-11)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id11">0.8.0 (2019-7-13)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">0.7.1 (2019-4-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id13">0.6.1 (2019-4-15)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id14">0.6.0 (2019-4-7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id15">0.5.6 (2019-3-30)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id16">0.5.5 (2019-3-29)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id17">0.5.4 (2019-03-25)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id18">0.5.3 (2019-01-27)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id19">0.5.2 (2018-05-16)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id20">0.5.1 (2018-03-11)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id21">0.5.0 (2018-02-03)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id22">0.4.3 (2017-12-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id23">0.4.2 (2017-12-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id24">0.4.1 (2017-11-01)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id25">0.4.0 (2017-04-19)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id26">0.3.1 (2017-03-21)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id27">0.3.0 (2017-03-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id28">0.2.0 (2017-03-17)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id29">0.1.0 (2017-03-15)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
