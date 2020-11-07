@@ -6,8 +6,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Developer Interface &#8212; BitSV 0.11.2 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -310,12 +310,13 @@ public key.</p>
 
 <dl class="py method">
 <dt id="bitsv.PrivateKey.prepare_transaction">
-<code class="sig-name descname">prepare_transaction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">address</span></em>, <em class="sig-param"><span class="n">outputs</span></em>, <em class="sig-param"><span class="n">compressed</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fee</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">leftover</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">combine</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">message</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unspents</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">custom_pushdata</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.prepare_transaction" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">prepare_transaction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sender_address</span></em>, <em class="sig-param"><span class="n">outputs</span></em>, <em class="sig-param"><span class="n">network</span></em>, <em class="sig-param"><span class="n">compressed</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fee</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">leftover</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">combine</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">message</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unspents</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">custom_pushdata</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bitsv.PrivateKey.prepare_transaction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepares a P2PKH transaction for offline signing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>address</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The address the funds will be sent from.</p></li>
+<li><p><strong>network</strong> – The network (‘main’, ‘test’, ‘stn’)</p></li>
+<li><p><strong>sender_address</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The address the funds will be sent from.</p></li>
 <li><p><strong>outputs</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code>) – A sequence of outputs you wish to send in the form
 <code class="docutils literal notranslate"><span class="pre">(destination,</span> <span class="pre">amount,</span> <span class="pre">currency)</span></code>. The amount can
 be either an int, float, or string as long as it is
@@ -331,14 +332,15 @@ the same address you sent from.</p></li>
 <li><p><strong>combine</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not BitSV should use all available UTXOs to
 make future transactions smaller and therefore reduce
 fees. By default BitSV will consolidate UTXOs.</p></li>
-<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata = True) – A message to include in the transaction. This will be
+<li><p><strong>message</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> if custom_pushdata = False; <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code> if custom_pushdata
+= True) – A message to include in the transaction. This will be
 stored in the blockchain forever. Due to size limits,
 each message will be stored in chunks of 100kb bytes.</p></li>
 <li><p><strong>unspents</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="#bitsv.network.meta.Unspent" title="bitsv.network.meta.Unspent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unspent</span></code></a>) – The UTXOs to use as the inputs. By default BitSV will
 communicate with the blockchain itself.</p></li>
-<li><p><strong>custom_pushdata</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Adds control over push_data elements inside of the op_return by adding the
-“custom_pushdata” = True / False parameter as a “switch” to the
-<a class="reference internal" href="#bitsv.PrivateKey.send" title="bitsv.PrivateKey.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code></a> function and the
+<li><p><strong>custom_pushdata</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Adds control over push_data elements inside of the op_return by
+adding the “custom_pushdata” = True / False parameter as a
+“switch” to the <a class="reference internal" href="#bitsv.PrivateKey.send" title="bitsv.PrivateKey.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code></a> function and the
 <a class="reference internal" href="#bitsv.PrivateKey.create_transaction" title="bitsv.PrivateKey.create_transaction"><code class="xref py py-func docutils literal notranslate"><span class="pre">create_transaction()</span></code></a> functions.</p></li>
 </ul>
 </dd>
