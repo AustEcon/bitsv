@@ -21,9 +21,9 @@ Forked from Ofek's awesome Bit library: https://github.com/ofek/bit
 
 Noticeboard:
 ------------
-Latest Major Release - 0.11.2_ (2020-10-11)
+Latest Major Release - 0.11.3_ (2020-11-7)
 
-.. _0.11.2: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
+.. _0.11.3: https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst
 
 - Added WhatsOnChain API for mainnet and testnet
 - Unspent data type: removed 'script' (scriptpubkey) attribute (unavailable from WhatsOnChain and Satoshi.io APIs and is unused in the codebase).
@@ -31,6 +31,7 @@ Latest Major Release - 0.11.2_ (2020-10-11)
 - MatterCloud now activated via **'MATTERCLOUD_API_KEY' environment variable** which makes it the highest priority API in the list for main, test, stn. Otherwise WhatsOnChain is used by default.
 - 0.11.1 Fixed an off-by-one bug for generating pushdata op_codes for data-carrier 'op_return' txs - c/o `gitzhou <https://github.com/gitzhou>`_.
 - 0.11.2 NetworkAPI.broadcast_tx() now returns the txid instead of null.
+- 0.11.3 make 'prepare_transaction' a @classmethod as it should not require a private key (breaking change as function signature now requires the 'network' as a positional argument)
 
 Previous Major Release - 0.10.4_ (2019-02-13)
 
@@ -108,7 +109,7 @@ This sets memo.sv name (linked to this bitcoin address) to "New_Name" (as per ht
             rpcpassword='password',
             network='regtest')
 
-note: wallet features of the node software will soon be deprecated. However, possible use cases may include
+Possible use cases may include:
 
     - Rapid transaction broadcasting ~ 200tx/sec):
     - Regtesting of app in AzurePipelines or Travis CI for example.

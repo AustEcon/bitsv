@@ -5,6 +5,9 @@ Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
 --------------------------------------------------------------
 - No new changes since 0.11.2 yet.
 
+0.11.3 (2020-11-7)
+------------------
+- make 'prepare_transaction' a @classmethod as it should not require a private key (breaking change as function signature now requires the 'network' as a positional argument)
 
 0.11.2 (2020-10-11)
 -------------------
