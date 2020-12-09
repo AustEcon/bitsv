@@ -7,6 +7,7 @@ from bitsv.network.meta import Unspent
 
 # left here as a reminder to normalize get_transaction()
 from bitsv.network.transaction import Transaction, TxInput, TxOutput
+from bitsv.network.block import Block
 from bitsv.constants import BSV
 
 DEFAULT_TIMEOUT = 30
@@ -24,6 +25,7 @@ class BSVBookGuardaAPI:
     - broadcast_tx
     """
     MAIN_ENDPOINT = 'https://bsvbook.guarda.co/'
+    MAIN_STATUS_API = MAIN_ENDPOINT + 'api'
     MAIN_ADDRESS_API = MAIN_ENDPOINT + 'api/v2/address/{}'
     MAIN_BALANCE_API = MAIN_ADDRESS_API
     MAIN_TX_PULL_API = MAIN_ADDRESS_API + '?page={}'
@@ -31,6 +33,7 @@ class BSVBookGuardaAPI:
     MAIN_TX_PUSH_API = MAIN_ENDPOINT + 'api/v2/sendtx'
     MAIN_TX_API = MAIN_ENDPOINT + 'api/v2/tx/{}'
     MAIN_TX_AMOUNT_API = MAIN_TX_API
+    MAIN_BLOCK_API = MAIN_ENDPOINT + 'api/v2/block/{}?page={}'
 
     @classmethod
     def get_address_info(cls, address):
@@ -107,3 +110,23 @@ class BSVBookGuardaAPI:
         if 'error' in response:
             raise ValueError(response['error']['message'])
         return response['result']
+
+    @classmethod
+    def get_bestblockhash(cls):
+        r = requests.get(cls.MAIN_STATUS_API)
+        r.raise_for_status()
+        response = r.json()
+        return response['backend']['bestBlockHash']
+
+    @classmethod
+    def get_block(cls, hash: str):
+        txids = []
+        page = 1
+        while True:
+            r = requests.get(cls.MAIN_BLOCK_API.format(hash, page))
+            r.raise_for_status()
+            response = r.json()
+            txids.extend((tx["txid"] for tx in response["txs"]))
+            if page == response["totalPages"]:
+                break
+        return Block(response['hash'], response['height'], response['previousBlockHash'], response['nextBlockHash'], txids)

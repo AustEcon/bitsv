@@ -5,6 +5,7 @@ from whatsonchain.api import Whatsonchain
 from bitsv.constants import BSV
 from bitsv.network.meta import Unspent
 from bitsv.network.transaction import TxInput, TxOutput, Transaction
+from bitsv.network.block import Block
 
 
 def woc_tx_to_transaction(response):
@@ -22,6 +23,13 @@ def woc_tx_to_transaction(response):
 
     return tx
 
+def woc_bk_to_block(response):
+    txs = []
+    for tx in response['tx']:
+        txs.append(tx)
+    bk = Block(response['hash'], response['height'], response['previousblockhash'], response['nextblockhash'], txs)
+
+    return bk
 
 def woc_utxos_to_unspents(woc_utxos, block_height):
     utxos = []
@@ -59,3 +67,10 @@ class WhatsonchainNormalised(Whatsonchain):
 
     def send_transaction(self, tx_hex: str) -> str:
         return self.broadcast_rawtx(tx_hex)
+
+    def get_bestblockhash(self) -> str:
+        return self.get_chain_info()['bestblockhash']
+        
+    def get_block(self, hash: str) -> Block:
+        response = self.get_block_by_hash(hash)
+        return woc_bk_to_block(response)

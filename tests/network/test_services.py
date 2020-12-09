@@ -14,6 +14,7 @@ TEST_ADDRESS_USED2 = 'mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5'
 TEST_ADDRESS_USED3 = 'mpnrLMH4m4e6dS8Go84P1r2hWwTiFTXmtW'
 TEST_ADDRESS_UNUSED = 'mp1xDKvvZ4yd8h9mLC4P76syUirmxpXhuk'
 TEST_TX = '9a987f7fec77c84e743e7bd4cbcb410e1f37dd600df78137b0d07629520161b3'
+TEST_BLOCK_MAIN = '0000000000000000085be589c3c1f37ccd593be0af5b5b0acc7ee65009493e83'
 
 INVOKE_COUNTER = 0
 
@@ -79,6 +80,14 @@ class MockErrorApi:
     def send_transaction(rawtx):
         raise_connection_error()
 
+    @staticmethod
+    def get_bestblockhash():
+        raise_connection_error()
+
+    @staticmethod
+    def get_block(hash):
+        raise_connection_error()
+
 
 network_api_main = NetworkAPI('main')
 network_api_test = NetworkAPI('test')
@@ -120,6 +129,22 @@ class TestNetworkAPI:
         with pytest.raises(ConnectionError):
             mock_network_api_main.get_unspents(MAIN_ADDRESS_USED1)
 
+    def test_get_bestblockhash_main_equal(self):
+        results = [api.get_bestblockhash() for api in network_api_main.list_of_apis]
+        assert all_items_equal(results)
+
+    def test_get_bestblockhash_main_failure(self):
+        with pytest.raises(ConnectionError):
+            mock_network_api_main.get_bestblockhash()
+
+    def test_get_block_main_equal(self):
+        results = [api.get_block(TEST_BLOCK_MAIN) for api in network_api_main.list_of_apis]
+        assert all_items_equal(results)
+
+    def test_get_block_main_failure(self):
+        with pytest.raises(ConnectionError):
+            mock_network_api_main.get_block(TEST_BLOCK_MAIN)
+
     # Test
     def test_get_balance_test_equal(self):
         results = [api.get_balance(TEST_ADDRESS_USED2) for api in network_api_test.list_of_apis]
@@ -144,6 +169,14 @@ class TestNetworkAPI:
     def test_get_unspents_test_failure(self):
         with pytest.raises(ConnectionError):
             mock_network_api_test.get_unspents(TEST_ADDRESS_USED2)
+
+    def test_get_bestblockhash_test_equal(self):
+        results = [api.get_bestblockhash() for api in network_api_test.list_of_apis]
+        assert all_items_equal(results)
+
+    def test_get_bestblockhash_test_failure(self):
+        with pytest.raises(ConnectionError):
+            mock_network_api_test.get_bestblockhash()
 
     # STN
     # Commented out until necessary server upgrades are done on BitIndex

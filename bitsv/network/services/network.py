@@ -97,14 +97,14 @@ class NetworkAPI:
             self.list_of_apis.appendleft(self.bitindex3)
 
     @retry_annotation(IGNORED_ERRORS, tries=DEFAULT_RETRY)
-    def retry_wrapper_call(self, api_call, param):
-        return api_call(param)
+    def retry_wrapper_call(self, api_call, *params):
+        return api_call(*params)
 
-    def invoke_api_call(self, call_list, param):
+    def invoke_api_call(self, call_list, *params):
         """Tries to invoke all api, raise exception if all fail."""
         for api_call in call_list:
             try:
-                return self.retry_wrapper_call(api_call, param)
+                return self.retry_wrapper_call(api_call, *params)
             except IGNORED_ERRORS as e:
                 # TODO: Write a log here to notify the system has changed the default service.
                 self.list_of_apis.rotate(-1)
@@ -154,6 +154,25 @@ class NetworkAPI:
         """
         call_list = [api.get_unspents for api in self.list_of_apis]
         return self.invoke_api_call(call_list, address)
+
+    def get_bestblockhash(self):
+        """Gets the hash of the tip block on the main chain.
+        :raises ConnectionError: If all API services fail.
+        :rtype: ``str``
+        """
+        call_list = [api.get_bestblockhash for api in self.list_of_apis]
+        return self.invoke_api_call(call_list)
+
+    def get_block(self, blockhash):
+        """Gets the block details.
+
+        :param blockhash: The block hash in question.
+        :type blockhash: ``str``
+        :raises ConnectionError: If all API services fail.
+        :rtype: ``Block``
+        """
+        call_list = [api.get_block for api in self.list_of_apis]
+        return self.invoke_api_call(call_list, blockhash)
 
     def broadcast_tx(self, tx_hex):  # pragma: no cover
         """Broadcasts a transaction to the blockchain.

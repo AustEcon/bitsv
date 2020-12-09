@@ -146,6 +146,16 @@ class FullNode:
         ) for tx in unspents]
 
     @Decorators.handle_broken_pipe
+    def get_bestblockhash(self):
+        tips = self.rpc.getchaintips()
+        return self.rpc.getblockchaininfo()['bestblockhash']
+
+    @Decorators.handle_broken_pipe
+    def get_block(self, hash):
+        block = self.rpc.getblock(1)
+        return Block(block['hash'], block['height'], block['previousblockhash'], block['nextblockhash'], block['tx'])
+
+    @Decorators.handle_broken_pipe
     def broadcast_tx(self, tx_hex):
         return self.rpc.sendrawtransaction(tx_hex, True)
 
