@@ -10,6 +10,7 @@ from .whatsonchain import WhatsonchainNormalised
 
 from .mattercloud import MatterCloud, MATTERCLOUD_API_KEY_VARNAME
 from .bchsvexplorer import BCHSVExplorerAPI
+from .planaria import Planaria, PLANARIA_TOKEN_VARNAME
 
 DEFAULT_TIMEOUT = 30
 DEFAULT_RETRY = 3
@@ -96,20 +97,30 @@ class NetworkAPI:
             self.bitindex3 = MatterCloud(api_key=mattercloud_api_key, network=self.network)
             self.list_of_apis.appendleft(self.bitindex3)
 
-    @retry_annotation(IGNORED_ERRORS, tries=DEFAULT_RETRY)
-    def retry_wrapper_call(self, api_call, param):
-        return api_call(param)
+        planaria_token = os.environ.get(PLANARIA_TOKEN_VARNAME, None)
+        if planaria_token and network == 'main':
+            self.planaria = Planaria(token=planaria_token)
+            self.list_of_apis.append(self.planaria)
 
-    def invoke_api_call(self, call_list, param):
+    @retry_annotation(IGNORED_ERRORS, tries=DEFAULT_RETRY)
+    def retry_wrapper_call(self, api_call, *params):
+        return api_call(*params)
+
+    def get_apis_supporting(self, name):
+        return [api for api in self.list_of_apis if hasattr(api, name)]
+
+    def invoke_api_call(self, name, *params):
         """Tries to invoke all api, raise exception if all fail."""
+        call_list = [getattr(api, name) for api in self.get_apis_supporting(name)]
+        exceptions = []
         for api_call in call_list:
             try:
-                return self.retry_wrapper_call(api_call, param)
+                return self.retry_wrapper_call(api_call, *params)
             except IGNORED_ERRORS as e:
                 # TODO: Write a log here to notify the system has changed the default service.
                 self.list_of_apis.rotate(-1)
-                if call_list[-1] == api_call:   # All api iterated.
-                    raise ConnectionError('All APIs are unreachable, exception:' + str(e))
+                exceptions.append(str(e))
+        raise ConnectionError('All APIs are unreachable, exceptions:' + ';'.join(exceptions))
 
     def get_balance(self, address):
         """Gets the balance of an address in satoshis.
@@ -119,8 +130,7 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``int``
         """
-        call_list = [api.get_balance for api in self.list_of_apis]
-        return self.invoke_api_call(call_list, address)
+        return self.invoke_api_call('get_balance', address)
 
     def get_transactions(self, address):
         """Gets the ID of all transactions related to an address.
@@ -130,8 +140,17 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``list`` of ``str``
         """
-        call_list = [api.get_transactions for api in self.list_of_apis]
-        return self.invoke_api_call(call_list, address)
+        return self.invoke_api_call('get_transactions', address)
+
+    def get_bitcom_transactions(self, bitcom, address=None):
+        """Gets the ID of all transactions related to an address.
+
+        :param address: The address in question.
+        :type address: ``str``
+        :raises ConnectionError: If all API services fail.
+        :rtype: ``list`` of ``str``
+        """
+        return self.invoke_api_call('get_bitcom_transactions', bitcom, address)
 
     def get_transaction(self, txid):
         """Gets the full transaction details.
@@ -141,8 +160,7 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``Transaction``
         """
-        call_list = [api.get_transaction for api in self.list_of_apis]
-        return self.invoke_api_call(call_list, txid)
+        return self.invoke_api_call('get_transaction', txid)
 
     def get_unspents(self, address):
         """Gets all unspent transaction outputs belonging to an address.
@@ -152,8 +170,7 @@ class NetworkAPI:
         :raises ConnectionError: If all API services fail.
         :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
-        call_list = [api.get_unspents for api in self.list_of_apis]
-        return self.invoke_api_call(call_list, address)
+        return self.invoke_api_call('get_unspents', address)
 
     def broadcast_tx(self, tx_hex):  # pragma: no cover
         """Broadcasts a transaction to the blockchain.
@@ -162,6 +179,5 @@ class NetworkAPI:
         :type tx_hex: ``str``
         :raises ConnectionError: If all API services fail.
         """
-        call_list = [api.send_transaction for api in self.list_of_apis]
-        tx_id = self.invoke_api_call(call_list, tx_hex)
+        tx_id = self.invoke_api_call('send_transaction', tx_hex)
         return tx_id
