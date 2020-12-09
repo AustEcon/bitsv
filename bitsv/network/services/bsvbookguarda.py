@@ -13,7 +13,7 @@ DEFAULT_TIMEOUT = 30
 BSV_TO_SAT_MULTIPLIER = BSV
 
 
-class BCHSVExplorerAPI:
+class BSVBookGuardaAPI:
     """
     Simple bitcoin SV REST API --> uses base58 address format (addresses start with "1")
     - get_address_info
@@ -23,19 +23,14 @@ class BCHSVExplorerAPI:
     - get_unspent
     - broadcast_tx
     """
-    MAIN_ENDPOINT = 'https://bchsvexplorer.com/'
-    MAIN_ADDRESS_API = MAIN_ENDPOINT + 'api/addr/{}'
-    MAIN_BALANCE_API = MAIN_ADDRESS_API + '/balance'
-    MAIN_UNSPENT_API = MAIN_ADDRESS_API + '/utxo'
-    MAIN_TX_PUSH_API = MAIN_ENDPOINT + 'api/tx/send/'
-    MAIN_TX_API = MAIN_ENDPOINT + 'api/tx/{}'
+    MAIN_ENDPOINT = 'https://bsvbook.guarda.co/'
+    MAIN_ADDRESS_API = MAIN_ENDPOINT + 'api/v2/address/{}'
+    MAIN_BALANCE_API = MAIN_ADDRESS_API
+    MAIN_TX_PULL_API = MAIN_ADDRESS_API + '?page={}'
+    MAIN_UNSPENT_API = MAIN_ENDPOINT + 'api/v2/utxo/{}'
+    MAIN_TX_PUSH_API = MAIN_ENDPOINT + 'api/v2/sendtx'
+    MAIN_TX_API = MAIN_ENDPOINT + 'api/v2/tx/{}'
     MAIN_TX_AMOUNT_API = MAIN_TX_API
-    TX_PUSH_PARAM = 'create_rawtx'
-
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-    }
 
     @classmethod
     def get_address_info(cls, address):
@@ -47,13 +42,20 @@ class BCHSVExplorerAPI:
     def get_balance(cls, address):
         r = requests.get(cls.MAIN_BALANCE_API.format(address), timeout=DEFAULT_TIMEOUT)
         r.raise_for_status()  # pragma: no cover
-        return r.json()
+        return int(r.json()['balance'])
 
     @classmethod
     def get_transactions(cls, address):
-        r = requests.get(cls.MAIN_ADDRESS_API.format(address), timeout=DEFAULT_TIMEOUT)
-        r.raise_for_status()  # pragma: no cover
-        return r.json()['transactions']
+        page = 1
+        while True:
+            r = requests.get(cls.MAIN_TX_PULL_API.format(address, page), timeout=DEFAULT_TIMEOUT)
+            r.raise_for_status()  # pragma: no cover
+            response = r.json(parse_float=Decimal)
+            for txid in response['txids']:
+                yield txid
+            if page == response['totalPages']:
+                break
+            page += 1
 
     @classmethod
     def get_transaction(cls, txid):
@@ -68,7 +70,7 @@ class BCHSVExplorerAPI:
 
         tx_outputs = []
         for vout in response['vout']:
-            tx_output = TxOutput(scriptpubkey=vout['scriptPubKey']['hex'], amount=vout['valueSat'])
+            tx_output = TxOutput(scriptpubkey=vout['hex'], amount=vout['value'])
             tx_outputs.append(tx_output)
         tx = Transaction(response['txid'], tx_inputs, tx_outputs)
 
@@ -86,7 +88,7 @@ class BCHSVExplorerAPI:
         r = requests.get(cls.MAIN_UNSPENT_API.format(address), timeout=DEFAULT_TIMEOUT)
         r.raise_for_status()  # pragma: no cover
         utxos = [
-            Unspent(amount=currency_to_satoshi(utxo['amount'], 'bsv'),
+            Unspent(amount=currency_to_satoshi(utxo['value'], 'satoshi'),
                     confirmations=utxo['confirmations'],
                     txid=utxo['txid'],
                     txindex=utxo['vout'])
@@ -97,9 +99,11 @@ class BCHSVExplorerAPI:
     @classmethod
     def send_transaction(cls, rawtx):  # pragma: no cover
         r = requests.post(
-            'https://bchsvexplorer.com/api/tx/send',
-            data=json.dumps({'rawtx': rawtx}),
-            headers=cls.headers,
+            MAIN_TX_PUSH_API,
+            data=rawx
         )
         r.raise_for_status()
-        return r.json()['txid']
+        response = r.json()
+        if 'error' in response:
+            raise ValueError(response['error']['message'])
+        return response['result']

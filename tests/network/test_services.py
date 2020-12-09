@@ -105,7 +105,7 @@ class TestNetworkAPI:
             mock_network_api_main.get_balance(MAIN_ADDRESS_USED1)
 
     def test_get_transactions_main_equal(self):
-        results = [api.get_transactions(MAIN_ADDRESS_USED1) for api in network_api_main.list_of_apis]
+        results = [[*api.get_transactions(MAIN_ADDRESS_USED1)] for api in network_api_main.list_of_apis]
         assert all_items_common(results[:100])
 
     def test_get_transactions_main_failure(self):
