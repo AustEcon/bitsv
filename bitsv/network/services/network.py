@@ -143,7 +143,8 @@ class NetworkAPI:
         return self.invoke_api_call('get_transactions', address)
 
     def get_bitcom_transactions(self, bitcom, address=None):
-        """Gets the ID of all transactions related to an address.
+        """Gets the ID of all transactions with a given bitcom prefix,
+           optionally only from an address.
 
         :param address: The address in question.
         :type address: ``str``
