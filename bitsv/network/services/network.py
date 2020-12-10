@@ -147,7 +147,7 @@ class NetworkAPI:
            optionally only from an address.
 
         :param bitcom: The bottom prefix in question.
-        :type bottom: ``str``
+        :type bitcom: ``str``
         :param address: An optional address to filter from.
         :type address: ``str``
         :raises ConnectionError: If all API services fail.
