@@ -146,7 +146,9 @@ class NetworkAPI:
         """Gets the ID of all transactions with a given bitcom prefix,
            optionally only from an address.
 
-        :param address: The address in question.
+        :param bottom: The bottom prefix in question.
+        :type address: ``str``
+        :param address: An optional address to filter from.
         :type address: ``str``
         :raises ConnectionError: If all API services fail.
         :rtype: ``list`` of ``str``
