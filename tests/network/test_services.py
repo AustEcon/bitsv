@@ -9,6 +9,9 @@ from tests.utils import raise_connection_error
 MAIN_ADDRESS_USED1 = '1L2JsXHPMYuAa9ugvHGLwkdstCPUDemNCf'
 MAIN_ADDRESS_USED2 = '17SkEw2md5avVNyYgj6RiXuQKNwkXaxFyQ'
 MAIN_ADDRESS_UNUSED = '1DvnoW4vsXA1H9KDgNiMqY7iNkzC187ve1'
+MAIN_BITCOM_B = '19HxigV4QyBv3tHpQVcUEQyq1pzZVdoAut'
+MAIN_BITCOM_B_ADDRESS = '1BiU6C35By6EjMi8mFAKhd7eFxpB7M9opt'
+MAIN_BITCOM_B_TXID = '6c784b78cff5ee4f469f783adc0e957265f467d3a0dae2b2b1ecbc84a1bd1fb6'
 TEST_ADDRESS_USED1 = 'n2eMqTT929pb1RDNuqEnxdaLau1rxy3efi'
 TEST_ADDRESS_USED2 = 'mmvP3mTe53qxHdPqXEvdu8WdC7GfQ2vmx5'
 TEST_ADDRESS_USED3 = 'mpnrLMH4m4e6dS8Go84P1r2hWwTiFTXmtW'
@@ -97,7 +100,7 @@ mock_network_api_stn.list_of_apis = collections.deque([MockErrorApi])
 class TestNetworkAPI:
     # Main
     def test_get_balance_main_equal(self):
-        results = [api.get_balance(MAIN_ADDRESS_USED2) for api in network_api_main.list_of_apis]
+        results = [api.get_balance(MAIN_ADDRESS_USED2) for api in network_api_main.get_apis_supporting('get_balance')]
         assert all(result == results[0] for result in results)
 
     def test_get_balance_main_failure(self):
@@ -105,7 +108,7 @@ class TestNetworkAPI:
             mock_network_api_main.get_balance(MAIN_ADDRESS_USED1)
 
     def test_get_transactions_main_equal(self):
-        results = [api.get_transactions(MAIN_ADDRESS_USED1) for api in network_api_main.list_of_apis]
+        results = [[*api.get_transactions(MAIN_ADDRESS_USED1)] for api in network_api_main.get_apis_supporting('get_transactions')]
         assert all_items_common(results[:100])
 
     def test_get_transactions_main_failure(self):
@@ -113,16 +116,25 @@ class TestNetworkAPI:
             mock_network_api_main.get_transactions(MAIN_ADDRESS_USED1)
 
     def test_get_unspents_main_equal(self):
-        results = [api.get_unspents(MAIN_ADDRESS_USED2) for api in network_api_main.list_of_apis]
+        results = [api.get_unspents(MAIN_ADDRESS_USED2) for api in network_api_main.get_apis_supporting('get_unspents')]
         assert all_items_equal(results)
 
     def test_get_unspents_main_failure(self):
         with pytest.raises(ConnectionError):
             mock_network_api_main.get_unspents(MAIN_ADDRESS_USED1)
 
+    def test_get_bitcom_transactions_address_main_equal(self):
+        results = [[*api.get_bitcom_transactions(MAIN_BITCOM_B, MAIN_BITCOM_B_ADDRESS)][-1] for api in network_api_main.get_apis_supporting('get_bitcom_transactions')]
+        results.append(MAIN_BITCOM_B_TXID)
+        assert all_items_equal(results)
+
+    def test_get_bitcom_transactions_main_failure(self):
+        with pytest.raises(ConnectionError):
+            mock_network_api_main.get_bitcom_transactions(MAIN_BITCOM_B, MAIN_BITCOM_B_ADDRESS)
+
     # Test
     def test_get_balance_test_equal(self):
-        results = [api.get_balance(TEST_ADDRESS_USED2) for api in network_api_test.list_of_apis]
+        results = [api.get_balance(TEST_ADDRESS_USED2) for api in network_api_test.get_apis_supporting('get_balance')]
         assert all(result == results[0] for result in results)
 
     def test_get_balance_test_failure(self):
@@ -130,7 +142,7 @@ class TestNetworkAPI:
             mock_network_api_test.get_balance(TEST_ADDRESS_USED2)
 
     def test_get_transactions_test_equal(self):
-        results = [api.get_transactions(TEST_ADDRESS_USED2)[:100] for api in network_api_test.list_of_apis]
+        results = [api.get_transactions(TEST_ADDRESS_USED2)[:100] for api in network_api_test.get_apis_supporting('get_transactions')]
         assert all_items_common(results)
 
     def test_get_transactions_test_failure(self):
@@ -138,7 +150,7 @@ class TestNetworkAPI:
             mock_network_api_test.get_transactions(TEST_ADDRESS_USED2)
 
     def test_get_unspents_test_equal(self):
-        results = [api.get_unspents(TEST_ADDRESS_USED3) for api in network_api_test.list_of_apis]
+        results = [api.get_unspents(TEST_ADDRESS_USED3) for api in network_api_test.get_apis_supporting('get_unspents')]
         assert all_items_equal(results)
 
     def test_get_unspents_test_failure(self):
@@ -149,7 +161,7 @@ class TestNetworkAPI:
     # Commented out until necessary server upgrades are done on BitIndex
     # Or until Whatsonchain add number of confirmations to utxo response - otherwise I have it ready to go!
     """def test_get_balance_stn_equal(self):
-        results = [api.get_balance(TEST_ADDRESS_USED2) for api in network_api_stn.list_of_apis]
+        results = [api.get_balance(TEST_ADDRESS_USED2) for api in network_api_stn.get_apis_supporting('get_balance')]
         assert all(result == results[0] for result in results)
 
     def test_get_balance_stn_failure(self):
@@ -157,7 +169,7 @@ class TestNetworkAPI:
             mock_network_api_stn.get_balance(TEST_ADDRESS_USED2)
 
     def test_get_transactions_stn_equal(self):
-        results = [api.get_transactions(TEST_ADDRESS_USED2)[:100] for api in network_api_stn.list_of_apis]
+        results = [api.get_transactions(TEST_ADDRESS_USED2)[:100] for api in network_api_stn.get_apis_supporting('get_transactions')]
         assert all_items_common(results)
 
     def test_get_transactions_stn_failure(self):
@@ -165,7 +177,7 @@ class TestNetworkAPI:
             mock_network_api_stn.get_transactions(TEST_ADDRESS_USED2)
 
     def test_get_unspents_stn_equal(self):
-        results = [api.get_unspents(TEST_ADDRESS_USED3) for api in network_api_stn.list_of_apis]
+        results = [api.get_unspents(TEST_ADDRESS_USED3) for api in network_api_stn.get_apis_supporting('get_unspents')]
         assert all_items_equal(results)
 
     def test_get_unspents_stn_failure(self):
