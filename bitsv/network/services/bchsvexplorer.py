@@ -24,9 +24,10 @@ class BCHSVExplorerAPI:
     - broadcast_tx
     """
     MAIN_ENDPOINT = 'https://bchsvexplorer.com/'
-    MAIN_ADDRESS_API = MAIN_ENDPOINT + 'api/addr/{}'
-    MAIN_BALANCE_API = MAIN_ADDRESS_API + '/balance'
-    MAIN_UNSPENT_API = MAIN_ADDRESS_API + '/utxo'
+    MAIN_ADDRESS_API = MAIN_ENDPOINT + 'api/v2/address/{}'
+    MAIN_ADDRESS_BALANCE = MAIN_ADDRESS_API + '?details=basic'
+    MAIN_ADDRESS_TX_IDS = MAIN_ADDRESS_API + '?details=txids'
+    MAIN_UNSPENT_API = MAIN_ENDPOINT + 'api/v2/utxo/{}'
     MAIN_TX_PUSH_API = MAIN_ENDPOINT + 'api/tx/send/'
     MAIN_TX_API = MAIN_ENDPOINT + 'api/tx/{}'
     MAIN_TX_AMOUNT_API = MAIN_TX_API
@@ -45,15 +46,15 @@ class BCHSVExplorerAPI:
 
     @classmethod
     def get_balance(cls, address):
-        r = requests.get(cls.MAIN_BALANCE_API.format(address), timeout=DEFAULT_TIMEOUT)
+        r = requests.get(cls.MAIN_ADDRESS_BALANCE.format(address), timeout=DEFAULT_TIMEOUT)
         r.raise_for_status()  # pragma: no cover
-        return r.json()
+        return int(r.json()['balance'])
 
     @classmethod
     def get_transactions(cls, address):
-        r = requests.get(cls.MAIN_ADDRESS_API.format(address), timeout=DEFAULT_TIMEOUT)
+        r = requests.get(cls.MAIN_ADDRESS_TX_IDS.format(address), timeout=DEFAULT_TIMEOUT)
         r.raise_for_status()  # pragma: no cover
-        return r.json()['transactions']
+        return r.json()['txids']
 
     @classmethod
     def get_transaction(cls, txid):
@@ -86,7 +87,7 @@ class BCHSVExplorerAPI:
         r = requests.get(cls.MAIN_UNSPENT_API.format(address), timeout=DEFAULT_TIMEOUT)
         r.raise_for_status()  # pragma: no cover
         utxos = [
-            Unspent(amount=currency_to_satoshi(utxo['amount'], 'bsv'),
+            Unspent(amount=int(utxo['value']),
                     confirmations=utxo['confirmations'],
                     txid=utxo['txid'],
                     txindex=utxo['vout'])

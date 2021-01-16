@@ -106,7 +106,7 @@ class TestNetworkAPI:
 
     def test_get_transactions_main_equal(self):
         results = [api.get_transactions(MAIN_ADDRESS_USED1) for api in network_api_main.list_of_apis]
-        assert all_items_common(results[:100])
+        assert all_items_common(results)
 
     def test_get_transactions_main_failure(self):
         with pytest.raises(ConnectionError):
@@ -173,7 +173,7 @@ class TestNetworkAPI:
             mock_network_api_stn.get_unspents(TEST_ADDRESS_USED2)"""
 
     # Retry
-    def test_switch_serivce(self):
+    def test_switch_service(self):
         """ The invoke finally success after switch service. """
         network = NetworkAPI("main")
         network.list_of_apis = collections.deque([MockErrorApi, MockApi])
