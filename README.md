@@ -12,7 +12,11 @@ Forked from Ofek's awesome Bit library: https://github.com/ofek/bit
 
 Noticeboard:
 ------------
-Latest Major Release - [0.11.4](https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst) (2021-01-01)
+In the near-term I do not have the bandwidth to support any major increases in scope. If there are
+features you'd like added, raise an issue for discussion. It may be that you're best to create your 
+own small library that complements bitsv rather than allowing me to be a bottleneck...
+
+Latest Major Release - [0.11.5](https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst) (2021-01-24)
 
 - Added WhatsOnChain API for mainnet and testnet
 - Unspent data type: removed 'script' (scriptpubkey) attribute (unavailable from WhatsOnChain and Satoshi.io APIs and is unused in the codebase).
@@ -20,32 +24,18 @@ Latest Major Release - [0.11.4](https://github.com/AustEcon/bitsv/blob/master/HI
 - MatterCloud now activated via **'MATTERCLOUD_API_KEY' environment variable** which makes it the highest priority API in the list for main, test, stn. Otherwise WhatsOnChain is used by default.
 - 0.11.1 Fixed an off-by-one bug for generating pushdata op_codes for data-carrier 'op_return' txs - c/o [gitzhou](https://github.com/gitzhou).
 - 0.11.2 NetworkAPI.broadcast_tx() now returns the txid instead of null.
-- 0.11.3 make 'prepare_transaction' a @classmethod as it should not require a private key (breaking change as function signature now requires the 'network' as a positional argument)
-
-Previous Major Release - [0.10.4](https://github.com/AustEcon/bitsv/blob/master/HISTORY.rst) (2019-02-13)
-
-- Added new Fullnode class for connecting to local bitcoin node via JSON-RPC (thanks goes to https://github.com/xloem for the initial legwork).
-- Fullnode class works for Mainnet, Testnet, Scaling-testnet and RegTest (local mock blockchain).
-- Reordered outputs to always have 'false return' metadata included in the **first** output instead of the last. This will fix a new issue that arose with rendering of images etc. on bico.media.
-- Prepend OP_FALSE to OP_RETURN in preparation for Genesis upgrade coming in February.
-- Add 'sweep' function to PrivateKey class for sending all coins to a given address.
-- 0.10.1 includes a patch for rpc methods list
-- 0.10.2 includes a patch to fix broken API endpoint for foreign currency conversions.
-- 0.10.3 allow transaction fee less than 1 sat/byte (i.e. float) c/o [gitzhou](https://github.com/gitzhou)
-- 0.10.4 update main api url from https://api.bitindex.network to https://api.mattercloud.net
-
+- 0.11.3 Make 'prepare_transaction' a @classmethod as it should not require a private key (breaking change as function signature now requires the 'network' as a positional argument)
+- 0.11.5 Update bchsvexplorer.com to bsvbook.guarda.co c/o `xloem <https://github.com/xloem>`_ and `kcentrifugal <https://github.com/kcentrifugal>`_
+- 0.11.5 Extend test coverage to py38 and py39
 
 Planned improvements
 --------------------
 
 - Improved coverage of testing modules (currently at 84%).
-- (Mostly done in 0.10.0) Support for use of a local bitcoin full node instead of a Web-API. (paves the way for a RegTest environment for a rapid development cycle)
 - Work on the bsvbip32 library for hierarchical deterministic keys:
   https://github.com/AustEcon/bsvbip32. Plan for each node to access
   bitsv functionality so that building apps can be a breeze!
   (competing implementations welcome. That's partly why modularity is a good idea!)
-- Add Whatsonchain API for added redundancy across main / test and stn networks.
-- Minor updates to documentation for 0.9.0 release are still needed re: PrivateKey.get_transaction()
 
 ----------------------------
 

@@ -3,11 +3,16 @@ Release History
 
 Unreleased (see `master <https://github.com/AustEcon/bitsv>`_)
 --------------------------------------------------------------
-- No new changes since 0.11.2 yet.
+- No new changes since 0.11.5 yet.
+
+0.11.5 (2021-01-24)
+-------------------
+- Update bchsvexplorer.com to bsvbook.guarda.co c/o `xloem <https://github.com/xloem>`_ and `kcentrifugal <https://github.com/kcentrifugal>`_
+- Extend test coverage to py38 and py39
 
 0.11.3 (2020-11-7)
 ------------------
-- make 'prepare_transaction' a @classmethod as it should not require a private key (breaking change as function signature now requires the 'network' as a positional argument)
+- Make 'prepare_transaction' a @classmethod as it should not require a private key (breaking change as function signature now requires the 'network' as a positional argument)
 
 0.11.2 (2020-10-11)
 -------------------
