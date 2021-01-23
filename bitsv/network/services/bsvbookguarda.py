@@ -14,6 +14,8 @@ BSV_TO_SAT_MULTIPLIER = BSV
 
 class BSVBookGuardaAPI:
     """
+    https://github.com/guardaco/blockbook/blob/guarda-changes/docs/api.md
+
     Simple bitcoin SV REST API --> uses base58 address format (addresses start with "1")
     - get_address_info
     - get_balance
@@ -26,6 +28,7 @@ class BSVBookGuardaAPI:
     MAIN_ADDRESS_API = MAIN_ENDPOINT + 'api/v2/address/{}'
     MAIN_ADDRESS_BALANCE = MAIN_ADDRESS_API + '?details=basic'
     MAIN_ADDRESS_TX_IDS = MAIN_ADDRESS_API + '?details=txids'
+    MAIN_TX_PULL_API = MAIN_ADDRESS_API + '?details=txids' + '?page={}'
     MAIN_UNSPENT_API = MAIN_ENDPOINT + 'api/v2/utxo/{}'
     MAIN_TX_PUSH_API = MAIN_ENDPOINT + 'api/v2/sendtx/{}'
     MAIN_TX_API = MAIN_ENDPOINT + 'api/v2/tx/{}'
@@ -44,12 +47,22 @@ class BSVBookGuardaAPI:
 
     @classmethod
     def get_transactions(cls, address):
-        r = requests.get(cls.MAIN_ADDRESS_TX_IDS.format(address), timeout=DEFAULT_TIMEOUT)
-        r.raise_for_status()  # pragma: no cover
-        txs = r.json().get('txids')  # if there are no txs in history the 'txids' key doesn't exist
-        if txs:
-            return txs
-        return []
+        """Always pages through all results - which will be very slow if the address is reused a
+        lot - heavy address reuse that goes into the thousands is outside the scope of bitsv at
+        this time"""
+        page = 1  # 1 page = 1000 txids
+        all_txids = []
+        while True:
+            r = requests.get(cls.MAIN_TX_PULL_API.format(address, page), timeout=DEFAULT_TIMEOUT)
+            r.raise_for_status()  # pragma: no cover
+            response = r.json(parse_float=Decimal)
+            for txid in response.get('txids'):
+                all_txids.append(txid)
+            if page == response['totalPages']:
+                break
+            page += 1
+
+        return all_txids
 
     @classmethod
     def get_transaction(cls, txid):
