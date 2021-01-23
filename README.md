@@ -25,7 +25,7 @@ Latest Major Release - [0.11.5](https://github.com/AustEcon/bitsv/blob/master/HI
 - 0.11.1 Fixed an off-by-one bug for generating pushdata op_codes for data-carrier 'op_return' txs - c/o [gitzhou](https://github.com/gitzhou).
 - 0.11.2 NetworkAPI.broadcast_tx() now returns the txid instead of null.
 - 0.11.3 Make 'prepare_transaction' a @classmethod as it should not require a private key (breaking change as function signature now requires the 'network' as a positional argument)
-- 0.11.5 Update bchsvexplorer.com to bsvbook.guarda.co c/o `xloem <https://github.com/xloem>`_ and `kcentrifugal <https://github.com/kcentrifugal>`_
+- 0.11.5 Update bchsvexplorer.com to bsvbook.guarda.co c/o [xloem](https://github.com/xloem) and [kcentrifugal](https://github.com/kcentrifugal)
 - 0.11.5 Extend test coverage to py38 and py39
 
 Planned improvements
