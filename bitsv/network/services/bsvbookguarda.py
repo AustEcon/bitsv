@@ -1,5 +1,4 @@
 import requests
-import json
 from decimal import Decimal
 
 from bitsv.network import currency_to_satoshi
@@ -13,7 +12,7 @@ DEFAULT_TIMEOUT = 30
 BSV_TO_SAT_MULTIPLIER = BSV
 
 
-class BCHSVExplorerAPI:
+class BSVBookGuardaAPI:
     """
     Simple bitcoin SV REST API --> uses base58 address format (addresses start with "1")
     - get_address_info
@@ -23,20 +22,13 @@ class BCHSVExplorerAPI:
     - get_unspent
     - broadcast_tx
     """
-    MAIN_ENDPOINT = 'https://bchsvexplorer.com/'
+    MAIN_ENDPOINT = 'https://bsvbook.guarda.co/'
     MAIN_ADDRESS_API = MAIN_ENDPOINT + 'api/v2/address/{}'
     MAIN_ADDRESS_BALANCE = MAIN_ADDRESS_API + '?details=basic'
     MAIN_ADDRESS_TX_IDS = MAIN_ADDRESS_API + '?details=txids'
     MAIN_UNSPENT_API = MAIN_ENDPOINT + 'api/v2/utxo/{}'
-    MAIN_TX_PUSH_API = MAIN_ENDPOINT + 'api/tx/send/'
-    MAIN_TX_API = MAIN_ENDPOINT + 'api/tx/{}'
-    MAIN_TX_AMOUNT_API = MAIN_TX_API
-    TX_PUSH_PARAM = 'create_rawtx'
-
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-    }
+    MAIN_TX_PUSH_API = MAIN_ENDPOINT + 'api/v2/sendtx/{}'
+    MAIN_TX_API = MAIN_ENDPOINT + 'api/v2/tx/{}'
 
     @classmethod
     def get_address_info(cls, address):
@@ -72,7 +64,7 @@ class BCHSVExplorerAPI:
 
         tx_outputs = []
         for vout in response['vout']:
-            tx_output = TxOutput(scriptpubkey=vout['scriptPubKey']['hex'],
+            tx_output = TxOutput(scriptpubkey=vout['hex'],
                 amount=currency_to_satoshi(vout['value'], 'bsv'))
             tx_outputs.append(tx_output)
         tx = Transaction(response['txid'], tx_inputs, tx_outputs)
@@ -101,10 +93,13 @@ class BCHSVExplorerAPI:
 
     @classmethod
     def send_transaction(cls, rawtx):  # pragma: no cover
-        r = requests.post(
-            'https://bchsvexplorer.com/api/tx/send',
-            data=json.dumps({'rawtx': rawtx}),
-            headers=cls.headers,
+        r = requests.get(
+            cls.MAIN_TX_PUSH_API.format(rawtx),  # post method gives "error": "Missing tx blob"
+            data=rawtx
         )
-        r.raise_for_status()
-        return r.json()['txid']
+        if r.status_code != 200:
+            response = r.json()
+            if 'error' in response:
+                raise ValueError(response['error'])
+        response = r.json()
+        return response['result']
