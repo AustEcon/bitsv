@@ -37,7 +37,7 @@ class TxOutput:
 
     def __init__(self, scriptpubkey, amount):
         self.scriptpubkey = scriptpubkey
-        self.amount = amount
+        self.amount = amount  # satoshis
         self.data_carrier = None
 
         if scriptpubkey is None:

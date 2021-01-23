@@ -54,7 +54,10 @@ class BCHSVExplorerAPI:
     def get_transactions(cls, address):
         r = requests.get(cls.MAIN_ADDRESS_TX_IDS.format(address), timeout=DEFAULT_TIMEOUT)
         r.raise_for_status()  # pragma: no cover
-        return r.json()['txids']
+        txs = r.json().get('txids')  # if there are no txs in history the 'txids' key doesn't exist
+        if txs:
+            return txs
+        return []
 
     @classmethod
     def get_transaction(cls, txid):
@@ -69,7 +72,8 @@ class BCHSVExplorerAPI:
 
         tx_outputs = []
         for vout in response['vout']:
-            tx_output = TxOutput(scriptpubkey=vout['scriptPubKey']['hex'], amount=vout['valueSat'])
+            tx_output = TxOutput(scriptpubkey=vout['scriptPubKey']['hex'],
+                amount=currency_to_satoshi(vout['value'], 'bsv'))
             tx_outputs.append(tx_output)
         tx = Transaction(response['txid'], tx_inputs, tx_outputs)
 
