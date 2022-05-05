@@ -171,10 +171,9 @@ class PrivateKey(BaseKey):
 
         self._address = None
         self._scriptcode = None
-
-        self.balance = 0
-        self.unspents = []
-        self.transactions = []
+        self._balance = None
+        self._unspents = None
+        self._transactions = None
         self.network = network
 
         # Standard network_api_main/test/stn objects are instantiated at top of this file as globals.
@@ -205,6 +204,24 @@ class PrivateKey(BaseKey):
                             OP_EQUALVERIFY + OP_CHECKSIG)
         return self._scriptcode
 
+    @property
+    def balance(self):
+        if self._balance is None:
+            self.get_balance()
+        return self._balance
+
+    @property
+    def unspents(self):
+        if self._unspents is None:
+            self.get_unspents()
+        return self._unspents
+
+    @property
+    def transactions(self):
+        if self._transactions is None:
+            self.get_transactions()
+        return self._transactions
+
     def to_wif(self):
         return bytes_to_wif(
             self._pk.secret,
@@ -230,8 +247,7 @@ class PrivateKey(BaseKey):
         :type currency: ``str``
         :rtype: ``str``
         """
-        self.get_unspents()
-        self.balance = sum(unspent.amount for unspent in self.unspents)
+        self._balance = sum(unspent.amount for unspent in self.unspents)
         return self.balance_as(currency)
 
     def get_unspents(self):
@@ -244,9 +260,9 @@ class PrivateKey(BaseKey):
         :param sort: 'value:desc' or 'value:asc' to sort unspents by descending/ascending order respectively
         :rtype: ``list`` of :class:`~bitsv.network.meta.Unspent`
         """
-        self.unspents[:] = self.network_api.get_unspents(self.address)
-        self.balance = sum(unspent.amount for unspent in self.unspents)
-        return self.unspents
+        self._unspents = self.network_api.get_unspents(self.address)
+        self._balance = sum(unspent.amount for unspent in self._unspents)
+        return self._unspents
 
     def get_transactions(self):
         """Fetches transaction history.
@@ -254,8 +270,8 @@ class PrivateKey(BaseKey):
         :param to_index: Final index to finish collecting transactions from
         :rtype: ``list`` of ``str`` transaction IDs
         """
-        self.transactions = self.network_api.get_transactions(self.address)
-        return self.transactions
+        self._transactions = self.network_api.get_transactions(self.address)
+        return self._transactions
 
     def get_transaction(self, txid):
         """Gets a single transaction.

@@ -139,9 +139,9 @@ class TestPrivateKey:
         private_key = PrivateKey()
 
         assert private_key._address is None
-        assert private_key.balance == 0
-        assert private_key.unspents == []
-        assert private_key.transactions == []
+        assert private_key._balance is None
+        assert private_key._unspents is None
+        assert private_key._transactions is None
 
     def test_address(self):
         private_key = PrivateKey(WALLET_FORMAT_MAIN)
